@@ -1,0 +1,27 @@
+#body{
+     padding-top: 150px;
+     background-image: url('../img/slide/fondo5.jpg');
+}
+
+.panel-heading{
+    background-color: #0099CC;
+    color: white;
+    font-family: 'Pacifico', sans-serif;
+    font-size: 24px;
+    text-align: center;
+}
+
+#label{
+    font-family: 'Pacifico', sans-serif;
+    font-size: 18px;
+}
+
+.panel-footer{
+    font-family: 'Kalam', sans-serif;
+    font-size: 18px;
+    background-color: #e1f5fe;
+}
+
+#clave{
+    font-size: 20px;
+}

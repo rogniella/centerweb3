@@ -1,0 +1,130 @@
+/*
+ * Start Bootstrap - Full Width Pics (http://startbootstrap.com/)
+ * Copyright 2013-2016 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
+ */
+
+body {
+    margin-top: 50px; /* Required margin for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+}
+
+/*Estilo del fondo de las paginas de las marcas*/
+.reef, 
+.rayban,
+.valeria-mazza,
+.cook,
+.ossira,
+.pr-design,
+.las-oreiro,
+.muaa,
+.mormaii,
+.boss,
+.philippe-rosset,
+.optitech {
+    text-align: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
+
+
+.reef {
+	background: url('../img/slide/orig_1022752_305292.jpg') no-repeat center center scroll;
+    padding: 100px 0;
+}
+
+
+.rayban {
+    background: url('../img/slide/rayban_slide.jpg') no-repeat center center scroll;
+    padding: 100px 0;
+}
+
+.valeria-mazza {
+    background: url('../img/slide/valeria.jpg') no-repeat center center scroll;
+    padding: 100px 0;
+}
+
+.cook {
+    background: url('../img/slide/4-big.jpg') no-repeat center center scroll;
+    padding: 100px 0;
+}
+
+.ossira {
+    background: url('../img/slide/ossira_eyewear_web.jpg') no-repeat center center scroll;
+    padding: 100px 0;
+}
+
+.pr-design {
+    background: url('../img/slide/pr-design-ss-18-19.jpg') no-repeat center center scroll;
+    padding: 100px 0;
+}
+
+.las-oreiro {
+    background: url('../img/slide/las_oreiro_gafas_web.jpg') no-repeat center center scroll;
+    padding: 100px 0;
+}
+
+.muaa {
+    background: url('../img/slide/lentes-muaa-nueva-c.jpg') no-repeat center center scroll;
+    padding: 100px 0;
+}
+
+.mormaii {
+    background: url('../img/slide/anteojos-lentes-gafas-de-sol-mo.jpg') no-repeat center center scroll;
+    padding: 100px 0;
+}
+
+.boss {
+    background: url('../img/slide/201802-boss-or-pg.jpg') no-repeat center center scroll;
+    padding: 100px 0;
+}
+
+.philippe-rosset{
+    background: url('../img/slide/28752668_1347160308718152_4485585559573495808_n.jpg') no-repeat center center scroll;
+    padding: 100px 0;
+}
+
+.optitech {
+    background: url('../img/slide/HOME-1.jpg') no-repeat center center scroll;
+    padding: 100px 0;
+}
+
+.img-center {
+	margin: 0 auto;
+}
+
+
+
+section {
+    padding: 75px 0;
+}
+
+.section-heading {
+    margin: 30px 0;
+    font-size: 4em;
+}
+
+.section-lead {
+    margin: 30px 0;
+}
+
+.section-paragraph {
+    margin: 30px 0;
+}
+
+footer {
+    margin: 50px 0;
+}
+
+@media(max-width:768px) {
+    section {
+        padding-top: 25px;
+        padding-bottom: 25px;
+    }
+
+    .section-heading {
+        font-size: 2em;
+    }
+}

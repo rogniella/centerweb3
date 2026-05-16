@@ -1,0 +1,44 @@
+
+input[type="number2"]::-webkit-outer-spin-button, 
+input[type="number2"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number2"] {
+    -moz-appearance: textfield;
+}
+
+
+.ran-vertical-center {
+    vertical-align: middle !important;
+    float: none;
+    font-weight:bold;
+}
+
+
+
+.ran-negrita {
+    font-weight:bold;
+}
+
+.ran-label {
+    font-weight:bold;
+}
+
+.ran-verde {
+    color:#1EB236;
+}
+
+.ran-azul {
+    color:#1E25B2; 
+}
+
+.modal-header {
+	background-color: #045FB4; 
+	border-color: black;
+	color: white
+}
+
+.sinborde {
+  border: 0;
+}
