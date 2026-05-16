@@ -12,7 +12,7 @@ class TarjetasController extends Controller
 {
     public function index()
     {
-        // Vista que pide los archivos a subir
+        // Vista que pide los archivos bajados de la aplicacion de las tarjetas  a subir
         return view('tarjetas.index');
     }
 

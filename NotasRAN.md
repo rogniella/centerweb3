@@ -2,14 +2,14 @@
 
 - Vs 3.00 5/2026 Actualizacion Laravel 13.9.0
    - Se quito: laravelcollective/htm
-   - Se cambio: afipsdk  por adrianbarabino/afip-php-libre  (Para manejo facturación Afip)
+   - Se cambio: afipsdk  por adrianbarabino/afip-php-libre  (Para manejo    facturación Afip)
    - Incorporo proceso y visualizacion movientos de Tarjetas
 - Vs 2.02 5/2023 Mejoras en las consultas de Clientes,Ot y Ventas
 - Vs 2.01 5/2023 Agrego posibilidad de Generar Notas de Créditos
 
-# GitHub: 
-   En Rama Master en Repositorio Centerweb2  
+# GitHub:     
    github.com  rogniella   r_niella@hotmail.com
+   En Rama Master en Repositorio centerweb3 
 
 # Hosting:  lucushost  https://www.lucushost.com/     
    Es Español  vs gratis pero solo 15 dias  HostingWeb   36 U$s año 20gb  Se paga desde 30/5/2020
