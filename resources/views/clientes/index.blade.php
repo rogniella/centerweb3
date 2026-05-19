@@ -26,7 +26,9 @@
       [ 'titulo' => 'Opciones', 'tipo' => 'data-field="cli_idWEB" data-align="center" data-formatter="opcionesFormatter"']
   ];
 
-  include( base_path() . "/resources/views/clientes/campos.php");
+  @php
+    include base_path('resources/views/clientes/campos.php');
+  @endphp
 
   // Formulario de Alta/ Modificacion 
 

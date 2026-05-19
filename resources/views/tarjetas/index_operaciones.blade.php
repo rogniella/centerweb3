@@ -3,6 +3,14 @@
    
 @section('contenido')
 
+
+<?php 
+    $idliq = "";
+    if ($_GET) {
+        $idliq = $_GET["idLiq"];
+    }        
+?>
+
 <form class="form-inline" role="form" >
  
   <!-- 1ra Fila de Informes -->
@@ -16,11 +24,19 @@
             <div class="panel-body">
                 <div class="form-group">
 
-                {!! Form::select('filtro0', $productos, '', ['id' => 'filtro0', 'class' => 'form-control', 'required']) !!}    
+                <select name="filtro0" id="filtro0" class="form-control" required>
+                        @foreach($productos as $key => $value)
+                            <option value="{{ $key }}" {{ $key == 1 ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
+                </select>      
 
+                <select name="terminal" id="terminal" class="form-control" required>
+                        @foreach($terminales as $key => $value)
+                            <option value="{{ $key }}" {{ $key == 1 ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
+                </select>      
 
-                  <input type="text" class="form-control" name="filtro2" id="filtro2"  placeholder="Nro.Liquidación" value="">
-
+                <label class="control-label">Acreditación:</label>
                     <div class="input-group">
                     <button type="button" class="btn btn-default pull-right" id="daterange-btn">
                       <span>
@@ -29,6 +45,25 @@
                         <i class="fa fa-caret-down"></i>
                     </button>              
                     </div>
+ 
+                <label class="control-label">Fec.Operación:</label>
+                    <div class="input-group">
+                    <button type="button" class="btn btn-default pull-right" id="daterange-btn-ope">
+                      <span>
+                        <i class="fa fa-calendar"></i> Rango de fecha
+                      </span>
+                        <i class="fa fa-caret-down"></i>
+                    </button>              
+                    </div>
+
+
+                  <input type="text" class="form-control" name="filtro2" id="filtro2"  placeholder="Nro.Liquidación" value="<?= $idliq; ?>">
+
+                  <input type="text" class="form-control" name="lote" id="lote"  placeholder="Nro.Lote" value="">
+
+                  <input type="text" class="form-control" name="cupon" id="cupon"  placeholder="Nro.Cupón" value="">
+
+
               </div>
 
               <div class="form-group">
@@ -58,22 +93,24 @@
           <tr> 
             <th data-field="fecha_clearing" data-halign="center" data-align="center" data-footer-formatter="idTotal" data-sortable="true" >Fecha Acred.</th>
             <th data-field="fecha_presentacion" data-halign="center" data-align="center" data-sortable="true" >Presentación</th>
+            <th data-field="fecha_operacion" data-halign="center" data-align="center" data-sortable="true" >Operación</th>
 
             <th data-field="idliquidacion"  data-sortable="true" data-halign="center" data-align="center" >Nro.Liquidación</th>
+            <th data-field="terminal"  data-sortable="true" data-halign="center" data-align="center" >Terminal</th>
+            <th data-field="lote"  data-sortable="true" data-halign="center" data-align="center" >Lote</th>            
+            <th data-field="cupon"  data-sortable="true" data-halign="center" data-align="center" >Cupon</th>                                    
             <th data-field="descripcion"  data-sortable="true"data-halign="center" data-align="left" >Tarjeta</th>
             <th data-field="mto_bruto" data-halign="center" data-align="right" data-footer-formatter="mtoFormatter" data-sortable="true">Mto.Ventas</th>
-            <th data-field="mto_sindto" data-halign="center" data-align="right" data-footer-formatter="mtoFormatter" data-sortable="true">Mto.Acreditar</th>
+            <th data-field="mto_final" data-halign="center" data-align="right" data-footer-formatter="mtoFormatter" data-sortable="true">Mto.Acreditar</th>
             <th data-field="mto_arancel" data-halign="center" data-align="right" data-footer-formatter="mtoFormatter" data-sortable="true">Arancel</th>
             <th data-field="iva_arancel" data-halign="center" data-align="right" data-footer-formatter="mtoFormatter"  data-sortable="true">Iva Arancel(21)</th>
 
             <th data-field="mto_financiero" data-halign="center" data-align="right" data-footer-formatter="mtoFormatter" data-sortable="true">Cost.Financiero</th>
             <th data-field="iva_financiero" data-halign="center" data-align="right" data-footer-formatter="mtoFormatter"  data-sortable="true">Iva Cost.Finan.(10.5)</th>
 
-
-            <th data-field="iva_financiero" data-sortable="true" data-footer-formatter="mtoFormatter" data-align="right"> Ret.IB</th>
-            <th data-field="iva_financiero" data-sortable="true" data-footer-formatter="mtoFormatter" data-align="right"> Percep.Iva</th>
-            <th data-field="iva_financiero" data-sortable="true" data-footer-formatter="mtoFormatter" data-align="right">Otros.Deb</th>
+            <th data-field="ret_ib" data-sortable="true" data-footer-formatter="mtoFormatter" data-align="right"> Ret.IB</th>
             <th data-field="plazo_pago" data-sortable="true" data-align="right">Plazo</th>
+            <th data-field="cuotas" data-sortable="true" data-align="right">Cuotas</th>
             <th data-field="observacion"  data-sortable="true"data-halign="center" data-align="left" >Observación</th>
 
           </tr>
@@ -98,33 +135,31 @@
    }
 
   
-
    function mtoFormatter(data) {
     // Calculo el todal 
     var field = this.field
-    return '$ ' +   data.map(function (row) {
-          return +  ( row[field].toFixed(2) )
-      }).reduce(function (sum, i) {
-        
-        // Sum es string  i e numero
-        total = parseFloat(sum) + i
-
-//        console.log  ( typeof sum , typeof i , typeof total  , Number.parseFloat(total).toFixed(2) )
-
-//        console.log  ( sum , i , total  , Number.parseFloat(total).toFixed(2) )
-        //ret = total.toFixed(2)
-        return  Number.parseFloat(total).toFixed(2) 
-      }, 0)  
+    return '$ ' + data.map(function (row) {
+        var val = parseFloat(row[field])
+        return isNaN(val) ? 0 : val
+    }).reduce(function (sum, i) {
+        return Number.parseFloat((parseFloat(sum) + i)).toFixed(2)
+    }, 0)
    }
 
 
     var $fecha = '';
     var $fechafin ;
+    var $fecha_ope = '';
+    var $fechafin_ope ;
 
     $(document).ready(function(){
-        // Tomo los datos de entrada
-        //consultar();
-    });      
+         // Tomo los datos de entrada
+         idliq = '<?= $idliq; ?>';
+
+         if ( idliq != '' )  {
+           consultar();
+         }
+    });   
 
     $('#daterange-btn').daterangepicker(
      {
@@ -149,6 +184,31 @@
   
     );  // Fin $('#daterange-btn').daterangepicker(
 
+
+    $('#daterange-btn-ope').daterangepicker(
+     {
+      ranges   : {
+        'Hoy'       : [moment(), moment()],
+        'Ayer'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Este mes'  : [moment().startOf('month'), moment().endOf('month')],
+        'Último mes'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+
+        '2do Último mes'  : [moment().subtract(2, 'month').startOf('month'), moment().subtract(2, 'month').endOf('month')]
+     },
+     startDate: moment(),
+     endDate  : moment()
+     },
+     function (start, end) {
+
+          $('#daterange-btn-ope span').html(start.format('D MMMM YYYY') + ' al ' + end.format('D  MMMM YYYY'))
+          $fecha_ope = start.format('YYYY-M-D');
+          $fechafin_ope = end.format('YYYY-M-D');
+          consultar();
+
+     }
+  
+    );  // Fin $('#daterange-btn').daterangepicker(
+
     var $table = $('#mitabla'); // Tabla principal
 
   
@@ -158,7 +218,7 @@
        // ------------------------------------------------      
        $.ajax({
             dataType: "json",
-            data: { filtro0: $('#filtro0').val(), filtro2: $('#filtro2').val()  ,fecha: $fecha , fechafin: $fechafin  },
+            data: { filtro0: $('#filtro0').val(), filtro2: $('#filtro2').val()  ,fecha: $fecha , fechafin: $fechafin ,terminal: $('#terminal').val(),lote: $('#lote').val(),cupon: $('#cupon').val() ,fechaope: $fecha_ope , fechafinope: $fechafin_ope  },
             url:   'buscar_operaciones',
             type:  'get',
             success: function(data){

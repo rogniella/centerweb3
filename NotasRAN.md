@@ -9,7 +9,7 @@
 
 # GitHub:     
    github.com  rogniella   r_niella@hotmail.com
-   En Rama Master en Repositorio centerweb3 
+   En Rama Main en Repositorio centerweb3 
 
 # Hosting:  lucushost  https://www.lucushost.com/     
    Es Español  vs gratis pero solo 15 dias  HostingWeb   36 U$s año 20gb  Se paga desde 30/5/2020
@@ -135,6 +135,13 @@ composer require codexshaper/laravel-woocommerce
 
 Cambios en php.ini
 ------------------
+- Error en complemento afip
+   extension=soap
+
+- Para permitir seleccionar mas de 20 archivos
+  max_file_uploads = 200
+  Y en el hosting: desde el adm de archivo en el archivo   .htaccess    agregar la liena  php_value max_file_uploads 100
+
 - Si da Error al crear proyectos, en Php.ini:
 Por ejemplo, C:\xampp\phpbusque la línea de extensión zip y descoméntelo (elimine el punto y coma) detrás de él. parece extension=zip_ Eso es todo
 
@@ -142,8 +149,6 @@ Por ejemplo, C:\xampp\phpbusque la línea de extensión zip y descoméntelo (eli
 Cannot use spipu/html2pdf's latest version v5.2.7 as it requires ext-gd * which is missing from your platform.
 Para php-8 , solo ubique su php.iniarchivo y elimine el comentario de la línea extension=gd
 
-- Error en afip
-   extension=soap
 
 
 php artisan config:cache
@@ -156,6 +161,7 @@ php artisan config:cache
 *** si da error raro con las rutas ***
 php artisan route:clear
 
+cd public_html/admin3
 php artisan optimize
 php artisan config:clear
 

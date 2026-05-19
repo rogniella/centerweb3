@@ -50,6 +50,9 @@
                 <li><a href="{{ route('estadisticas.rubro') }}">Estadistica por Rubros</a></li>
                 <li><a href="{{ route('estadisticas.ot') }}">Estadistica Ordenes Trabajos</a></li>
                 <li role="separator" class="divider"></li>
+                <li><a href="{{ route('tarjetas.lista_operaciones') }}">Operaciones con Tarjetas</a></li>  
+                <li><a href="{{ route('tarjetas.lista_liquidaciones') }}">Liquidaciones con Tarjetas</a></li>  
+                <li role="separator" class="divider"></li>
                 <li><a href="{{ route('productos.planilla_cristales') }}">Planilla de Cristales</a></li>
 
               </ul>
@@ -62,7 +65,7 @@
                 <!-- Opciones Solo si es Administrador-->
                 @if(Auth::user()->perfil_id == 'ADM')
                   <li role="separator" class="divider"></li>
-                  <li><a href="{{ route('tarjetas.index') }}">Procesar Archivos de Tarjetas</a></li>
+                  <li><a href="{{ route('tarjetas.carga') }}">Procesar Archivos de Tarjetas</a></li>
                   <li role="separator" class="divider"></li>
                   <li><a href="{{ route('productos.actualiza_precio') }}">Actualizar Precios Cristales</a></li>
                   <li role="separator" class="divider"></li>

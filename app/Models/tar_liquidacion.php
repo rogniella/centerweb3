@@ -53,7 +53,9 @@ class tar_liquidacion extends Model {
 
 //        $filter .=  " order by Fac_Id desc ";
 
-        $consulta= "SELECT * FROM tar_liquidaciones LEFT JOIN tar_productos ON producto = tar_productos.id " . $filter  . " LIMIT $limite" ;
+        $limite = is_numeric($limite) && $limite > 0 ? (int)$limite : 1000;
+
+        $consulta= "SELECT * FROM tar_liquidaciones LEFT JOIN tar_productos ON producto = tar_productos.id " . $filter  . " LIMIT " . $limite ;
 
         $ret = DB::select($consulta,$valores);
 

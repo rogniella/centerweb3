@@ -120,7 +120,7 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('ventas/generaComprobanteAFIP', 'generaComprobanteAFIP');
         Route::get('ventas/imprimePDF', 'imprimePDF');
         Route::get('ventas/forma_pago', 'forma_pago')->name('ventas.forma_pago');
-        Route::get('ventas/store', 'store');
+        Route::post('ventas/store', 'store');
         Route::get('ventas/forma_pago_carga','forma_pago_carga');
     });
 
@@ -256,11 +256,18 @@ Route::group( ['middleware' => ['auth'] ], function() {
         'as' => 'marcas.combo_marca' //Nombre de la ruta
     ]);
 
-    // CARGA DE ARCHIVOS TARJETAS
+    //  TARJETAS
     Route::controller(TarjetasController::class)->group(function () {
-        Route::get('tarjetas/index', 'index')->name('tarjetas.index');
+        Route::get('tarjetas/carga', 'carga')->name('tarjetas.carga');
         Route::post('tarjetas/upload', 'upload')->name('tarjetas.upload');
+        Route::get('tarjetas/lista_operaciones', 'lista_operaciones')->name('tarjetas.lista_operaciones');
+        Route::get('tarjetas/lista_liquidaciones', 'lista_liquidaciones')->name('tarjetas.lista_liquidaciones');            
+        Route::get('tarjetas/buscar_operaciones', 'buscar_operaciones')->name('tarjetas.buscar_operaciones');
+        Route::get('tarjetas/buscar_liquidaciones', 'buscar_liquidaciones')->name('tarjetas.buscar_liquidaciones');
+
     });
+
+    
 
 }); //FIN Requiere estar conectado
 

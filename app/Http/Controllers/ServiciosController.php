@@ -10,15 +10,15 @@ class ServiciosController extends Controller {
           case "OSDE":
             $titulo = "OSDE" ; 
             $ruta = "https://extranet.osde.com.ar/OSDEExtranet/jsp/multiempresas/osde/HomePublicaV2.jsp"; 
-            $usuario = "2723589611"; 
-            $clave = "1811"; 
+            $usuario = "r_niella@hotmail.com  (Profesionales)"; 
+            $clave = "2023bETO"; 
             break;
           case "SANCOR":
             $titulo = "SANCOR SALUD"; 
             //$ruta = "http://www.sancorsalud.com.ar/";
-            $ruta = "https://portalproveedores.sancorsalud.com.ar/login";
+            $ruta = "https://autogestionprestadores.sancorsalud.com.ar";
             $usuario = "600208"; 
-            $clave = "baezmariacarolina"; 
+            $clave = "32541455"; 
             break;
           case "JERA":
             $titulo = "JERARQUICOS SALUD" ; 

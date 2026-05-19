@@ -53,8 +53,6 @@
                 <!-- Opciones Solo si es Administrador-->
                 @if(Auth::user()->perfil_id == 'ADM')
                   <li role="separator" class="divider"></li>
-                  <li><a href="{{ route('tarjetas.index') }}">Carga de Archivos Tarjetas</a></li>
-                  <li role="separator" class="divider"></li>
                   <li><a href="{{ route('minformes.index') }}">Tipos de Informes</a></li>
                   <li><a href="{{ route('monedas.index') }}">Monedas</a></li>
                   <li><a href="{{ route('users.index') }}">Usuarios</a></li>

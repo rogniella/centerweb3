@@ -4,6 +4,48 @@
 
 @section('contenido')
 
+<style>
+#drop-zone {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #fafafa;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#drop-zone:hover,
+#drop-zone.dragover {
+    border-color: #4CAF50;
+    background: #f0fdf0;
+}
+
+#drop-zone .icono {
+    font-size: 48px;
+    color: #999;
+    margin-bottom: 10px;
+}
+
+#drop-zone.dragover .icono {
+    color: #4CAF50;
+}
+
+#drop-zone p {
+    margin: 5px 0;
+    color: #666;
+}
+
+#drop-zone .btn-seleccionar {
+    margin-top: 10px;
+}
+</style>
+
 <form enctype="multipart/form-data" method="post" action="{{ route('tarjetas.upload') }}">
   @csrf
   <div class="row">
@@ -13,9 +55,18 @@
           <h3 class="panel-title">Carga de Archivos de Tarjetas</h3>
         </div>
         <div class="panel-body">
+          <input type="file" id="archivos" name="archivos[]" multiple accept=".txt" style="display:none"/>
+
           <div class="form-group">
-            <label class="control-label">Seleccionar Archivos (Txt):</label>
-            <input type="file" id="archivos" name="archivos[]" class="form-control" multiple accept=".txt" required/>
+            <div id="drop-zone">
+              <div class="icono">📁</div>
+              <p><strong>Arrastra los archivos aquí</strong></p>
+              <p>o</p>
+              <button type="button" class="btn btn-default btn-seleccionar" id="btn-seleccionar">
+                <i class="glyphicon glyphicon-folder-open"></i> Seleccionar Archivos
+              </button>
+              <p class="text-muted" style="font-size:12px;margin-top:8px;">Archivos .txt — sin límite de cantidad</p>
+            </div>
           </div>
 
           <div class="form-group" id="lista-archivos" style="display:none;">
@@ -56,28 +107,100 @@ function formatearTamano(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
+// Hacemos de esta manera porque si es solo con el input tiene como limite de cantidad de archivos a subir, con el drag and drop no hay limite 
+// Cambiar en php.ini → max_file_uploads = 200
+function actualizarLista() {
+    var tbody = $('#lista-body');
+    tbody.empty();
+
+    if (filesArray.length > 0) {
+        $.each(filesArray, function (i, file) {
+            var fila = '<tr>' +
+                '<td>' + (i + 1) + '</td>' +
+                '<td>' + file.name + '</td>' +
+                '<td>' + formatearTamano(file.size) + '</td>' +
+                '</tr>';
+            tbody.append(fila);
+        });
+
+        $('#lista-archivos').show();
+        $('#btn-subir').prop('disabled', false);
+    } else {
+        $('#lista-archivos').hide();
+        $('#btn-subir').prop('disabled', true);
+    }
+}
+
+var filesArray = [];
+
 $(document).ready(function () {
+    var dropZone = document.getElementById('drop-zone');
+
+    dropZone.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.remove('dragover');
+
+        var files = e.dataTransfer.files;
+        for (var i = 0; i < files.length; i++) {
+            filesArray.push(files[i]);
+        }
+        actualizarLista();
+    });
+
+    $('#btn-seleccionar').click(function () {
+        $('#archivos').click();
+    });
+
     $('#archivos').change(function () {
         var files = this.files;
-        var tbody = $('#lista-body');
-        tbody.empty();
-
-        if (files.length > 0) {
-            $.each(files, function (i, file) {
-                var fila = '<tr>' +
-                    '<td>' + (i + 1) + '</td>' +
-                    '<td>' + file.name + '</td>' +
-                    '<td>' + formatearTamano(file.size) + '</td>' +
-                    '</tr>';
-                tbody.append(fila);
-            });
-
-            $('#lista-archivos').show();
-            $('#btn-subir').prop('disabled', false);
-        } else {
-            $('#lista-archivos').hide();
-            $('#btn-subir').prop('disabled', true);
+        for (var i = 0; i < files.length; i++) {
+            filesArray.push(files[i]);
         }
+        this.value = '';
+        actualizarLista();
+    });
+
+    $('form').on('submit', function (e) {
+        if (filesArray.length === 0) {
+            e.preventDefault();
+            return;
+        }
+
+        e.preventDefault();
+
+        var formData = new FormData();
+        formData.append('_token', $('[name="_token"]').val());
+
+        for (var i = 0; i < filesArray.length; i++) {
+            formData.append('archivos[]', filesArray[i]);
+        }
+
+        $('#btn-subir').prop('disabled', true).text('Subiendo...');
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            redirect: 'manual'
+        }).then(function (response) {
+            var location = response.headers.get('Location') || '{{ route('tarjetas.carga') }}';
+            window.location.href = location;
+        }).catch(function () {
+            $('#btn-subir').prop('disabled', false).text('Procesar Archivos');
+            alert('Error al subir los archivos. Intente nuevamente.');
+        });
     });
 });
 
