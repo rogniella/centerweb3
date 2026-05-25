@@ -14,7 +14,11 @@
     <div class="panel-body">
         <form id="formularioPrincipal" autocomplete="off" role="form" onkeypress="return event.keyCode != 13;">
             <div class="row">
-                <div class="col-lg-2 col-md-2">
+                <div class="col-xs-12 col-sm-6 col-md-2">
+                    <label>Fecha</label>
+                    <input class="form-control" type="date" name="fecha" id="fecha" value="<?= date("Y-m-d"); ?>" readonly>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-2">
                     <label>Sucursal</label>
                     <select name="sucursal" id="sucursal" class="form-control" required>
                         @foreach($sucursales as $key => $value)
@@ -22,33 +26,29 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-lg-2 col-md-2">
+                <div class="col-xs-12 col-sm-6 col-md-2">
                     <label>Vendedor</label>
                     <select class="form-control" name="id_vendedor" id="id_vendedor" autofocus>
                         <?php $vendedor = ''; ?>
                         @include('common.combo_vendedor')
                     </select>
                 </div>
-                <div class="col-lg-2 col-md-2">
+                <div class="col-xs-12 col-sm-6 col-md-2">
                     <label>Tipo Comp.</label>
                     <select class="form-control" name="id_tipo_cbte" id="id_tipo_cbte">
                         @include('common.combo_comprobante_fiscal')
                     </select>
                 </div>
-                <div class="col-lg-2 col-md-2">
-                    <label>Fecha</label>
-                    <input class="form-control" type="date" name="fecha" id="fecha" value="<?= date("Y-m-d"); ?>" readonly>
-                </div>
-                <div class="col-lg-4 col-md-4">
+                <div class="col-xs-12 col-sm-12 col-md-4">
                     <label>Cliente</label>
                     <div class="input-group">
                         <input type="hidden" id="id_clienteweb" name="id_clienteweb" value="">
                         <input class="form-control" type="text" id="id_cliente" name="id_cliente" value="" autocomplete="off" placeholder="DNI/Apelido/Nombre">
                         <span class="input-group-btn">
-                            <button type="button" class="btn" id="modif-cliente-btn" title="Consultar/Modificar" onclick="BtnModificaCliente()">
+                            <button type="button" class="btn" id="modif-cliente-btn" title="Consultar/Modificar" onclick="BtnModificaCliente()" tabindex="-1">
                                 <i class="fa fa-pencil" aria-hidden="true"></i>
                             </button>
-                            <button type="button" class="btn" title="Nuevo" onclick="BtnNuevoCliente()">
+                            <button type="button" class="btn" title="Nuevo" onclick="BtnNuevoCliente()" tabindex="-1">
                                 <i class="fa fa-plus" aria-hidden="true"></i>
                             </button>
                         </span>
@@ -57,8 +57,8 @@
             </div>
 
             <div class="row" style="padding: 1px;">
-                <div class="col-lg-8 col-md-8"></div>
-                <div class="col-lg-4 col-md-4">
+                <div class="hidden-xs hidden-sm col-md-8"></div>
+                <div class="col-xs-12 col-md-4">
                     <div class="alert-info" id="datos_cliente" hidden>
                         <b><span id="nombre_cliente">xxxxxxxx</span><br></b>
                         <span id="dni_cliente">nnnnnnnnnn</span><br>
@@ -77,39 +77,37 @@
                 <div class="panel-heading">
                     <b>Selección de Artículos</b>
                 </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-lg-2 col-md-2">
+                <div class="panel-body panel-items">
+                    <div class="row row-compact">
+                        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">
                             <select class="form-control" id="id_familia">
                                 <?php $FLIA_ID = "VAR"; ?>
                                 @include('common.combo_familia')
                             </select>
                         </div>
-                        <div class="col-lg-2 col-md-2">
-                            <div class="input-group">
-                                <input class="form-control" type="text" id="id_producto" placeholder="Buscar Artículo">
-                            </div>
+                        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">
+                            <input class="form-control text-right" type="text" id="id_producto" placeholder="Buscar Artículo">
                         </div>
-                        <div class="col-lg-3 col-md-3">
+                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                             <input class="form-control" type="text" id="descrip_producto" disabled>
                         </div>
-                        <div class="col-lg-1 col-md-1">
+                        <div class="col-xs-4 col-sm-2 col-md-1 col-lg-1">
                             <input class="form-control text-right" type="text" id="cantidad" placeholder="Cantidad">
                         </div>
-                        <div class="col-lg-2 col-md-2">
+                        <div class="col-xs-4 col-sm-4 col-md-2 col-lg-2">
                             <div class="input-group">
                                 <span class="input-group-addon">$</span>
                                 <input class="form-control text-right" type="text" id="precio_unitario" placeholder="Precio Unit.">
                             </div>
                         </div>
-                        <div class="col-lg-1 col-md-1">
+                        <div class="col-xs-2 col-sm-4 col-md-1 col-lg-1">
                             <div class="input-group">
                                 <span class="input-group-addon">%</span>
                                 <input class="form-control text-right" type="text" id="bonif_unitario" value="0" placeholder="Bonif">
                             </div>
                         </div>
-                        <div class="col-lg-1 col-md-1">
-                            <button type="button" class="btn btn-primary" title="Agregar" onclick="ingresar_articulo()">
+                        <div class="col-xs-2 col-sm-4 col-md-1 col-lg-1">
+                            <button type="button" class="btn btn-primary btn-block" title="Agregar" onclick="ingresar_articulo()">
                                 <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                             </button>
                         </div>
@@ -119,8 +117,9 @@
 
             <!-- Tabla de Items -->
             <div class="row">
-                <div class="col-lg-12 col-md-12">
+                <div class="col-xs-12">
                     <h4>Su Venta</h4>
+                    <div class="table-responsive">
                     <table id="tbl-items" class="table table-bordered table-hover">
                         <thead>
                             <tr>
@@ -134,6 +133,7 @@
                         </thead>
                         <tbody></tbody>
                     </table>
+                    </div>
                 </div>
             </div>
 
@@ -143,38 +143,48 @@
                     <b>Formas de Pago</b>
                 </div>
                 <div class="panel-body">
-                    <div class="row">
-                        <div class="col-lg-3 col-md-3">
+                    <div class="row row-compact">
+                        <div class="col-xs-12 col-sm-4 col-md-2" style="margin-bottom:5px;">
                             <select class="form-control" id="metodoPago">
-                                <option value="" disabled selected>Seleccione un método</option>
-                                <option value="P">Pesos</option>
-                                <option value="T">Tarjeta Crédito</option>
-                                <option value="TB">Transferencia Bancaria</option>
+                                <option value="P" selected>Pesos</option>
+                                <option value="D">Dólares</option>
+                                <option value="R">Reales</option>
+                                <option value="T">Tarjetas</option>
                                 <option value="CC">Cuenta Corriente</option>
+                                <option value="CH">Cheques</option>
                             </select>
                         </div>
-                        <div class="col-lg-3 col-md-3" id="opcionesPago"></div>
-                        <div class="col-lg-1 col-md-1">
-                            <button type="button" id="addBtnPago" class="btn btn-primary" onclick="agregarMetodoPago()">
+                        <div class="col-xs-12 col-sm-8 col-md-5" id="opcionesPago"></div>
+                        <div class="col-xs-6 col-sm-4 col-md-2" >
+                            <button type="button" id="addBtnPago" class="btn btn-primary btn-block" onclick="agregarMetodoPago()">
                                 <i class="fa fa-plus"></i> Agregar
                             </button>
                         </div>
-                        <div class="col-lg-5 col-md-5" id="resumenPagos"></div>
+                        <div class="col-xs-6 col-sm-4 col-md-3 text-right" >
+                            <button type="button" id="limpiarPagosBtn" class="btn btn-default" onclick="limpiarPagos()" style="display:none;">
+                                <i class="fa fa-eraser"> Limpiar</i>
+                            </button>
+                            <span id="resumenPagos" style="display:inline-block;"></span>
+                        </div>
                     </div>
                     <div class="row" style="padding-top: 10px;">
-                        <div class="col-lg-7 col-md-7">
+                        <div class="col-xs-12 col-md-7">
+                            <div class="table-responsive">
                             <table id="tbl-pagos" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th>Método</th>
                                         <th>Detalle</th>
                                         <th>Monto</th>
+                                        <th>Cotización</th>
                                         <th style="text-align: center;"><span class="fa fa-wrench"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
                             </table>
+                            </div>
                         </div>
+                        <div class="col-xs-12 col-md-5" id="resumenPagosInfo"></div>
                     </div>
                 </div>
             </div>
@@ -184,14 +194,20 @@
             <!-- Observaciones y Total -->
             <h4>Observaciones</h4>
             <div class="form-group row">
-                <div class="col-xs-5">
-                    <textarea id="observaciones" name="observaciones" rows="5" cols="70" placeholder="Escriba sus observaciones aquí..."></textarea>
+                <div class="col-xs-12 col-md-5" style="margin-bottom:10px;">
+                    <textarea id="observaciones" name="observaciones" class="form-control" rows="5" placeholder="Escriba sus observaciones aquí..."></textarea>
                 </div>
-                <div class="col-xs-7 text-right">
-                    <div class="input-group" style="display: inline-flex; align-items: center;">
-                        <strong style="font-size: 20px; margin-right: 30px;">Total:</strong>
-                        <span class="input-group-addon" style="font-size: 20px; width: 50px;">$</span>
-                        <input type="text" class="form-control text-right" style="font-size: 20px; width: 160px;" name="total" id="total" value="0" readonly>
+                <div class="col-xs-12 col-md-7 text-right">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="total-container">
+                                <strong class="total-label">Total:</strong>
+                                <div class="input-group total-input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input type="text" class="form-control text-right total-input" name="total" id="total" value="0" tabindex="-1" readonly>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -220,5 +236,64 @@ include base_path('resources/views/clientes/campos.php');
 @endsection
 
 @section('scrip')
+<style>
+.row-compact > [class*="col-"] {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+.row-compact {
+    margin-left: -4px;
+    margin-right: -4px;
+}
+.panel-items {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.total-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+.total-label {
+    font-size: 20px;
+    margin-right: 15px;
+    white-space: nowrap;
+}
+.total-input-group {
+    max-width: 220px;
+    min-width: 160px;
+}
+.total-input-group .input-group-addon {
+    font-size: 20px;
+}
+.total-input {
+    font-size: 20px;
+}
+@media (max-width: 767px) {
+    .total-container {
+        justify-content: flex-start;
+    }
+    .total-label {
+        font-size: 16px;
+        margin-right: 10px;
+    }
+    .total-input-group {
+        max-width: 100%;
+        width: 100%;
+    }
+    .total-input-group .input-group-addon {
+        font-size: 16px;
+    }
+    .total-input {
+        font-size: 16px;
+    }
+}
+</style>
+<script>
+window.COTIZACION_DOLAR = {{ $cotizacionDolar ?? 1 }};
+window.COTIZACION_REAL = {{ $cotizacionReal ?? 1 }};
+window.TARJETAS_LIST = @json($tarjetas);
+</script>
 <script src="{{ asset('js/ventas.js') }}"></script>
 @endsection

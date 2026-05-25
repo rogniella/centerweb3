@@ -24,7 +24,8 @@ use App\Http\Controllers\TarjetasController;
 //Route::get('/admin', 'App\Http\Controllers\HomeController@index')->name('home');
 
 //ya no  Route::redirect('/', 'http://tienda.centerfotooptica.com.ar');
- Route::get('/', 'App\Http\Controllers\HomeController@index')->name('home');
+ Route::get('/', [HomeController::class, 'index'])->name('home');
+ Route::post('/home/shortcuts', [HomeController::class, 'saveShortcuts'])->name('home.shortcuts.save');
 
 Auth::routes();  // Todas las rutas del manejo de login. Se agregan con laravel/ui
 
@@ -122,6 +123,7 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('ventas/forma_pago', 'forma_pago')->name('ventas.forma_pago');
         Route::post('ventas/store', 'store');
         Route::get('ventas/forma_pago_carga','forma_pago_carga');
+        Route::get('ventas/cuotas_tarjeta','cuotas_tarjeta');
     });
 
     //CAJAS

@@ -19,7 +19,7 @@ class User extends Authenticatable
      */
 
     protected $fillable = [
-        'name', 'email', 'password', 'perfil_id' , 'apellidonombre','id_entidadrelacionada','sucursal'
+        'name', 'email', 'password', 'perfil_id' , 'apellidonombre','id_entidadrelacionada','sucursal', 'home_shortcuts'
     ];
 
     /**
@@ -39,6 +39,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'home_shortcuts' => 'array',
     ];
 
     public function perfil()

@@ -228,7 +228,7 @@ class producto extends Model {
   }
 
   public static function buscar_movimientos( $filtro_fecini,$filtro_fecfin, $filtro_sucursal ='',
-        $filtro_tipo_operacion ='', $filtro_familia ='',$filtro_idprod ='' ,$filtro_descripcion ='', $filtro_cero , $limite = 1000){
+        $filtro_tipo_operacion ='', $filtro_familia ='',$filtro_idprod ='' ,$filtro_descripcion ='', $filtro_cero= 'N' , $limite = 1000){
         // Listado principal, dependiendo de los filtros
         // Tambien lo utiliza el auto completar
         // Concatenar según la consulta. Armo scrip de consulta

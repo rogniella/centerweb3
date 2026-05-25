@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Auth;
 use Laracasts\Flash\Flash;
 
 use App\clases\comprobante;
-use App\Models\caja;  
-use App\Models\sucursal;  
-use App\Models\factura;  
+use App\Models\caja;
+use App\Models\cotizacion;
+use App\Models\sucursal;
+use App\Models\factura;
+use Illuminate\Support\Facades\DB;
 
 
 class VentasController extends Controller
@@ -42,14 +44,37 @@ class VentasController extends Controller
       ]);      
   } // Fin Buscar
     
-  public function altas()
+  public function cuotas_tarjeta(Request $request)
   {
-      // Pantalla de alta Nuevo Comprobante
-      // Los Combos lo completa en la pantalla porque ya estaban hechos  
-      $sucursales = sucursal::combo(Auth::user()->sucursal , 'N' ); //No Incluye todas
-      return view('ventas.create' , [ 'sucursales' => $sucursales ] );
+      // Se llama por Ajax desde ventas.js para cargar las cuotas segun la tarjeta seleccionada
+      $cuotas = DB::table('tarjetacuotas')
+          ->where('TarCuo_Id', $request->tarjeta_id)
+          ->where('TarCuo_Estado', 'A')
+          ->orderBy('TarCuo_Cuota')
+          ->get();
+
+      return response()->json($cuotas);
   }
 
+  public function altas()
+  {
+      // Pantalla para cargar nueva Venta o Presupuesto
+      $sucursales = sucursal::combo(Auth::user()->sucursal , 'N' );
+      $cotizacionD = cotizacion::where('Cot_Moneda', 'D')->orderBy('id', 'desc')->first();
+      $cotizacionR = cotizacion::where('Cot_Moneda', 'R')->orderBy('id', 'desc')->first();
+
+      $tarjetas = DB::table('tarjetas')
+          ->where('Tar_Estado', 'A')
+          ->orderBy('Tar_Descri')
+          ->get(['Tar_Id', 'Tar_Descri']);
+
+      return view('ventas.create', [
+          'sucursales' => $sucursales,
+          'cotizacionDolar' => $cotizacionD ? $cotizacionD->Cot_Cotizacion : 1,
+          'cotizacionReal' => $cotizacionR ? $cotizacionR->Cot_Cotizacion : 1,
+          'tarjetas' => $tarjetas,
+      ]);
+  }
 
 
   public function show(Request $request)
@@ -255,9 +280,12 @@ class VentasController extends Controller
     foreach ($items_pagos as $item) {
         // se va agregando nuevas Formas de Pago
         $ocomprobante->linea_pago[] = [
+          'detalle' => $item['detalle'],
           'moneda' => $item['moneda'],
-          'monto' => $item['monto'],
+          'tarjeta' => $item['tarjeta_id'],
           'cuotas' => $item['cuotas'],
+          'monto' => $item['monto'],
+          'montomonori' => $item['montomonori'],
           'cotizacion' => $item['cotizacion']
         ];
     }

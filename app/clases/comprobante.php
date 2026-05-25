@@ -1,72 +1,63 @@
-<?php   namespace app\clases;
+<?php namespace app\clases;
 
-use Illuminate\Support\Facades\DB;  // Para usar SQL directamente (Raw SQL)
-
-use App\clases\correlativo;  
-use App\Models\producto;  
-use App\Models\caja; 
-use App\Models\mcaja;   
+use Illuminate\Support\Facades\DB;
+use App\clases\correlativo;
+use App\clases\ws_afip;
+use App\clases\PDFFactura\PDFVoucher;
+use App\clases\PDFFactura\PDFPresupuesto;
+use App\Models\producto;
+use App\Models\caja;
+use App\Models\mcaja;
 use App\Models\factura;
 use App\Models\cliente;
 use App\Models\ot;
 use App\Models\comprobantebd;
 
-use App\clases\PDFFactura\PDFVoucher;
-use App\clases\PDFFactura\PDFPresupuesto;
-use App\clases\ws_afip;
+class comprobante {
 
-class comprobante  {
-  		 
     // Propiedades
-    // Salida: 
-        public $ret = ""; // Retorno de Ejecución  "" = Ok  sino Retoran Mensaje de Error
+    public $ret = ''; // Retorno de Ejecución  "" = Ok  sino Retoran Mensaje de Error
+
     // Datos del comprobante de Venta o Presupuesto:
-        private $comp_sucursal=0;
-        public $comp_tipoot=''; // FC = Ventas directas Suc 
-                                // VT = Venta en sistema WEB
-                                // PR = Presupuesto
-                                // A,L,C,R,G  Tipos de OT 
-        public $comp_id=0;
-        public $comp_fecmov='';
-        public $comp_responsable='CAJA'; //POR DEFECTO
-        public $comp_idcli = 0;    
+    private $comp_sucursal = 0;
+    public $comp_tipoot = ''; // FC = Ventas directas Suc
+                              // VT = Venta en sistema WEB
+                              // PR = Presupuesto
+                              // A,L,C,R,G  Tipos de OT
+    public $comp_id = 0;
+    public $comp_fecmov = '';
+    public $comp_responsable = 'CAJA'; //POR DEFECTO
+    public $comp_idcli = 0;
+    public $comp_monto = 0;
+    private $comp_idanula = 0;
+    private $comp_estado = '';
+    private $comp_idfactura = 0;
+    public $comp_observaciones = '';
 
-        public $comp_monto=0;
-        private $comp_idanula=0;
-        private $comp_estado='';
-        private $comp_idfactura=0;
-        public $comp_observaciones="";
- 
+    // Datos para Factura AFIP
+    public $tipo_de_factura = 0; // Cod Numerico Segun AFIP
+    public $fecha_factura = '';
+    private $tipo_de_comprobante = ''; // Tipo Interno para tabla de facturas  A, B , ....
+    private $CAE = ''; // string de 14
+    private $CAEFchVto = ''; //  "2019-10-16"
+    private $punto_de_venta = '';
+    private $numero_de_factura = '';
+    private $punto_facturaOriginal = '';
+    private $facturaOriginal = '';
 
-        // Datos para Factura AFIP
-        public  $tipo_de_factura = 0; // Cod Numerico Segun AFIP   
-        public  $fecha_factura = ""; 
-        private $tipo_de_comprobante = "";  // Tipo Interno para tabla de facturas  A, B , ....
-        private $CAE = "";  // string de 14
-        private $CAEFchVto  = "";  //  "2019-10-16"
-        private $punto_de_venta = ""; 
-        private $numero_de_factura = ""; 
-        private $punto_facturaOriginal = ""; 
-        private $facturaOriginal = ""; 
+    // Linea de Detalles de Items Vendidos
+    public $linea_detalle = [];
+    private $linea_alicuotas = [];
 
-        // Linea de Detalles de Items Vendidos, tiene que ser un vector
-        public  $linea_detalle = [];
-        private $linea_alicuotas = [];    
-        // Lineas de Formas de Pago
-        public $linea_pago = [];
+    // Lineas de Formas de Pago
+    public $linea_pago = [];
 
-  //  Lista de campos Internos del Obj 
-  private $importe_iva =0;
-  private $importe_gravado=0;
-
-
-
-  private $cliente="";
-
-
-        
-  private $auxEstadoFactua ="";
-  private $auxErrorAfip ="";
+    // Lista de campos Internos del Obj
+    private $importe_iva = 0;
+    private $importe_gravado = 0;
+    private $cliente = '';
+    private $auxEstadoFactua = '';
+    private $auxErrorAfip = '';
 
 
 
@@ -82,7 +73,7 @@ class comprobante  {
       $comprobante->comp_sucursal= $suc; 
 
       // Si son Ordenes de Trabajos busco en tabla Ot
-      if ($tipoOT == 'A' or $tipoOT == 'L' or $tipoOT == 'C' or $tipoOT == 'R' or $tipoOT == 'G'  ) {
+      if (in_array($tipoOT, ['A', 'L', 'C', 'R', 'G'])) {
         $ot = ot::find_suc_id( $suc,$tipoOT, $id );
         $comprobante->comp_fecmov =  $ot->Ot_FecPedido;
         $comprobante->comp_responsable =  $ot->Ot_UsuUltMan; 
@@ -109,8 +100,7 @@ class comprobante  {
           $comprobante->tipo_de_comprobante = $factura->Fac_Comprobante; // A, B , S, R
           $comprobante->tipo_de_factura  = $comprobante->ConvTipoCompLetra_Nro( $comprobante->tipo_de_comprobante);  // Cod numerico segun afip
           $comprobante->numero_de_factura = $factura->Fac_NroFactura; 
-         // dd($factura);
-          $comprobante->punto_de_venta = $factura->Fac_NroPuntoVta; 
+           $comprobante->punto_de_venta = $factura->Fac_NroPuntoVta;
 
           // Si es una Nota de Credito Busco el comprobante Original
           if($factura->Fac_NotaCredito != 0 ) {
@@ -119,7 +109,6 @@ class comprobante  {
               $comprobante->facturaOriginal = $facturaOriginal->Fac_NroFactura;
           }
 
-    //      $comprobante->tipoResponsable = $factura->Fac_CodRespIVA; 
       }else{
           $comprobante->CAE = ""; 
           $comprobante->CAEFchVto = "";
@@ -137,7 +126,6 @@ class comprobante  {
       $datos = DB::select($consulta,[ $comprobante->comp_tipoot, $comprobante->comp_id ,  $comprobante->comp_sucursal] );
 
       foreach ($datos as $row) {
-         // print_r($row);
           // En las ventas o presu las cantidades estan en negativo
           if ($row->Mov_Operacion == 'V' OR $row->Mov_Operacion == 'P' ) $row->Mov_Cantidad = $row->Mov_Cantidad * -1;   
           $precio_unitario_tomado =  $row->Mov_PrecioUnitario;
@@ -191,17 +179,13 @@ class comprobante  {
             "tarjeta" => $row->Caj_Tarjeta ,
             "cuotas" =>  $row->Caj_Cuotas
           ];          
-      }  
-
+      }
 
     } catch (\Exception $e) {
-    //  dd ("Capturo el try del comprobante ", $e); 
       $comprobante->ret =  $e->getMessage();
 
     }
-    // dd($comprobante,$consulta);
     return $comprobante;
-
   }
 
   public function GeneraPRESUPUESTO( $esReimpresion = false){
@@ -229,9 +213,6 @@ class comprobante  {
         "codigoConcepto" => 1,
         "codigoMoneda" => "$",
         "cotizacionMoneda" => 1.000,
-    //  por si es servicios  "fechaDesde" => 20190311,
-    //    "fechaHasta" => 20190303,
-    //    "fechaVtoPago" => 20190303,
         "codigoTipoDocumento" => $this->cliente->Aux_CodDocumento,  //  cod nro 96,
         "TipoDocumento" => $this->cliente->Cli_CodDocumento, 
         "numeroDocumento" => $this->cliente->Cli_Documento, // Debe ser diferente al DNI del emisor
@@ -252,9 +233,8 @@ class comprobante  {
         "CbtesAsoc" => Array()
     );
 
-
     // Recorro todas las lineas de Detalle
-    foreach ($this->linea_detalle as  $linea) {             
+    foreach ($this->linea_detalle as  $linea) {
          $voucher["items"][] = [
                 "codigo" => $linea['familia'] . $linea['codigo'],
                 "scanner" => 0,
@@ -304,7 +284,6 @@ class comprobante  {
         echo 'Falló la Generación del PDF: ' . $e->getMessage();
     }
 
-
   } // GeneraPRESUPUESTO
 
   public function GeneraPDF( $esReimpresion = false){
@@ -342,9 +321,6 @@ class comprobante  {
         "codigoMoneda" => "$",
         "cotizacionMoneda" => 1.000,
         "texto_comprobante_asociado" =>  $texto_comprobante_asociado,
-    //  por si es servicios  "fechaDesde" => 20190311,
-    //    "fechaHasta" => 20190303,
-    //    "fechaVtoPago" => 20190303,
         "codigoTipoDocumento" => $this->cliente->Aux_CodDocumento,  //  cod nro 96,
         "TipoDocumento" => $this->cliente->Cli_CodDocumento, 
         "numeroDocumento" => $this->cliente->Cli_Documento, // Debe ser diferente al DNI del emisor
@@ -415,7 +391,6 @@ class comprobante  {
       ob_end_clean();
 
     try {
-      // dd($voucher);
       $pdf = new PDFVoucher($voucher, $config);
 
       $pdf->emitirPDF($logo_path);
@@ -442,16 +417,12 @@ class comprobante  {
       // Guardamos a PDF
       $pdf->Output( $file_completo ,'F' ); //genera el archivo
 
-      // $pdf->Output( $file  ); ///esta linea visulaiza por pantalla , no sigue
-      // $pdf->Output( $file , 'D' ); ///esta pide para descrgar en el navegador
-
       return $file;
 
     } catch (Exception $e) {
         displaylog( 'Falló la Generación del PDF: ' . $e->getMessage() );
         echo 'Falló la Generación del PDF: ' . $e->getMessage();
     }
-
 
   } // GeneraPDF
 
@@ -497,7 +468,6 @@ class comprobante  {
             displaylog('Error: GeneraFAC EN AFIP, NO se genero:' . $this->ret . ' Comp:' .$this->numero_de_factura );
         }  
     } catch (\Exception $e) {
-    //  dd ("Capturo el try del comprobante AFIP", $e); 
         $this->ret =  $e->getMessage() ;
         displaylog('Error: GeneraFAC AFIP, NO se genero:' . $this->ret . ' Comp:' .$this->numero_de_factura );
         return  $this->ret;
@@ -522,25 +492,23 @@ class comprobante  {
 
     $this->ret =  ""   ; // todo Ok por defecto
 
-    switch ($this->comp_tipoot ) {
-      case "VT": //Venta WEB
-        $operacion = "V"; 
-        $this->tipo_de_comprobante =  $this->ConvTipoCompNro_Letra( $this->tipo_de_factura);
-        break;            
-      case "PR": //Presupuesto
-        $operacion = "P"; 
-        $this->tipo_de_comprobante =  "P";
-        $this->tipo_de_factura = "Z"; // No hay que generar nada
-        break; 
-    }    
+    $operacion = match ($this->comp_tipoot) {
+        'VT' => 'V',
+        'PR' => 'P',
+        default => 'X',
+    };
+    $this->tipo_de_comprobante = $operacion === 'V'
+        ? $this->ConvTipoCompNro_Letra($this->tipo_de_factura)
+        : 'P';
+    if ($operacion === 'P') {
+        // Si es presupuesto no actualiza pagos
+        $this->numero_de_factura = $this->comp_id;
+        $this->CAE = "";
+        $this->tipo_de_factura = 'Z';
+    }
                
 
     $this->punto_de_venta=  str_pad( $this->punto_de_venta ,4,"0" , STR_PAD_LEFT) ; //LE doy formato por las dudas
-
-   
-    //	  $this->comp_fecmov = fechahorahoy();
-
-
 
   try {
 
@@ -557,7 +525,6 @@ class comprobante  {
         throw new \ErrorException($this->ret  );
       }  
     }
-   // dd($this);
     // Con las lineas de Detalle , carga los campos de totales, ivas y alicuoas de iva
     $this->cargaAlicuotasIva();
 
@@ -576,7 +543,6 @@ class comprobante  {
         if  ( ! $producto  = Producto::findCodigo($items["familia"],$items["codigo"] ) ) {
            throw new \ErrorException("Error al buscar producto:" . $items["familia"] ."&nbsp;" . $items["codigo"]);
         } 
-
         $producto->Prod_UsuUltMan =   $this->comp_responsable;
         if ($items['detalle'] == "" ) {
             $items['detalle'] = $producto->Prod_Descripcion ;  
@@ -587,60 +553,7 @@ class comprobante  {
                $this->comp_id , 0 , $items['detalle'] , $this->comp_tipoot , $producto->mov_sucursal, $items['bonif'] );
         if ($this->ret != "") {
           throw new \ErrorException("Error al actualizar linea Detalle:" . $this->ret );
-        }       
-    
-        if ($operacion == "P") {
-            // Si es presupuesto no actualiza pagos
-            $this->numero_de_factura = $this->comp_id;
-            $this->CAE = "";
-            continue;
-        }       
-        // Si tiene solo ** 1 forma de pago **, y no es cod 99
-        if( count($this->linea_pago) == 1  and
-            !( $items["familia"] == "VAR" and $items['codigo'] == "99")  ){
-          $ocaja = new mcaja();
-          $ocaja->MCaj_FecMov=fechahoy();
-          if ($items["familia"] == "VAR") {
-            $ocaja->MCaj_Codigo=  sprintf("%'.04d\n", $items['codigo'])  ;
-          }else{
-            $consulta = "SELECT Flia_Ctacon FROM familias  WHERE    Flia_Id= ?";
-            $datos = DB::select($consulta, [$items["familia"]] );
-            $ocaja->MCaj_Codigo=  sprintf("%'.04d\n", $datos[0]->Flia_Ctacon)  ;
-          }
-
-          $ocaja->MCaj_Moneda=$this->linea_pago[0]["moneda"]; // en moneda original
-
-          $ocaja->MCaj_Monto=  ($items['precio_unitario_tomado'] * $items['cantidad'] ) / $this->linea_pago[0]["cotizacion"];  // Monto en moneda original
-
-          switch ($ocaja->MCaj_Moneda ) {
-            case 'C': // Cheques en Pesos
-              $ocaja->MCaj_CtaOri="06"; // Cta Cheques Pendientes
-              $ocaja->MCaj_Moneda="P"; // Pesos
-              break;
-            case 'H': // Cheques en Reales
-              $ocaja->MCaj_CtaOri="06"; // Cta Cheques Pendientes
-              $ocaja->MCaj_Moneda="R"; // Reales
-              break;
-            default: 
-              $ocaja->MCaj_CtaOri="01"; // Caja
-          } 
-          $ocaja->MCaj_CtaDes="";
-          $ocaja->MDes_IdFac = $this->comp_id;
-          $ocaja->MDes_TipoOT = $this->comp_tipoot ;          
-          $ocaja->MDes_Descripcion=$items['detalle'];
-
-          $ocaja->MCaj_Origen="15"; // Web Comprobante Venta
-          $ocaja->MCaj_FecAlta=fechahorahoy();
-          $ocaja->MCaj_IdWEB = 0;
-          $ocaja->MCaj_Id = 0;
-          $ocaja->MCaj_UsuAlta=$this->comp_responsable;
-          $ocaja->MCaj_SucursalOrig =   $this->comp_sucursal;
-          $ocaja->MCaj_SucursalDes =  $this->comp_sucursal ;
-          $ocaja->MCaj_Sucursal =  $this->comp_sucursal ;
-          
-          $ocaja->save();
-        }
-
+        }          
     } //fin  Recorro todas las lineas de Detalle
 
 
@@ -648,6 +561,8 @@ class comprobante  {
     //    Y genero Factura en Afip + grabo tabla de facturas
     if ( $this->comp_tipoot == 'VT') {
       $correlativo = 0;
+      $this->graba_MCaja();
+      
       // Recorro todas las Formas de Pago
       foreach ($this->linea_pago as  $items) {     
         $correlativo ++;
@@ -660,12 +575,13 @@ class comprobante  {
         $caja->Caj_Estado="";
         $caja->Caj_Sucursal = $this->comp_sucursal; 
         $caja->Caj_Correlativo = $correlativo ;
+        $caja->Caj_Detalle = $items["detalle"];
         $caja->Caj_Moneda = $items["moneda"];
-        $caja->Caj_Monto = numdec($items["monto"] ,2) ;
+        $caja->Caj_Tarjeta = $items["tarjeta"];
         $caja->Caj_Cuotas = $items["cuotas"];
-        $caja->Caj_Detalle = "Vta Dir N°" . $this->comp_id;
+        $caja->Caj_Monto = numdec($items["monto"] ,2) ;
+        $caja->Caj_MontoMonOri = numdec($items["montomonori"] ,2) ;
         $caja->Caj_Operacion = 'V'; // Venta
-        $caja->Caj_MontoMonOri = 0;
         $caja->Caj_Cotizacion = $items["cotizacion"];
         $caja->Caj_Responsable = $this->comp_responsable;
         $caja->Caj_UsuAlta = $this->comp_responsable;
@@ -673,12 +589,9 @@ class comprobante  {
         $caja->Caj_Id = 0; //Es el que toma en los clientes
         $caja->save();
 
-        // FALTA Ver si corresponde grabar en Mcaja si Es Multi Forma de Pagos
-
       } //fin  Recorro Formas de Pago
 
-      if ($this->tipo_de_factura != "Z") {
-
+      if ($this->tipo_de_factura != 'Z') {
           $this->ret =  $this->crea_comprobante_afip();
           if($this->ret == "") {
              // todo correctos ya se gravo en Afip y retorno Nro Fact, CAE , y fecha Venc CAE
@@ -686,24 +599,17 @@ class comprobante  {
           }else{
               displaylog('Error: GeneraFAC EN AFIP, NO se genero:' . $this->ret . ' Comp:'. $this->comp_id  . ' Error AuxAfip:' . $this->auxErrorAfip );
               $this->auxErrorAfip = $this->ret;
-           //ver   if( $this->ret == "" ) {
-           //     throw new \ErrorException($this->ret);
-                  // Es solo error de Coneccion continua
-                 $this->auxEstadoFactua = "K"; // Error Afip  Registro y dejo marcado
-                  $this->numero_de_factura = $this->obtengocorrelativo("K");
-                  $this->CAEFchVto = fechahoy(); 
-                  $this->ret = ""; // Limpio el error del comprobante, dejo solo el de AFIP 
+              $this->auxEstadoFactua = "K"; // Error Afip  Registro y dejo marcado
+              $this->numero_de_factura = $this->obtengocorrelativo("K");
+              $this->CAEFchVto = fechahoy(); 
+              $this->ret = ""; // Limpio el error del comprobante, dejo solo el de AFIP 
           }
-        //dd($this->numero_de_factura, $this->CAE,$this->CAEFchVto);
           $this->graba_factura();
-
-
       }  
     } // Fin de Graba los Pagos
 
   } catch (\Exception $e) {
       DB::rollBack();
-   //   dd ("Capturo el try del comprobante ", $e); 
       $this->ret =  $e->getMessage() ;
 
       return  $this->ret;
@@ -720,6 +626,112 @@ class comprobante  {
   //  Funciones Internas
   // -----------------------------------------
 
+  private function graba_MCaja(){
+    // Esta tabla tiene el mismo registro que Caja pero con el monto en moneda original, y el codigo de origen segun la forma de pago
+    $esUnSoloPago = count($this->linea_pago) == 1;
+
+    // Recorro todas las lineas de Detalle
+    foreach ($this->linea_detalle as  $items) {
+        // Saltear items especiales VAR codigo 99
+        if ($items["familia"] == "VAR" and $items['codigo'] == "99") {
+            continue;
+        }
+
+        $ocaja = new mcaja();
+        $ocaja->MCaj_FecMov = fechahoy();
+
+        if ($items["familia"] == "VAR") {
+            $ocaja->MCaj_Codigo = sprintf("%'.04d\n", $items['codigo']);
+        } else {
+            $consulta = "SELECT Flia_Ctacon FROM familias WHERE Flia_Id = ?";
+            $datos = DB::select($consulta, [$items["familia"]]);
+            $ocaja->MCaj_Codigo = sprintf("%'.04d\n", $datos[0]->Flia_Ctacon);
+        }
+
+        if ($esUnSoloPago) {
+            // Una sola forma de pago: en la moneda original
+            $ocaja->MCaj_Moneda = $this->linea_pago[0]["moneda"];
+            $ocaja->MCaj_Monto = ($items['precio_unitario_tomado'] * $items['cantidad']) / $this->linea_pago[0]["cotizacion"];
+
+            switch ($ocaja->MCaj_Moneda) {
+                case 'C':
+                    $ocaja->MCaj_CtaOri = "06";
+                    $ocaja->MCaj_Moneda = "P";
+                    break;
+                case 'H':
+                    $ocaja->MCaj_CtaOri = "06";
+                    $ocaja->MCaj_Moneda = "R";
+                    break;
+                default:
+                    $ocaja->MCaj_CtaOri = "01";
+            }
+        } else {
+            // Multiples formas de pago: siempre en pesos
+            $ocaja->MCaj_Moneda = "P";
+            $ocaja->MCaj_Monto = $items['precio_unitario_tomado'] * $items['cantidad'];
+            $ocaja->MCaj_CtaOri = "01";
+        }
+
+        $ocaja->MCaj_CtaDes = "";
+        $ocaja->MDes_IdFac = $this->comp_id;
+        $ocaja->MDes_TipoOT = $this->comp_tipoot;
+        $ocaja->MDes_Descripcion = $items['detalle'];
+
+        $ocaja->MCaj_Origen = "15";
+        $ocaja->MCaj_FecAlta = fechahorahoy();
+        $ocaja->MCaj_IdWEB = 0;
+        $ocaja->MCaj_Id = 0;
+        $ocaja->MCaj_UsuAlta = $this->comp_responsable;
+        $ocaja->MCaj_SucursalOrig = $this->comp_sucursal;
+        $ocaja->MCaj_SucursalDes = $this->comp_sucursal;
+        $ocaja->MCaj_Sucursal = $this->comp_sucursal;
+
+        $ocaja->save();
+    }
+
+    // Si hay multiples formas de pago, crear transferencias para las que no son pesos
+    if (!$esUnSoloPago) {
+        foreach ($this->linea_pago as $pago) {
+            $monedaPago = $pago["moneda"];
+
+            if ($monedaPago === "C") {
+                $monedaReal = "P";
+                $ctaOri = "06";
+            } elseif ($monedaPago === "H") {
+                $monedaReal = "R";
+                $ctaOri = "06";
+            } else {
+                $monedaReal = $monedaPago;
+                $ctaOri = "01";
+            }
+
+            if ($monedaReal !== "P") {
+                $oCajaTransf = new mcaja();
+                $oCajaTransf->MCaj_Codigo = "0900";
+                $oCajaTransf->MCaj_FecMov = fechahoy();
+                $oCajaTransf->MCaj_Moneda = $monedaReal;
+                $oCajaTransf->MCaj_Monto = $pago["montomonori"] ?? ($pago["monto"] / ($pago["cotizacion"] ?? 1));
+                $oCajaTransf->MCaj_CtaOri = $ctaOri;
+                $oCajaTransf->MCaj_CtaDes = "01";
+                $oCajaTransf->MCaj_MonedaDes = "P";
+                $oCajaTransf->MCaj_MontoDes = $pago["monto"];
+                $oCajaTransf->MCaj_SucursalDes = $this->comp_sucursal;
+                $oCajaTransf->MDes_IdFac = $this->comp_id;
+                $oCajaTransf->MDes_TipoOT = $this->comp_tipoot;
+                $oCajaTransf->MDes_Descripcion = "Transf " . $monedaReal . " a P";
+                $oCajaTransf->MCaj_Origen = "15";
+                $oCajaTransf->MCaj_FecAlta = fechahorahoy();
+                $oCajaTransf->MCaj_IdWEB = 0;
+                $oCajaTransf->MCaj_Id = 0;
+                $oCajaTransf->MCaj_UsuAlta = $this->comp_responsable;
+                $oCajaTransf->MCaj_SucursalOrig = $this->comp_sucursal;
+                $oCajaTransf->MCaj_Sucursal = $this->comp_sucursal;
+                $oCajaTransf->save();
+            }
+        }
+    }
+  }
+  
   private function graba_factura(){
 
       // Grabo tabla de Facturas
@@ -739,7 +751,6 @@ class comprobante  {
       }else{
         $factura->Fac_NroPuntoVta =  $this->punto_de_venta ;
       }
-//      $factura->Fac_NroFactura = sprintf("%'.08d\n",$this->numero_de_factura );
       $factura->Fac_NroFactura = $this->numero_de_factura ;
 
       $factura->Fac_Subtot = numdec($this->importe_gravado,2);  // iva 21
@@ -759,16 +770,7 @@ class comprobante  {
       $factura->Fac_CAE = $this->CAE;
       $factura->Fac_VencimientoCAE =  $this->CAEFchVto;
       $factura->Fac_Sucursal =  $this->comp_sucursal; 
-      
-    //  dd($factura);
-      $factura->save();  
-
-//ver en que influye
-   //   $ret =  correlativo::gravo_correlativo($this->tipo_de_factura,$this->numero_de_factura);
-   //   if ($ret == -1   ) {
-   //       $this->ret = "Error: Al grabar Correlativo Comprobante Factura"  ;
-   //   
-
+      $factura->save();
 
   } // fin graba_factura
 
@@ -786,7 +788,6 @@ class comprobante  {
     $comp_afip->punto_facturaOriginal = $this->punto_facturaOriginal;   //Se completa solo en Anulaciones
     $comp_afip->facturaOriginal = $this->facturaOriginal;        //Se completa solo en Anulaciones
     $ret  = $comp_afip->nuevo_comprobante();
-   // dd($comp_afip);
     if($ret == "") {
       $this->CAE = $comp_afip->CAE; //CAE asignado a la Factura
       $this->CAEFchVto = $comp_afip->CAEFchVto; //Fecha de vencimiento del CAE
@@ -824,13 +825,11 @@ class comprobante  {
           $ocomp->Comp_IdCli = $this->comp_idcli;
           $ocomp->Comp_IdFactura = $this->comp_idfactura; //VER todavia no lo tenemos
           $ocomp->Comp_observaciones = $this->comp_observaciones;
-        //  dd($ocomp , $this->comp_id);
           $ocomp->save();
           $this->comp_id = $ocomp->Comp_idWEB; // Retorna el Comprobante Generado 
 
 
     } catch (\Exception $e) {
-      //  dd($e);
       if ( $e->getCode() == 23000 )  {
            // Duplicado
             $retorno = "DUPLICADO";
@@ -842,11 +841,9 @@ class comprobante  {
     return $retorno;	
 
   } // End insert_comprobante
-	
 
   private function lee_tabla_comprobante() {
 
-    
     if($this->comp_tipoot <> "FC" ) { //Si se genero en WEB busco por id web  FC=Vta Directa en Suc
       $consulta = "SELECT * FROM comprobantes  WHERE  Comp_idWEB=?" ;
       $datos = DB::select($consulta,[ $this->comp_id] );
@@ -855,7 +852,6 @@ class comprobante  {
       $datos = DB::select($consulta,[ $this->comp_sucursal, $this->comp_tipoot , $this->comp_id] );
     }  
     if($datos ) {
-     // dd($datos[0]);
       $this->comp_tipoot =  $datos[0]->Comp_TipoOT;
       $this->comp_fecmov =  $datos[0]->Comp_FecMov;
       $this->comp_sucursal =  $datos[0]->Comp_Sucursal;
@@ -865,8 +861,6 @@ class comprobante  {
       $this->comp_idfactura =  $datos[0]->Comp_IdFactura; 
       $this->comp_idcli =  $datos[0]->Comp_IdCli; 
       $this->comp_observaciones =  $datos[0]->Comp_observaciones;
-
-     // dd($datos[0] ,$datos[0]->Comp_Monto ,  $this->comp_monto, $this );
 
     }else{
 
@@ -880,67 +874,37 @@ class comprobante  {
 private function ConvTipoCompNro_Letra( $tipoNro){
  
     // Retorna Cod Afa Segun Afip
-    switch ($tipoNro ) {
-      case 1: // Factura A
-        return "A" ;  
-        break;
-      case 3: // Nota Cred A
-        return "R" ;  
-        break;
-      case 6: // Factura B
-        return "B" ;  
-        break;
-      case 8: // Nota Cred B
-        return "S" ;  
-        break;
-      case 11: // Factura C
-        return "C" ;  
-        break;
-    }        
+    return match ($tipoNro) {
+        1 => 'A',
+        3 => 'R',
+        6 => 'B',
+        8 => 'S',
+        11 => 'C',
+        default => '',
+    };
 }
 
 private function ConvTipoCompNro_Letra_PDF( $tipoNro){
- 
-  // Retorna Cod Afa Segun Afip
-  switch ($tipoNro ) {
-    case 1: // Factura A
-      return "A" ;  
-      break;
-    case 3: // Nota Cred A
-      return "A" ;  
-      break;
-    case 6: // Factura B
-      return "B" ;  
-      break;
-    case 8: // Nota Cred B
-      return "B" ;  
-      break;
-    case 11: // Factura C
-      return "C" ;  
-      break;
-  }        
+
+  return match ($tipoNro) {
+      1, 3 => 'A',
+      6, 8 => 'B',
+      11 => 'C',
+      default => '',
+  };
 }
 
 private function ConvTipoCompLetra_Nro( $tipoletra){
  
     // Retorna Cod Numerico Segun Afip
-    switch ($tipoletra ) {
-      case "A": // Factura A
-        return 1 ;  
-        break;
-      case "B": // Factura B
-        return 6 ;  
-        break;
-      case "C": // Factura C
-        return 11 ;  
-        break;
-      case "R": // Nota Credito A
-        return 3 ;  
-        break;
-      case "S": // Nota Credito B
-        return 8 ;  
-        break;
-    }        
+    return match ($tipoletra) {
+        'A' => 1,
+        'B' => 6,
+        'C' => 11,
+        'R' => 3,
+        'S' => 8,
+        default => 0,
+    };
 }
 
 private function ConvTipoDocumento_Nro( $tipoletra){
@@ -955,43 +919,27 @@ private function ConvTipoDocumento_Nro( $tipoletra){
 
          Numero de documento del comprador (0 para consumidor final)
        **/
-    switch ($tipoletra ) {
-      case "": 
-        return 99 ;  
-        break;
-      case "CUIT": 
-        return 80 ;  
-        break;
-      case "DNI": 
-        return 96 ;  
-        break;
-      case "CUIL": 
-        return 86 ;  
-        break;
-      case "LE": 
-        return 89 ;  
-        break;        
-      case "LC": 
-        return 90 ;  
-        break;        
-    }        
+    return match ($tipoletra) {
+        '' => 99,
+        'CUIT' => 80,
+        'DNI' => 96,
+        'CUIL' => 86,
+        'LE' => 89,
+        'LC' => 90,
+        default => 0,
+    };
 }
 
 private function descripcionTipoResponsable( $tipoResp){
  
     // Retorna Cod Numerico Segun Afip
-    switch ($tipoResp ) {
-      case "CF": 
-        return "Consumidor Final" ;  
-        break;
-      case "RI": 
-        return "Responsable Inscripto";
-      case "MO": 
-        return "Monotributo";
-      case "EX": 
-        return "IVA Sujeto Exento";            
-        break;
-    }        
+    return match ($tipoResp) {
+        'CF' => 'Consumidor Final',
+        'RI' => 'Responsable Inscripto',
+        'MO' => 'Monotributo',
+        'EX' => 'IVA Sujeto Exento',
+        default => $tipoResp,
+    };
 }
 
 private function descripcionTipoComprobante( $tipoletra){
@@ -1019,16 +967,8 @@ private function cargaAlicuotasIva() {
     $auxlinea = 0;
     $i=0;
 
-    foreach ($this->linea_detalle as  $items) {     
-       
-
-
-
-
-        $totalComp = $totalComp + ( $items['precio_unitario_tomado'] *  $items['cantidad'] ) ;
-        // PENDIETE PARA DISCRIMINAR CONCEPTOS DIFERENTES IVAS
-        //$this->linea_detalle[$i]['importe_iva'] =  round($auxlinea - ( $auxlinea / 1.21)  , 2) ;
-        //$this->linea_detalle[$i]['importe_gravado'] =  $auxlinea  - $this->linea_detalle[$i]['importe_iva'] ;
+    foreach ($this->linea_detalle as  $items) {
+        $totalComp = $totalComp + ( $items['precio_unitario_tomado'] *  $items['cantidad'] );
         $i++;
     } // Fin Calculos
 
@@ -1072,26 +1012,17 @@ private function CompletoDatosCliente(){
 
 	private function obtengocorrelativo($tipocomprobante) {
 
-    switch ($tipocomprobante) {
-			case "CA": //Comprobante de Caja 
-				$tipocomprobante = "E";
-				break;
-			case "FC": //Venta directa 
-				$tipocomprobante = "D";
-        $this->comp_estado = "P"; // Pagado
-				break;
-			case "RE": //Remito 
-				$tipocomprobante = "I";
-				break;
-			case "PR": //Presupueto 
-				$tipocomprobante = "H";
-				break;
-      case "K": // Error en Factura AFIP 
-        $tipocomprobante = "K";
-        break;
-			default:
-				$tipocomprobante = "H";
-      }
+    $tipocomprobante = match ($tipocomprobante) {
+        'CA' => 'E',
+        'FC' => 'D',
+        'RE' => 'I',
+        'PR' => 'H',
+        'K' => 'K',
+        default => 'H',
+    };
+    if ($tipocomprobante === 'D') {
+        $this->comp_estado = 'P';
+    }
       // Lo genero y gravo 
       $nvoid =  correlativo::leo_proximo($tipocomprobante);
       $ret =  correlativo::gravo_correlativo($tipocomprobante,$nvoid);
