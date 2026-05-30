@@ -38,17 +38,17 @@
 
                 <label class="control-label">Acreditación:</label>
                     <div class="input-group">
-                    <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+<button type="button" class="btn btn-default pull-right daterange-btn" id="daterange-btn">
                       <span>
                         <i class="fa fa-calendar"></i> Rango de fecha
                       </span>
                         <i class="fa fa-caret-down"></i>
                     </button>              
                     </div>
- 
+  
                 <label class="control-label">Fec.Operación:</label>
                     <div class="input-group">
-                    <button type="button" class="btn btn-default pull-right" id="daterange-btn-ope">
+                    <button type="button" class="btn btn-default pull-right daterange-btn" id="daterange-btn-ope">
                       <span>
                         <i class="fa fa-calendar"></i> Rango de fecha
                       </span>

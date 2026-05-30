@@ -24,7 +24,7 @@
               <h3 class="panel-title">Consulta de Ordenes de Trabajo</h3>
         </div>
         <div class="panel-body">
-                <div class="form-group">
+                <div class="form-group form-group-separado">
                     <label class="control-label">Tipo Informe:</label>
                     <select  name="tipo_informe" id="tipo_informe"  class="form-control">
                       <option value= "">Completo </option>
@@ -32,7 +32,7 @@
                       <option value= "P">Pendientes de Entrega </option>
                     </select>
                 </div>    
-                <div class="form-group">
+                <div class="form-group form-group-separado">
                     <label class="control-label">Sucursal:</label>
                     <select name="Ot_Sucursal" id="Ot_Sucursal" class="form-control" required>
                         @foreach($sucursales as $key => $value)
@@ -40,19 +40,17 @@
                         @endforeach
                     </select>
                 </div>    
-                <div class="form-group">
+              <div class="form-group form-group-separado">
                     <label class="control-label">Fechas:</label>
                     <div class="input-group">
-                    <button type="button" class="btn btn-default pull-right" id="daterange-btn">
-                      <span>
-                        <i class="fa fa-calendar"></i> Rango de fecha
-                      </span>
-                        <i class="fa fa-caret-down"></i>
-                    </button>              
+                    <button type="button" class="btn btn-default btn-block daterange-btn" id="daterange-btn">
+                        <i class="fa fa-calendar"></i>
+                        <span>{{ $fecha }} al {{ $fecha_fin }}</span>
+                        <i class="fa fa-caret-down" style="margin-left: 4px;"></i>
+                    </button>
                     </div>
               </div>
-
-              <div class="form-group">
+              <div class="form-group form-group-separado">
                     <label class="control-label">Tipo OT:</label>
                     <select name="tipoot" id="tipoot" class="form-control">
                         <option value="" >[Todos]</option>
@@ -62,16 +60,16 @@
                         <option value="R">Reparaciones</option>
                         <option value="G">Garantías</option>
                     </select>
-
+              </div>
+              <div class="form-group form-group-separado">
                     <label class="control-label">Estado:</label>
                     <select name="estado" id="estado" class="form-control">
                         <option value="" >[Todos]</option>
                         @include('common.combo_otestados')
                     </select>
-
               </div>  
-              <div class="form-group">
-       		       <button type="button" onClick="consultar()" class="btn btn-primary pull-right">Consultar</button>
+              <div class="form-group form-group-separado">
+                   <button type="button" onClick="consultar()" class="btn btn-primary  btn-block"><i class="fa fa-search"></i> Consultar</button>
               </div>  
             </div>
         </div> <!-- Fin Panel Info -->

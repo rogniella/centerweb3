@@ -9,13 +9,14 @@ use Illuminate\Support\Facades\DB;  // Para usar SQL directamente (Raw SQL)
 class caja extends Model
 {
     
+    // Tabla de Formas de Pago
     protected $table = "caja";
-    // Difino Clave Primaria
+    // Defino Clave Primaria
 	protected $primaryKey = 'Caj_IdWEB';
    
     public $timestamps = false;
 
-    public static function buscar($filtro_tipoinforme,$filtro_sucursal,$filtro_fecini ='',$filtro_fecfin ='',$filtro_tipoot =''
+    public static function buscar($filtro_moneda,$filtro_sucursal,$filtro_fecini ='',$filtro_fecfin ='',$filtro_tipoot =''
              ,$filtro_estado='') {
 
     	// Se la define static  para llamarla sin objeto con ::	
@@ -27,16 +28,15 @@ class caja extends Model
             $filter .= " AND Caj_SucursalOri = ?";
             $valores[] = $filtro_sucursal ;
         }
-        if ($filtro_tipoinforme != "") {
+        if ($filtro_moneda != "") {
             $filter .= " AND Caj_Moneda = ?";
-            $valores[] = $filtro_tipoinforme ;
+            $valores[] = $filtro_moneda ;
         }
         if ($filtro_fecini != "") {
-            $filtro_fecini = $filtro_fecini . " 00:00:00";
-            $filtro_fecfin = $filtro_fecfin . " 23:59:59";
-            $filter .= " AND Caj_FecMov >= '" . $filtro_fecini . "' and Caj_FecMov <= '". $filtro_fecfin . "' ";
+            $filter .= " AND Caj_FecMov >= ? AND Caj_FecMov <= ?";
+            $valores[] = $filtro_fecini . " 00:00:00";
+            $valores[] = $filtro_fecfin . " 23:59:59";
         }
-
 
         $filter .=  " order by Caj_IdWEB desc";
 

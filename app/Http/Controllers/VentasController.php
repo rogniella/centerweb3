@@ -19,11 +19,22 @@ class VentasController extends Controller
 {
 
 
-  public function forma_pago()
+  public function forma_pago(Request $request)
   {
-      // Lista de Ordenes de Trabajo - Pantalla Principal
+      $validated = $request->validate([
+          'sucursal' => 'nullable|string|max:10',
+          'fecha' => 'nullable|date_format:Y-m-d',
+          'fechafin' => 'nullable|date_format:Y-m-d',
+      ]);
+
       $sucursales = sucursal::combo(Auth::user()->sucursal, 'S');
-      return view('ventas.forma_pago', ['sucursales' => $sucursales ] );
+
+      return view('ventas.forma_pago', [
+          'sucursales' => $sucursales,
+          'filtro_sucursal' => $validated['sucursal'] ?? '0',
+          'filtro_fecha' => $validated['fecha'] ?? date('Y-m-d'),
+          'filtro_fechafin' => $validated['fechafin'] ?? date('Y-m-d'),
+      ]);
   }
 
   public function forma_pago_carga (Request $request) 

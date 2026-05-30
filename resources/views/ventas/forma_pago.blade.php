@@ -1,25 +1,13 @@
 @extends('template.informes')
-@section('titulo','Listado Pagos')
+@section('titulo','Listado de Pagos')
    
 @section('contenido')
-
-<?php 
-    // Inicio los parametros de Filtrado
-    $sucursal = "0";
-    $fecha = date("Y-m-d");
-    $fecha_fin = date("Y-m-d");
-    if ($_GET) {
-        $sucursal = $_GET["sucursal"];
-        $fecha = $_GET["fecha"];
-        $fecha_fin = $_GET["fechafin"];
-    }    
-?>
 
 <form class="form-inline" role="form" >
     <!-- Panel Del Titulo y Filtros -->
     <div class="panel panel-info">         
         <div class="panel-heading">
-              <h3 class="panel-title">Listado Pagos por Forma de Pago</h3>
+              <h3 class="panel-title">Listado de Pagos por su Forma</h3>
         </div>
         <div class="panel-body">
                 <div class="form-group">
@@ -41,7 +29,7 @@
                 <div class="form-group">
                     <label class="control-label">Fechas:</label>
                     <div class="input-group">
-                    <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+                    <button type="button" class="btn btn-default pull-right daterange-btn" id="daterange-btn">
                       <span>
                         <i class="fa fa-calendar"></i> Rango de fecha
                       </span>
@@ -159,10 +147,9 @@
 <script>
 
 
-    var $fecha;
-    var $fechafin;
-
- 	
+  var $fecha;
+  var $fechafin;
+	
   var $table = $('#mitabla');
 
  // Todos los Eventos de la Tabla
@@ -220,7 +207,7 @@
         $('select[name="tipo_informe"]').change(function () {
             consultar();
         });
-        $('select[name="Sucursal"]').change(function () {
+        $('select[name="sucursal"]').change(function () {
             consultar();
         });
     });
@@ -229,7 +216,7 @@
         // LLama a 2da pagina con la logica de la busqueda 
         // ------------------------------------------------ 
         $tipoinforme  = $('#tipo_informe').val();   
-        $sucursal  = $('#Sucursal').val();   
+        $sucursal  = $('#sucursal').val();   
         $tipoot = $('#tipoot').val()  
         $estado = $('#estado').val()  
         $.ajax({
@@ -259,10 +246,9 @@
 DATE RANGE
 =============================================*/
 $(document).ready(function(){
-         // Tomo los datos de entrada
-         $fecha = '<?= $fecha; ?>';
-         $fechafin = '<?= $fecha_fin; ?>';
-         document.getElementById("Sucursal").value = '<?= $sucursal; ?>';
+         $fecha = '{{ $filtro_fecha }}';
+         $fechafin = '{{ $filtro_fechafin }}';
+         $('#sucursal').val('{{ $filtro_sucursal }}');
          consultar();
 });      
 

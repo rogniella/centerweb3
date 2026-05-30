@@ -44,7 +44,6 @@
   <script src="{{ asset('plugins/jquery-ui-1.12.1/jquery-ui.min.js') }}"></script>
 
 	<script src="{{ asset('plugins/bootstrap/js/bootstrap.js') }}"></script>
-	<script src="{{ asset('plugins/chosen/chosen.jquery.js') }}"></script>
 	<script src="{{ asset('plugins/trumbowyg/trumbowyg.js') }}"></script>
 
   <!-- Buscador autocomplete -->
@@ -84,7 +83,24 @@
 
     $(function() {
          //Se pone para que en todos los llamados ajax se bloquee la pantalla mostrando el mensaje Procesando...
-         $.blockUI.defaults.message = '<h3>Procesando...</h3>';
+         $.blockUI.defaults.css = {
+           border: 'none',
+           padding: 0,
+           backgroundColor: 'transparent',
+           top: '50%',
+           left: '50%',
+           transform: 'translate(-50%, -50%)',
+           width: 'auto',
+           textAlign: 'center',
+           cursor: 'wait'
+         };
+         $.blockUI.defaults.overlayCSS = {
+           backgroundColor: '#000',
+           opacity: 0.4
+         };
+         $.blockUI.defaults.fadeIn = 200;
+         $.blockUI.defaults.fadeOut = 200;    
+         $.blockUI.defaults.message = '<div class="blockui-modern"><div class="blockui-spinner"></div><p class="blockui-text">Cargando Información...</p></div>';
          $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
     });
 

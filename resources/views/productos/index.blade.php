@@ -20,7 +20,7 @@
                         @foreach($familias as $key => $value)
                             <option value="{{ $key }}" {{ $key == '' ? 'selected' : '' }}>{{ $value }}</option>
                         @endforeach
-                    </select>    
+                </select>    
                 <input type="text" class="form-control" name="filtro1" id="filtro1"  placeholder="Descripción" value="">
 
                 <select id="filtroMarca" name="filtroMarca" class="form-control">
@@ -34,42 +34,54 @@
               </div>
 
               <br> <!-- Salto linea--> 
-              <br>
 
               <div class="form-group">
-                 <a  data-toggle="collapse" href="#collapseFiltro" role="button" aria-expanded="false" aria-controls="collapseExample">
-                    &nbsp;Más Filtros..
+                 <a class="mas-filtros-divider" data-toggle="collapse" href="#collapseFiltro" role="button" aria-expanded="false" aria-controls="collapseFiltro">
+                    <span class="line"></span>
+                    <span class="arrow">▼</span>
+                    <span class="divider-label divider-label-contracted">Más Opciones...</span>
+                    <span class="divider-label divider-label-expanded">Menos Opciones</span>
+                    <span class="line"></span>
                  </a>
 
                  <div class="collapse" id="collapseFiltro">
 
-                    <select id="filtroEstado" name="filtroEstado" class="form-control">
-                      <option value="T">[Todos]</option>
-                      <option value="A" selected>Activos</option>
-                      <option value="I">Inactivos</option>
-                    </select>
-                    <select id="filtroStock" name="filtroStock" class="form-control">
-                      <option value="T" selected>[Stock Todos]</option>
-                      <option value="C">Con Stock</option>
-                      <option value="S">Sin Stock</option>
-                    </select>
-                    <input type="number" class="form-control" name="mes_ventas" id="mes_ventas"  placeholder="Ventas-Meses" value="">              
+                    <div class="form-group">
+                        <select id="filtroEstado" name="filtroEstado" class="form-control">
+                          <option value="T">[Todos]</option>
+                          <option value="A" selected>Activos</option>
+                          <option value="I">Inactivos</option>
+                        </select>
+                        <select id="filtroStock" name="filtroStock" class="form-control">
+                          <option value="T" selected>[Stock Todos]</option>
+                          <option value="C">Con Stock</option>
+                          <option value="S">Sin Stock</option>
+                        </select>
+                        <input type="number" class="form-control" name="mes_ventas" id="mes_ventas" placeholder="Meses de Ventas (Ej: 12)" title="Cantidad de Meses de Ventas"  value="">
+                        <input type="text" class="form-control" name="filtro2" id="filtro2" placeholder="Buscar por precio" title="Solo aquellos que superan el precio especificado
+                        "  value="">
+                        <input type="date" class="form-control" name="filtro3" id="filtro3"  title="Solo aquellos con Fecha Última Actualización menores a la especificada"  value="">
+                    </div>
 
-                    <input type="text" class="form-control" name="filtro2" id="filtro2"  placeholder="Precio" value="">              
-                    <input type="date" class="form-control" name="filtro3" id="filtro3"  placeholder="Fecha Ult Act" value="">              
+                    <hr style="margin: 15px 0;">
 
-                    <div class="form-group">
-                      <button type="button" class="btn btn-default pull-right" id="form-search-btn" onclick="genera_pedido()">Generar Pedido</button>
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <button type="button" class="btn btn-info btn-sm" onclick="genera_pedido()">
+                          <i class="fa fa-truck"></i> Generar Pedido
+                        </button>
+                        <button type="button" class="btn btn-warning btn-sm" onclick="accion1()">
+                          <i class="fa fa-compress"></i> Consolida Códigos
+                        </button>
+                        <button type="button" class="btn btn-success btn-sm" onclick="precios_masivo()">
+                          <i class="fa fa-usd"></i> Modificar Precios
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="estadisticas()">
+                          <i class="fa fa-bar-chart"></i> Estadisticas
+                        </button>
+                      </div>
                     </div>
-                    <div class="form-group">
-                      <button type="button" class="btn btn-default pull-right" id="form-search-btn" onclick="accion1()">Consolida Códigos</button>
-                    </div>
-                    <div class="form-group">
-                      <button type="button" class="btn btn-default pull-right" id="form-search-btn" onclick="precios_masivo()">Modificar Precios</button>
-                    </div>
-                    <div class="form-group">
-                      <button type="button" class="btn btn-default pull-right" id="form-search-btn" onclick="estadisticas()">Estadisticas</button>
-                    </div>
+
                   </div> <!-- Fin mas filtro -->
 
               </div> <!-- From Group -->

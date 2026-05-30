@@ -12,7 +12,6 @@
 
   
 	<link rel="stylesheet" href="{{ asset('plugins/bootstrap/css/bootstrap.css')}}">
-	<link rel="stylesheet" href="{{ asset('plugins/chosen/chosen.css')}}">
 	<link rel="stylesheet" href="{{ asset('plugins/trumbowyg/ui/trumbowyg.css') }}">
 
     <link rel="stylesheet" href="{{ asset('plugins/bootstrap-select-1.12.4-dist/css/bootstrap-select.min.css') }}"> 

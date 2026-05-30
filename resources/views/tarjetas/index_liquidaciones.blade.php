@@ -26,7 +26,7 @@
 
                 <label class="control-label">Acreditación:</label>
                     <div class="input-group">
-                    <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+                    <button type="button" class="btn btn-default pull-right daterange-btn" id="daterange-btn">
                       <span>
                         <i class="fa fa-calendar"></i> Rango de fecha
                       </span>
@@ -36,7 +36,7 @@
 
                 <label class="control-label">Fec.Presentación:</label>
                     <div class="input-group">
-                    <button type="button" class="btn btn-default pull-right" id="daterange-btn-ope">
+                    <button type="button" class="btn btn-default pull-right daterange-btn" id="daterange-btn-ope">
                       <span>
                         <i class="fa fa-calendar"></i> Rango de fecha
                       </span>

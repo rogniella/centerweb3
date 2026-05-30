@@ -567,31 +567,46 @@ class ProductosController extends Controller
 
 
 
-  public function edit(Request $request)
-  {
-
-      // Pantalla No Modal de Informacion
-      $producto   = producto::find($request->id);
-
-      $marcas = DB::select("SELECT  id , nombre  FROM marcas where familia = '". $producto->Prod_Familia . "' and estado <>'I'" ); 
-
-     // dd($marcas);
-
-      return view('productos.edit' ,  compact('producto','marcas') );
-  
-  }
 
 
 
-  public function movimientos()
+  public function movimientos(Request $request)
   {
       // Pantalla Consulta de Movimentos
 
       $familias = familia::select(DB::raw("CONCAT( Flia_Id ,' - ',Flia_Descripcion) as descri"),'Flia_Id')->orderBy('Flia_Id', 'ASC')->pluck( 'descri','Flia_Id'); 
-      $sucursales = sucursal::combo(Auth::user()->sucursal, 'S'); //Incluye todas
+      $sucursales = sucursal::combo(Auth::user()->sucursal, 'S');
 
+      // Parámetros de filtrado desde GET
+      $sucursal = $request->get('sucursal', '0');
+      $familia = $request->get('familia', '');
+      $operacion = $request->get('operacion', '');
+      $id_producto = $request->get('id_producto', '');
+      $desc_producto = $request->get('desc_producto', '');
+      $cod_cero = $request->get('cod_cero', '');
+      $mes = (int) $request->get('mes', 0);
+      $anio = (int) $request->get('anio', 0);
 
-      return view('productos.movimientos' , [ 'sucursales' => $sucursales , 'familias' => $familias ] );
+      // Cálculo de fechas (cuando se navega desde estadísticas con mes/año)
+      $fecha = date("Y-m-d");
+      $fecha_fin = date("Y-m-d");
+
+      if ($mes > 0) {
+          if ($mes > 12) {
+              $fecha = date("Y-m-d", mktime(0, 0, 0, 1, 1, $anio));
+              $fecha_fin = date("Y-m-d", mktime(0, 0, 0, 12, 31, $anio));
+          } else {
+              $diafin = date("d", mktime(0, 0, 0, $mes + 1, 1, $anio) - 1);
+              $fecha = date("Y-m-d", mktime(0, 0, 0, $mes, 1, $anio));
+              $fecha_fin = date("Y-m-d", mktime(0, 0, 0, $mes, $diafin, $anio));
+          }
+      }
+
+      return view('productos.movimientos', compact(
+          'sucursales', 'familias',
+          'sucursal', 'familia', 'operacion', 'id_producto', 'desc_producto', 'cod_cero',
+          'fecha', 'fecha_fin'
+      ));
   }
 
   public function buscar_movimientos (Request $request)  {

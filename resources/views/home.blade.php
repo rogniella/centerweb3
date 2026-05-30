@@ -23,6 +23,19 @@
                 <span>{{ $shortcut['label'] }}</span>
             </a>
         </div>
+
+        @if($loop->iteration % 2 == 0)
+            <div class="clearfix visible-xs-block"></div>
+        @endif
+        @if($loop->iteration % 3 == 0)
+            <div class="clearfix visible-sm-block"></div>
+        @endif
+        @if($loop->iteration % 4 == 0)
+            <div class="clearfix visible-md-block"></div>
+        @endif
+        @if($loop->iteration % 6 == 0)
+            <div class="clearfix visible-lg-block"></div>
+        @endif
     @empty
         <div class="col-lg-12">
             <div class="alert alert-info">No hay accesos directos disponibles para tu perfil.</div>
@@ -115,8 +128,6 @@
 @endsection
 
 @section('scrip')
-
-<link rel="stylesheet" href="{{ asset('plugins/AdminLTE/AdminLTE.css')}}">
 
 <style>
 .shortcut-cards {

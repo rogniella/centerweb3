@@ -26,7 +26,7 @@
                 <div class="form-group">
                     <label class="control-label">Fechas:</label>
                     <div class="input-group">
-                    <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+                    <button type="button" class="btn btn-default pull-right daterange-btn" id="daterange-btn">
                       <span>
                         <i class="fa fa-calendar"></i> Rango de fecha
                       </span>

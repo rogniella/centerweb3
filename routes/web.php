@@ -237,7 +237,6 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('productos/movimientos', 'movimientos')->name('productos.movimientos');
         Route::get('productos/buscar_movimientos', 'buscar_movimientos');
         Route::post('productos/store', 'store');
-        Route::get('productos/edit', 'edit');
         Route::get('productos/delete', 'delete');
         Route::get('productos/GeneroNvoCodigo', 'GeneroNvoCodigo');
         Route::get('productos/planilla_cristales', 'planilla_cristales')->name('productos.planilla_cristales');

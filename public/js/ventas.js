@@ -233,10 +233,7 @@ function actualizarTablaPagos() {
 }
 
 function ingresar_pagos() {
-    if (pagosRealizados.length === 0) {
-        venta.addPago('P', venta.total, 1, 1);
-        return;
-    }
+
     $.each(pagosRealizados, function (_, pago) {
         venta.addPago(pago.detalle, pago.moneda, pago.tarjeta_id, pago.monto, pago.montomonori, pago.cuotas || 1, pago.cotizacion || 1,pago.banco, pago.nro_cheque     );           
     });
@@ -265,6 +262,38 @@ function ingresar_articulo() {
         return false;
     }
 
+    var esProducto99 = (id_producto === '99' && id_familia === 'VAR');
+    if (esProducto99) {
+        var existeOtro = false;
+        var yaExiste99 = false;
+        $.each(venta.items, function (_, item) {
+            if (item.id_producto === '992' && item.id_familia === 'VAR') return true;
+            if (item.id_producto === '99' && item.id_familia === 'VAR') {
+                yaExiste99 = true;
+                return false;
+            }
+            existeOtro = true;
+            return false;
+        });
+        if (existeOtro) {
+            Swal.fire({ type: 'error', title: 'Error', text: 'El producto 99 con familia VAR no puede combinarse con otros productos' });
+            return false;
+        }
+    } else {
+        var existeProducto99 = false;
+        $.each(venta.items, function (_, item) {
+            if (item.id_producto === '992' && item.id_familia === 'VAR') return true;
+            if (item.id_producto === '99' && item.id_familia === 'VAR') {
+                existeProducto99 = true;
+                return false;
+            }
+        });
+        if (existeProducto99) {
+            Swal.fire({ type: 'error', title: 'Error', text: 'No puede agregar este producto porque ya existe un producto 99 en la venta' });
+            return false;
+        }
+    }
+
     var key = venta.addItem(id_producto, id_familia, descrip_producto, id_iva, cantidad, precio_unitario, bonif_unitario, precio_total);
 
     $('#tbl-items tbody').append(
@@ -279,6 +308,7 @@ function ingresar_articulo() {
     );
 
     actualizarTotales();
+    checkHabilitarPagos();
     $('#id_producto, #descrip_producto').val('');
     auxcantidad.clear();
     auxprecio_unitario.clear();
@@ -290,6 +320,7 @@ function borrar_articulo(key) {
     venta.deleteItem(key);
     $('#row-' + key).remove();
     actualizarTotales();
+    checkHabilitarPagos();
 }
 
 // === 6. CLIENTES ===
@@ -400,6 +431,34 @@ function actualizarMontoTarjeta() {
     }
 }
 
+function togglePagosPanel(habilitar) {
+    $('#metodoPago').prop('disabled', !habilitar);
+    $('#addBtnPago').prop('disabled', !habilitar);
+    if (habilitar) {
+        if ($('#pagosDisabledMsg').length) {
+            $('#pagosDisabledMsg').remove();
+            $('#metodoPago').trigger('change');
+        }
+    } else if (!$('#pagosDisabledMsg').length) {
+        $('#opcionesPago').html(
+            '<div id="pagosDisabledMsg" class="alert alert-info" style="margin-bottom:0;padding:8px;">' +
+                '<i class="fa fa-info-circle"></i> Agregue productos para habilitar las formas de pago' +
+            '</div>'
+        );
+    }
+}
+
+function checkHabilitarPagos() {
+    var tieneProductoHabilitado = false;
+    $.each(venta.items, function (_, item) {
+        if (item.id_producto === '992' && item.id_familia === 'VAR') return true;
+        if (item.id_producto === '99' && item.id_familia === 'VAR') return true;
+        tieneProductoHabilitado = true;
+        return false;
+    });
+    togglePagosPanel(tieneProductoHabilitado);
+}
+
 // === 8. FINALIZAR ===
 
 function FinalizaVenta() { Finalizar('Vta'); }
@@ -414,7 +473,15 @@ async function Finalizar(operacion) {
     var operacionDetalle = operacion === 'Vta' ? 'esta Venta' : 'este PRESUPUESTO';
     var numeroOrig = '', punto_facturaOriginal = '';
 
-    if (operacion === 'Vta') {
+    var Existe99 = false;
+    $.each(venta.items, function (_, item) {
+        if (item.id_producto === '99' && item.id_familia === 'VAR') {
+            Existe99 = true;
+            return false;
+        }
+    });
+
+    if (operacion === 'Vta' && !Existe99  ) {
         if (tipo_de_factura !== 'Z') tipo_de_factura = $('#id_tipo_cbte').val();
         if (tipo_de_factura == 3 || tipo_de_factura == 8) {
             var ncResult = await Swal.fire({
@@ -551,6 +618,7 @@ function inicializar() {
     $('#PresuButton').html('PRESUPUESTAR');
 
     $('#metodoPago').val('P').trigger('change');
+    togglePagosPanel(false);
 }
 
 function valida_estado_servidor() {
@@ -749,17 +817,34 @@ $(document).ready(function () {
         actualizarMontoTarjeta();
     });
 
-    // --- Actualizar equivalente en pesos para Dólares y Reales ---
-    $('#opcionesPago').on('input', '#montoDolares, #cotizacionDolares', function () {
+    // --- Actualizar equivalente en pesos para Dólares ---
+    $('#opcionesPago').on('input', '#montoDolares', function () {
         var monto = parseFloat($('#montoDolares').val()) || 0;
         var cotiz = parseFloat($('#cotizacionDolares').val()) || 1;
         $('#equivalenteDolares').val(formatearNumeroConSeparadorDeMiles(monto * cotiz, 2));
     });
 
-    $('#opcionesPago').on('input', '#montoReales, #cotizacionReales', function () {
+    $('#opcionesPago').on('input', '#cotizacionDolares', function () {
+        var equivaleteVal = parseFloat(numberFormatBd($('#equivalenteDolares').val())) || faltaPagar || 0;
+        var cotiz = parseFloat($(this).val()) || 1;
+        var foreignAmount = equivaleteVal > 0 ? equivaleteVal / cotiz : 0;
+        $('#montoDolares').val(foreignAmount.toFixed(2));
+        $('#equivalenteDolares').val(formatearNumeroConSeparadorDeMiles(equivaleteVal, 2));
+    });
+
+    // --- Actualizar equivalente en pesos para Reales ---
+    $('#opcionesPago').on('input', '#montoReales', function () {
         var monto = parseFloat($('#montoReales').val()) || 0;
         var cotiz = parseFloat($('#cotizacionReales').val()) || 1;
         $('#equivalenteReales').val(formatearNumeroConSeparadorDeMiles(monto * cotiz, 2));
+    });
+
+    $('#opcionesPago').on('input', '#cotizacionReales', function () {
+        var equivaleteVal = parseFloat(numberFormatBd($('#equivalenteReales').val())) || faltaPagar || 0;
+        var cotiz = parseFloat($(this).val()) || 1;
+        var foreignAmount = equivaleteVal > 0 ? equivaleteVal / cotiz : 0;
+        $('#montoReales').val(foreignAmount.toFixed(2));
+        $('#equivalenteReales').val(formatearNumeroConSeparadorDeMiles(equivaleteVal, 2));
     });
 
     // --- Cambio de método de pago ---

@@ -229,7 +229,7 @@ class producto extends Model {
 
   public static function buscar_movimientos( $filtro_fecini,$filtro_fecfin, $filtro_sucursal ='',
         $filtro_tipo_operacion ='', $filtro_familia ='',$filtro_idprod ='' ,$filtro_descripcion ='', $filtro_cero= 'N' , $limite = 1000){
-        // Listado principal, dependiendo de los filtros
+        // Listado de movimientos del producto, dependiendo de los filtros
         // Tambien lo utiliza el auto completar
         // Concatenar según la consulta. Armo scrip de consulta
         $filter = " where 1=1";
@@ -238,7 +238,9 @@ class producto extends Model {
         if ($filtro_fecini != "") {
             $filtro_fecini = $filtro_fecini . " 00:00:00";
             $filtro_fecfin = $filtro_fecfin . " 23:59:59";
-            $filter .= " AND Mov_FecMov >= '" . $filtro_fecini . "' and Mov_FecMov <= '". $filtro_fecfin . "' ";
+            $filter .= " AND Mov_FecMov >= ? and Mov_FecMov <= ?";
+            $valores[] = $filtro_fecini;
+            $valores[] = $filtro_fecfin;
         }
 
         if ($filtro_familia != "") {
@@ -254,10 +256,9 @@ class producto extends Model {
                 $filter .= " AND mov_operacion = ?";              
             }    
         }
- // dd($filtro_cero);
 
         if ($filtro_cero == "S") {
-                $filter .= "  and mov_idprod <> '0'";              
+            $filter .= "  and mov_idprod <> '0'";              
         }
 
         if ($filtro_sucursal != "0") {
@@ -266,8 +267,8 @@ class producto extends Model {
         }
 
         if ($filtro_idprod != '' ) {
-          $filter .= " AND mov_idprod = ?";
-          $valores[] =  $filtro_idprod ;
+            $filter .= " AND mov_idprod = ?";
+            $valores[] =  $filtro_idprod ;
         }
 
         if ($filtro_descripcion != "") {
@@ -275,7 +276,6 @@ class producto extends Model {
             $valores[] = '%' . $filtro_descripcion . '%';
             $valores[] = '%' . $filtro_descripcion . '%';
         }
-
         
         $filter .=  " order by mov_idWEB ";
 

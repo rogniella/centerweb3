@@ -46,7 +46,7 @@
                   <input type="text" class="form-control" name="filtro2" id="filtro2"  placeholder="  Descripción" value="">
 
                     <div class="input-group">
-                    <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+                    <button type="button" class="btn btn-default pull-right daterange-btn" id="daterange-btn">
                       <span>
                         <i class="fa fa-calendar"></i> Rango de fecha
                       </span>
