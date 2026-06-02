@@ -13,6 +13,7 @@ use App\Http\Controllers\ComprasController;
 use App\Http\Controllers\VentasController;
 use App\Http\Controllers\AfipController;
 use App\Http\Controllers\CajasController;
+use App\Http\Controllers\CierresController;
 use App\Http\Controllers\FacturasController;
 use App\Http\Controllers\SucursalesController;
 use App\Http\Controllers\CtrolStockController;
@@ -128,11 +129,6 @@ Route::group( ['middleware' => ['auth'] ], function() {
 
     //CAJAS
     Route::controller(CajasController::class)->group(function () {
-        Route::get('cajas/cierres', 'cierres')->name('cajas.cierres');
-        Route::get('cajas/cierres2', 'cierres2');
-        Route::get('cajas/cierreCuenta', 'cierreCuenta');
-        Route::get('cajas/saldosCuentasDetalle', 'saldosCuentasDetalle')->name('cajas.saldosCuentasDetalle');
-        Route::get('cajas/saldosCuentasDetalle2', 'saldosCuentasDetalle2');
         Route::get('cajas/ventas', 'ventas')->name('cajas.ventas');
         Route::get('cajas/ventas2', 'ventas2');
         Route::get('cajas/show', 'show');
@@ -142,6 +138,18 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('cajas/store', 'store');
         Route::get('cajas/combo_moneda_cuenta', 'combo_moneda_cuenta');
         Route::get('cajas/combo_cuenta_sucursal', 'combo_cuenta_sucursal');
+    });    
+
+    //CIERRES
+    Route::controller(CierresController::class)->group(function () {
+        Route::get('cierres', 'cierres')->name('cierres.index');
+        Route::get('cierres/listar', 'listar')->name('cierres.listar');
+        Route::get('cierres/guardar-cierre', 'cierreCuenta');
+        Route::get('cierres/saldos', 'saldosCuentasDetalle')->name('cierres.saldosCuentasDetalle');
+        Route::get('cierres/saldos-listar', 'saldosCuentasDetalle2');
+        Route::get('cierres/arqueo', 'arqueo')->name('cajas.arqueo');
+        Route::post('cierres/arqueo-guardar', 'arqueoGuardar');
+        Route::get('cierres/arqueo-comprobante', 'arqueoComprobante');
     });    
     
     //AFIP

@@ -182,7 +182,7 @@ class VentasController extends Controller
     if( $comprobante->ret == "") {
       
       if($comprobante ->auxEstadoFactua != "K") {
-        $comprobante->ret = "El Comprobante No esta en Estado pendiente AFIP";
+        $comprobante->ret = "El Comprobante No esta en Estado (K) pendiente AFIP";
       }else{
         $comprobante->ret = $comprobante->generaComprobanteAFIP();  
         if( $comprobante->ret == "") {
@@ -200,7 +200,7 @@ class VentasController extends Controller
       ]);
     }else{
       Flash::error("ERROR:" . $comprobante->ret );
-      return view('Facturas.error', ['comprobante' => $comprobante ] )  ;
+      return view('facturas.error', ['comprobante' => $comprobante ] )  ;
     }  
   }
 
@@ -244,7 +244,6 @@ class VentasController extends Controller
     // Es llamado por la vista ventas/create
 
     $ocomprobante = new comprobante();
-
     $ocomprobante->comp_sucursal = $request->sucursal; //Toma la del usuario Conectado
     if ( $request->operacion == "Vta") {
         $ocomprobante->comp_tipoot = "VT"; // Venta Web
@@ -306,22 +305,22 @@ class VentasController extends Controller
   //  dd( $ocomprobante );
     $ocomprobante->nuevo();
     if($ocomprobante->auxErrorAfip != "") {
-             $ocomprobante->ret = "";
-             $mensaje =  "<br> ***Comprobante Generado con ERROR AL GENERA EN AFIP*** <br>" .
-             $ocomprobante->auxErrorAfip . "<br> Reintenete mas tarde ";
+        $ocomprobante->ret = "";
+        $mensaje =  "<br> ***Comprobante Generado con ERROR AL GENERAR FACTURA EN AFIP*** <br>" .
+        $ocomprobante->auxErrorAfip . "<br> Reintenete mas tarde en Consulta de Facturas";
+       // dd($ocomprobante->auxErrorAfip , $ocomprobante->ret );
         return response()->json([
-        'mensaje' =>  $mensaje    ,
-        'pdf' =>   $dirPDF    ,
-        'id' => $ocomprobante->comp_id,
-        'errorAFIP' =>   $ocomprobante->auxErrorAfip ,
-        'retError' => $ocomprobante->ret
-    ]);
-
+          'mensaje' =>  $mensaje    ,
+          'pdf' =>   $dirPDF    ,
+          'id' => $ocomprobante->comp_id,
+          'errorAFIP' =>   $ocomprobante->auxErrorAfip ,
+          'retError' => $ocomprobante->ret
+        ]);
     } 
-   // dd($ocomprobante->auxErrorAfip , $ocomprobante->ret );
 
 
-    // Una vez grabado , lo leo para imprimir
+
+    // Una vez grabado y si no dio error , lo leo para imprimir
     $ocomprobante   = Comprobante::find($ocomprobante->comp_sucursal, $ocomprobante->comp_tipoot, $ocomprobante->comp_id );
   //  dd($ocomprobante );
     // Redirecciona a la ultima pagina llamada:

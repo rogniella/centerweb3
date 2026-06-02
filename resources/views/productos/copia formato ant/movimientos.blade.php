@@ -3,7 +3,8 @@
    
 @section('contenido')
 
-<form role="form" >
+
+<form class="form-inline" role="form" >
   <!-- 1ra Fila de Informes -->
   <div class="row">
    <div class="col-sm-12">
@@ -11,77 +12,75 @@
         <div class="panel-heading">
             <h3 class="panel-title"><i class="fa fa-exchange"></i> Consulta de Movimientos de Productos</h3>
         </div>
-        <div class="panel-body">
-            <a class="mas-filtros-divider" data-toggle="collapse" href="#collapseFiltro" role="button" aria-expanded="false" aria-controls="collapseFiltro">
+        <div class="panel-body" >
+            <div class="form-group form-group-separado">
+                <a class="mas-filtros-divider" data-toggle="collapse" href="#collapseFiltro" role="button" aria-expanded="false" aria-controls="collapseFiltro">
                     <span class="line"></span>
                     <span class="arrow">▼</span>
                     <span class="divider-label divider-label-contracted">Más Opciones...</span>
                     <span class="divider-label divider-label-expanded">Menos Opciones</span>
                     <span class="line"></span>
-            </a>
-
-            <div class="collapse" id="collapseFiltro">
-                <div class="row">
-                    <div class="col-sm-3 col-xs-12">
+                </a>
+                <div class="collapse" id="collapseFiltro">
+                    <div class="form-group form-group-separado">
                         <label class="control-label">Artículo:</label>
                         <input class="form-control" type="text" value="{{ $id_producto }}" id="id_producto" placeholder="Código de artículo">
                     </div>
-                    <div class="col-sm-5 col-xs-12">
+                    <div class="form-group form-group-separado">
                         <label class="control-label">Descripción:</label>
                         <input class="form-control" type="text" value="{{ $desc_producto }}" id="desc_producto" placeholder="Buscar por descripción">
                     </div>
-                    <div class="col-sm-4 col-xs-12">
+                    <div class="form-group form-group-separado">
                         <label class="control-label">Cod. Cero:</label>
-                        <select name="cod_cero" id="cod_cero" class="form-control">
-                            <option value="">NO</option>
-                            <option value="S">SI</option>
-                        </select>
+                            <select name="cod_cero" id="cod_cero" class="form-control">
+                                <option value="">NO</option>
+                                <option value="S">SI</option>
+                            </select>
                     </div>
-                </div>
-            </div>
+                    <br> <!-- Salto linea--> 
+                    <br> <!-- Salto linea--> 
+                </div> <!-- Fin mas filtro -->
+            </div> <!-- From Group -->
+            <br> <!-- Salto linea--> 
 
-            <div class="row">
-                <div class="col-sm-3 col-xs-12">
-                    <label class="control-label">Rubro:</label>
-                    <select name="filtro_flia" id="filtro_flia" class="form-control">
-                        @foreach($familias as $key => $value)
-                            <option value="{{ $key }}" {{ $key == $familia ? 'selected' : '' }}>{{ $value }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-sm-3 col-xs-12">
-                    <label class="control-label">Sucursal:</label>
-                    <select name="Sucursal" id="Sucursal" class="form-control" required>
-                        @foreach($sucursales as $key => $value)
-                            <option value="{{ $key }}" {{ $key == $sucursal ? 'selected' : '' }}>{{ $value }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-sm-2 col-xs-12">
-                    <label class="control-label">Fechas:</label>
-                    <div class="input-group">
-                        <button type="button" class="btn btn-default btn-block daterange-btn" id="daterange-btn">
-                            <i class="fa fa-calendar"></i>
+            <div class="form-group form-group-separado">
+                           <label class="control-label">Rubro:</label>
+                            <select name="filtro_flia" id="filtro_flia" class="form-control">
+                                @foreach($familias as $key => $value)
+                                    <option value="{{ $key }}" {{ $key == $familia ? 'selected' : '' }}>{{ $value }}</option>
+                                @endforeach
+                            </select>
+            </div>
+            <div class="form-group form-group-separado">
+                            <label class="control-label">Sucursal:</label>
+                            <select name="Sucursal" id="Sucursal" class="form-control" required>
+                                @foreach($sucursales as $key => $value)
+                                    <option value="{{ $key }}" {{ $key == $sucursal ? 'selected' : '' }}>{{ $value }}</option>
+                                @endforeach
+                            </select>
+            </div>
+            <div class="form-group form-group-separado">
+                <label class="control-label">Fechas:</label>
+                <div class="input-group">
+                    <button type="button" class="btn btn-default btn-block daterange-btn" id="daterange-btn">
+                        <i class="fa fa-calendar"></i>
                             <span>{{ $fecha }} al {{ $fecha_fin }}</span>
-                            <i class="fa fa-caret-down" style="margin-left: 4px;"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="col-sm-2 col-xs-12">
-                    <label class="control-label">Operación:</label>
-                    <select name="tipo_operacion" id="tipo_operacion" class="form-control">
-                        <option value="">[Todas]</option>
-                        <option value="V">Ventas</option>
-                        <option value="C">Compras</option>
-                    </select>
-                </div>
-                <div class="col-sm-2 col-xs-12">
-                    <label class="control-label">&nbsp;</label>
-                    <button type="button" onClick="consultar()" class="btn btn-primary btn-block"><i class="fa fa-search"></i> Consultar</button>
+                        <i class="fa fa-caret-down" style="margin-left: 4px;"></i>
+                    </button>
                 </div>
             </div>
-        </div>
+            <div class="form-group form-group-separado">
+                            <label class="control-label">Operación:</label>
+                            <select name="tipo_operacion" id="tipo_operacion" class="form-control">
+                                <option value="">[Todas]</option>
+                                <option value="V">Ventas</option>
+                                <option value="C">Compras</option>
+                            </select>
+            </div>
       
+            <div class="form-group form-group-separado">
+                    <button type="button" onClick="consultar()" class="btn btn-primary  btn-block"><i class="fa fa-search"></i> Consultar</button>
+            </div>
         </div>
       </div>
      </div> <!-- Fin col -->
@@ -164,6 +163,29 @@
 
 </form> 
 
+
+<!-- Formulario Consulta -->
+<div class="modal fade" id="consultaModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <form id="formconfirma">
+      <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <div id="titulo_consulta"> </div>
+          </div>
+          <div class="modal-body">
+            <div id="destino"> </div>
+          </div> <!-- FIN Modal body -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
+        </div>
+
+      </div>
+
+    </form>
+  </div>
+</div> <!-- FIN Formulario  -->
+
 @include('common.modal_consulta')
 
 @endsection <!-- Fin Contenido -->
@@ -172,297 +194,12 @@
 
 <style>
 
-    :root {
-        --card-shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
-        --card-shadow-hover: 0 4px 12px rgba(0,0,0,.1), 0 2px 4px rgba(0,0,0,.06);
-        --accent: #2c5f8a;
-        --accent-light: #e8f0f9;
-        --bg-soft: #f6f8fa;
-        --border-soft: #e4e7ec;
-    }
-
-    .panel {
-        border-radius: 10px !important;
-        box-shadow: var(--card-shadow);
-        border: none !important;
-        transition: box-shadow .25s ease;
-        overflow: hidden;
-    }
-    .panel:hover { box-shadow: var(--card-shadow-hover); }
-
-    .panel-info { border-left: 4px solid #5bc0de !important; }
-    .panel-success { border-left: 4px solid #5cb85c !important; }
-    .panel-default { border-left: 4px solid #bbb !important; }
-
-    .panel-heading {
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f4f8 100%) !important;
-        border-bottom: 1px solid var(--border-soft) !important;
-        padding: 14px 18px !important;
-        border-radius: 10px 10px 0 0 !important;
-    }
-    .panel-success > .panel-heading {
-        background: linear-gradient(135deg, #f0faf0 0%, #e6f3e6 100%) !important;
-    }
-    .panel-info > .panel-heading {
-        background: linear-gradient(135deg, #f0f8fc 0%, #e3f0f7 100%) !important;
-    }
-
-    .panel-title {
-        font-size: 15px;
-        font-weight: 600;
-        color: #1a2a3a;
-        letter-spacing: .01em;
-    }
-    .panel-title i { margin-right: 6px; }
-
-    .panel-body {
-        padding: 20px !important;
-        background: #fff;
-    }
-
-    .panel-body > .row { margin-bottom: 16px; }
-    .panel-body > .row:last-child { margin-bottom: 0; }
-    .panel-body .col-xs-12 { margin-bottom: 12px; }
-    .panel-body .row:last-child .col-xs-12:last-child { margin-bottom: 0; }
-
+    #mitabla tr { cursor: pointer; }
+    #mitabla tr:hover td { background-color: #f5f9ff; }
+    .panel-body { transition: opacity .3s ease; }
     #tabla-container.loading { opacity: .6; pointer-events: none; }
-
-    .form-control {
-        border-radius: 7px;
-        border: 1.5px solid var(--border-soft);
-        box-shadow: none !important;
-        transition: border-color .2s ease, box-shadow .2s ease;
-        font-size: 13.5px;
-        padding: 7px 12px;
-    }
-    .form-control:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(44,95,138,.12) !important;
-    }
-    select.form-control {
-        cursor: pointer;
-        appearance: auto;
-    }
-
-    .control-label {
-        font-weight: 600;
-        font-size: 12.5px;
-        color: #3a4a5a;
-        text-transform: uppercase;
-        letter-spacing: .04em;
-        margin-bottom: 5px;
-        display: block;
-    }
-
-    .btn {
-        border-radius: 7px;
-        font-weight: 600;
-        font-size: 13px;
-        padding: 8px 18px;
-        transition: all .2s ease;
-        position: relative;
-    }
-    .btn-primary {
-        background: linear-gradient(135deg, #3b7cb6 0%, #2c5f8a 100%);
-        border: none;
-        box-shadow: 0 2px 6px rgba(44,95,138,.25);
-    }
-    .btn-primary:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(44,95,138,.35);
-        background: linear-gradient(135deg, #4688c2 0%, #326a99 100%);
-    }
-    .btn-primary:active { transform: translateY(0); }
-    .btn-default {
-        background: #fff;
-        border: 1.5px solid var(--border-soft);
-        color: #3a4a5a;
-    }
-    .btn-default:hover {
-        background: var(--bg-soft);
-        border-color: #c8cdd4;
-    }
-    .btn-block { padding: 8px 12px; }
-
-    .label-operacion {
-        display: inline-block;
-        min-width: 60px;
-        font-weight: 600;
-        letter-spacing: .02em;
-    }
-    .label {
-        border-radius: 5px;
-        font-size: 11.5px;
-        padding: 4px 10px;
-        font-weight: 600;
-        letter-spacing: .02em;
-    }
-    .label-success { background: #2d9d5e !important; }
-    .label-primary { background: #2c7abc !important; }
-    .label-danger { background: #d9534f !important; }
-    .label-default { background: #7a8a9a !important; }
-    .label-info { background: #3ba0c8 !important; }
-    .label-warning { background: #e08e0b !important; }
-    .text-muted { color: #8a9aa8 !important; }
-
-    #mitabla {
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    #mitabla thead th {
-        background: linear-gradient(135deg, #f6f8fa 0%, #eef2f6 100%) !important;
-        border-bottom: 2px solid var(--border-soft) !important;
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .04em;
-        color: #3a4a5a;
-        padding: 12px 10px !important;
-    }
-    #mitabla td {
-        padding: 10px !important;
-        border-bottom: 1px solid #f0f2f5 !important;
-        font-size: 13px;
-        vertical-align: middle !important;
-    }
-    #mitabla tr { cursor: pointer; transition: background .15s ease; }
-    #mitabla tr:hover td { background-color: #f0f6ff; }
-    #mitabla tr:last-child td { border-bottom: none !important; }
-
-    #tabla_total thead th {
-        background: linear-gradient(135deg, #fafbfc 0%, #f4f6f8 100%) !important;
-        border-bottom: 2px solid var(--border-soft) !important;
-        font-size: 11.5px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .04em;
-        color: #3a4a5a;
-        padding: 10px !important;
-    }
-    #tabla_total td {
-        padding: 9px 10px !important;
-        font-size: 13px;
-        border-bottom: 1px solid #f0f2f5 !important;
-        vertical-align: middle !important;
-    }
-
-    .daterange-btn {
-        border-radius: 7px !important;
-        border: 1.5px solid var(--border-soft) !important;
-        background: #fff !important;
-        padding: 7px 12px !important;
-        font-size: 13px;
-        text-align: left;
-        transition: border-color .2s ease, box-shadow .2s ease;
-    }
-    .daterange-btn:hover {
-        border-color: var(--accent) !important;
-        box-shadow: 0 0 0 3px rgba(44,95,138,.08);
-    }
-    .daterange-btn i { color: var(--accent); }
-
-    #morris-area-chart {
-        border-radius: 8px;
-        background: #fafbfc;
-        padding: 10px 5px 0;
-        min-height: 260px;
-    }
-    .morris-hover {
-        border-radius: 8px !important;
-        box-shadow: var(--card-shadow-hover);
-        border: none !important;
-        padding: 10px 14px !important;
-        background: #fff !important;
-    }
-    .morris-hover-row-label { font-weight: 600 !important; color: #1a2a3a !important; }
-
-    .mas-filtros-divider {
-        display: grid;
-        grid-template-columns: 1fr auto 1fr;
-        align-items: center;
-        gap: 10px;
-        color: var(--accent);
-        font-size: 13px;
-        font-weight: 600;
-        text-decoration: none;
-        cursor: pointer;
-        width: 100%;
-        min-width: 0;
-        padding: 0;
-        margin: 0;
-        transition: opacity .2s;
-    }
-    .mas-filtros-divider:hover { opacity: .8; text-decoration: none; }
-    .mas-filtros-divider .line {
-        height: 1.5px;
-        background: linear-gradient(90deg, transparent, var(--border-soft), transparent);
-    }
-    .divider-center {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        white-space: nowrap;
-    }
-    .mas-filtros-divider .arrow {
-        font-size: 10px;
-        transition: transform .3s ease;
-    }
-    .mas-filtros-divider[aria-expanded="true"] .arrow {
-        transform: rotate(180deg);
-    }
-    .mas-filtros-divider .divider-label-contracted,
-    .mas-filtros-divider[aria-expanded="true"] .divider-label-expanded { display: inline; }
-    .mas-filtros-divider .divider-label-expanded,
-    .mas-filtros-divider[aria-expanded="true"] .divider-label-contracted { display: none; }
-
-    .collapse.in { padding-top: 8px; }
-
-    table.bootgrid-table { border-radius: 8px; }
-
-    .input-group .form-control:last-child {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-    }
-    .input-group .form-control:first-child {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-    }
-
-    @media (min-width: 769px) {
-        .panel-body .col-sm-1,
-        .panel-body .col-sm-2,
-        .panel-body .col-sm-3,
-        .panel-body .col-sm-4 {
-            margin-bottom: 0;
-        }
-    }
-
-    .mas-filtros-divider[aria-expanded="true"] .line {
-        display: block;
-    }
-
-    @media (max-width: 768px) {
-        .panel-body { padding: 14px !important; }
-        #mitabla td, #mitabla th { font-size: 12px; padding: 6px !important; }
-    }
-
-    .fixed-table-container { border-radius: 8px !important; border: 1px solid var(--border-soft) !important; }
-    .pagination { margin: 12px 0; }
-    .pagination > li > a,
-    .pagination > li > span {
-        border-radius: 5px !important;
-        margin: 0 2px;
-        border: 1px solid var(--border-soft) !important;
-        color: var(--accent) !important;
-        padding: 6px 12px;
-        font-size: 13px;
-        transition: all .15s ease;
-    }
-    .pagination > li.active > a {
-        background: var(--accent) !important;
-        border-color: var(--accent) !important;
-        color: #fff !important;
-    }
+    .label-operacion { display: inline-block; min-width: 60px; }
+    .morris-hover { border-radius: 4px !important; }
 
 </style>
 

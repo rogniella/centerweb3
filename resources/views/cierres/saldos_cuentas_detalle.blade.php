@@ -135,7 +135,7 @@
             global: false,
             dataType: "json",
             data: {"sucursal": $sucursal,"cod_cuenta": cuenta},
-            url:   'combo_cuenta_sucursal',
+            url:   '../cajas/combo_cuenta_sucursal',
             type:  'get',
             success: function(respuesta){
               //lo que se si el destino devuelve algo
@@ -163,7 +163,7 @@
             global: false,
             dataType: "json",
             data: {"cuenta": $cuenta,"moneda": moneda},
-            url:   'combo_moneda_cuenta',
+            url:   '../cajas/combo_moneda_cuenta',
             type:  'get',
             success: function(respuesta){
               $("#moneda").html(respuesta.html);
@@ -186,7 +186,6 @@
     });      
 
 
-
   
     var $table = $('#mitabla'); // Tabla principal
 
@@ -206,7 +205,7 @@
        $.ajax({
             dataType: "json",   
             data: { sucursal: $('#sucursal').val() , cuenta: $('#cuenta').val(), moneda: $('#moneda').val()  },
-            url:   'saldosCuentasDetalle2',
+            url:   'saldos-listar',
             type:  'get',
             success: function(data){
                 $table.bootstrapTable('load', data.results);
@@ -245,7 +244,7 @@
             global: false,
             dataType: "json",
             data: { sucursal: $('#sucursal').val() , cuenta: $('#cuenta').val(), moneda: $('#moneda').val(), saldo: $saldo , ultid: $ultid },
-            url:   'cierreCuenta',
+            url:   'guardar-cierre',
             type:  'get',
             success: function(data){
               if(data.msgError == '') {
@@ -259,7 +258,6 @@
                 msgerror( xhr.responseText);
             } // Fin si hay error
           }); // Fin llamado Ajax
-
 
 
 

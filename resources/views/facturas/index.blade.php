@@ -33,6 +33,7 @@
                       <option value= '0004'>0004 - PDF - WS AFIP</option>
                       <option value= '0005'>0005 - PDF - WS AFIP Mercedes</option>
                       <option value= '0006'>0006 - Manuales Mercedes</option>
+                      <option value= '9998'>9998 - Con Error Pendientes WEB</option>
                       <option value= '9999'>9999 - Con Error Pendientes</option>
                   </select>
                   <select id="filtro1" name="filtro1" class="form-control"> 
@@ -152,7 +153,7 @@
         }
 
         
-        if (PuntoVenta == '9999') {
+        if (PuntoVenta == '9999' ||  PuntoVenta == '9998') {
            botones = '<button type="button" class="btn   btn-warning   btn-xs"'+
                   'title="Generar Afip" onclick="imprimePDF('+ Sucursal + ',' + Tipo + ',' + IdOt + ',' + Estado +')">'+
                     '<i class="fa fa-external-link"></i>'+

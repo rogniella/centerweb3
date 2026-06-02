@@ -16,26 +16,6 @@
             <div class="panel-body">
 
               <div class="form-group">
-                <select name="filtro_flia" id="filtro_flia" class="form-control">
-                        @foreach($familias as $key => $value)
-                            <option value="{{ $key }}" {{ $key == '' ? 'selected' : '' }}>{{ $value }}</option>
-                        @endforeach
-                </select>    
-                <input type="text" class="form-control" name="filtro1" id="filtro1"  placeholder="Descripción" value="">
-
-                <select id="filtroMarca" name="filtroMarca" class="form-control">
-                    <option value="T">[Todas Marcas]</option>
-                </select>
-
-              </div>
-
-              <div class="form-group">
-                <button type="button" class="btn btn-default pull-right" id="form-search-btn" onclick="consultar()">Buscar</button>
-              </div>
-
-              <br> <!-- Salto linea--> 
-
-              <div class="form-group">
                  <a class="mas-filtros-divider" data-toggle="collapse" href="#collapseFiltro" role="button" aria-expanded="false" aria-controls="collapseFiltro">
                     <span class="line"></span>
                     <span class="arrow">▼</span>
@@ -45,25 +25,6 @@
                  </a>
 
                  <div class="collapse" id="collapseFiltro">
-
-                    <div class="form-group">
-                        <select id="filtroEstado" name="filtroEstado" class="form-control">
-                          <option value="T">[Todos]</option>
-                          <option value="A" selected>Activos</option>
-                          <option value="I">Inactivos</option>
-                        </select>
-                        <select id="filtroStock" name="filtroStock" class="form-control">
-                          <option value="T" selected>[Stock Todos]</option>
-                          <option value="C">Con Stock</option>
-                          <option value="S">Sin Stock</option>
-                        </select>
-                        <input type="number" class="form-control" name="mes_ventas" id="mes_ventas" placeholder="Meses de Ventas (Ej: 12)" title="Cantidad de Meses de Ventas"  value="">
-                        <input type="text" class="form-control" name="filtro2" id="filtro2" placeholder="Buscar por precio" title="Solo aquellos que superan el precio especificado
-                        "  value="">
-                        <input type="date" class="form-control" name="filtro3" id="filtro3"  title="Solo aquellos con Fecha Última Actualización menores a la especificada"  value="">
-                    </div>
-
-                    <hr style="margin: 15px 0;">
 
                     <div class="row">
                       <div class="col-sm-12">
@@ -81,11 +42,51 @@
                         </button>
                       </div>
                     </div>
+                    <hr style="margin: 15px 0;">
+                    <div class="form-group">
+                        <select id="filtroEstado" name="filtroEstado" class="form-control">
+                          <option value="T">[Todos]</option>
+                          <option value="A" selected>Activos</option>
+                          <option value="I">Inactivos</option>
+                        </select>
+                        <select id="filtroStock" name="filtroStock" class="form-control">
+                          <option value="T" selected>[Stock Todos]</option>
+                          <option value="C">Con Stock</option>
+                          <option value="S">Sin Stock</option>
+                        </select>
+                        <input type="number" class="form-control" name="mes_ventas" id="mes_ventas" placeholder="Meses de Ventas (Ej: 12)" title="Cantidad de Meses de Ventas"  value="">
+                        <input type="text" class="form-control" name="filtro2" id="filtro2" placeholder="Buscar por precio" title="Solo aquellos que superan el precio especificado
+                        "  value="">
+                        <input type="date" class="form-control" name="filtro3" id="filtro3"  title="Solo aquellos con Fecha Última Actualización menores a la especificada"  value="">
+                    </div>
+
+                   <br> <!-- Salto linea--> 
+
 
                   </div> <!-- Fin mas filtro -->
 
               </div> <!-- From Group -->
+              <br> <!-- Salto linea--> 
 
+              <div class="form-group">
+                <select name="filtro_flia" id="filtro_flia" class="form-control">
+                        @foreach($familias as $key => $value)
+                            <option value="{{ $key }}" {{ $key == '' ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
+                </select>    
+                <input type="text" class="form-control" name="filtro1" id="filtro1"  placeholder="Descripción" value="">
+
+                <select id="filtroMarca" name="filtroMarca" class="form-control">
+                    <option value="T">[Todas Marcas]</option>
+                </select>
+
+              </div>
+
+              <div class="form-group">
+                  <button type="button" onClick="consultar()" class="btn btn-primary  btn-block"><i class="fa fa-search"></i> Consultar</button>
+              </div>
+
+          
             </div> <!-- Fin Panel BodyInfo -->
         </div> <!-- Fin Panel Info -->
 

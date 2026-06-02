@@ -113,7 +113,7 @@
        $.ajax({
             dataType: "json",
             data: { sucursal: $sucursal  , fecha: $fecha, fechafin: $fechafin},
-            url:   'cierres2',
+            url:   'cierres/listar',
             type:  'get',
             success: function(data){
                 $table.bootstrapTable('load', data.results);

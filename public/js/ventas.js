@@ -481,8 +481,8 @@ async function Finalizar(operacion) {
         }
     });
 
-    if (operacion === 'Vta' && !Existe99  ) {
-        if (tipo_de_factura !== 'Z') tipo_de_factura = $('#id_tipo_cbte').val();
+    if (tipo_de_factura !== 'Z') tipo_de_factura = $('#id_tipo_cbte').val();
+    if (operacion === 'Vta'   ) {
         if (tipo_de_factura == 3 || tipo_de_factura == 8) {
             var ncResult = await Swal.fire({
                 title: 'Nota de Crédito — Comprobante Original',
@@ -505,6 +505,8 @@ async function Finalizar(operacion) {
             punto_facturaOriginal = ncResult.value.punto;
             numeroOrig = ncResult.value.numero;
         }
+    }
+    if (operacion === 'Vta' && !Existe99  ) {
 
         if (pagosRealizados.length === 0) {
             Swal.fire({ type: 'error', title: 'Error', text: 'Debe agregar al menos una forma de pago' });
@@ -569,6 +571,7 @@ async function Finalizar(operacion) {
                 if (data.pdf) {
                     window.open(data.pdf, '', '_blank');
                 } else if (data.errorAFIP) {
+                    // Muestra el error y muestra  para reintentar con Afip
                     window.open('generaComprobanteAFIP?id=' + data.id + '&tipo=VT', '', '_blank');
                 }
                 inicializar();

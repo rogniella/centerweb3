@@ -38,7 +38,7 @@ class ws_afip  {
       $tope_sin_ident = (float) env('AFIP_TOPE_SINIDENTIF_PES');
       // Pendiente discriminar forma de pago para la validacion
       // $tope_sin_ident = (float) env('AFIP_TOPE_SINIDENTIF_TAR');
-      $afipProduccion = (boolean) env('AFIP_PRODUCCION');
+      $afipProduccion = filter_var(env('AFIP_PRODUCCION'), FILTER_VALIDATE_BOOLEAN);
       $afip = new Afip( [ 'CUIT' => $cuitEmpresa , 'production' => $afipProduccion ]  ); 
 
       /*  Numero del punto de venta  */
@@ -87,6 +87,8 @@ class ws_afip  {
       /**  Número de la ultima Factura  **/
 
       //RAN  Si da error adentro ElectronicBilling no lo intercepta Verr
+   //  \Log::info('AFIP DEBUG tipo_de_factura: ' . var_export($this->tipo_de_factura, true) . ' punto_de_venta: ' . var_export($punto_de_venta, true) . ' tipo (gettype): ' . gettype($this->tipo_de_factura));
+
      $last_voucher = $afip->ElectronicBilling->GetLastVoucher($punto_de_venta, $this->tipo_de_factura);
      // dd($last_voucher);
       /*
@@ -111,17 +113,17 @@ class ws_afip  {
       /**
        * Importe sujeto al IVA (sin icluir IVA)
        **/
-      $importe_gravado = $this->importe_gravado;
+      $importe_gravado = (float) $this->importe_gravado;
 
       /**
        * Importe exento al IVA
        **/
-      $importe_exento_iva = $this->importe_exento_iva;;
+      $importe_exento_iva = (float) $this->importe_exento_iva;
 
       /**
        * Importe de IVA
        **/
-      $importe_iva = $this->importe_iva;
+      $importe_iva = (float) $this->importe_iva;
 
 
       // Si es nota de crel lleva (unica diferencia) 'CbtesAsoc' =>  ...
@@ -224,7 +226,10 @@ class ws_afip  {
           Creamos la Factura
       */
    //    dd($data);
+      $curLocale = setlocale(LC_NUMERIC, '0');
+      setlocale(LC_NUMERIC, 'C');
       $res = $afip->ElectronicBilling->CreateVoucher($data);
+      setlocale(LC_NUMERIC, $curLocale);
       //dd($res);
       $this->CAE = $res['CAE']; //CAE asignado a la Factura
       $this->CAEFchVto = $res['CAEFchVto']; //Fecha de vencimiento del CAE
@@ -232,12 +237,28 @@ class ws_afip  {
       return ""; // Todo Ok
 
     } catch (\Exception $e) {
-       //  dd ("capturo try de Genero Afip:", $e->getMessage() , $e); 
+       //  dd ("capturo try de Genero Afip:", $e->getMessage() , $e);
+
+        // DEBUG: Capturar XML SOAP request/response para diagnosticar error
+        try {
+            if (isset($data)) {
+                \Log::error('AFIP DATA: ' . json_encode($data, JSON_UNESCAPED_UNICODE));
+            }
+            if (isset($afip) && isset($afip->ElectronicBilling)) {
+                $soapClient = $afip->ElectronicBilling->soap_client;
+                if (isset($soapClient)) {
+                    \Log::error('AFIP SOAP REQUEST: ' . $soapClient->__getLastRequest());
+                    \Log::error('AFIP SOAP RESPONSE: ' . $soapClient->__getLastResponse());
+                }
+            }
+        } catch (\Exception $logErr) {
+            \Log::error('AFIP DEBUG LOG ERROR: ' . $logErr->getMessage());
+        }
 
         if ($e->getCode() == 4 ) {
            return  "No hay conección con el Servidor de Afip <br>" .  $e->getMessage(); // Error de Coneccion Dejo Pendiente
         }else{
-           return  "Captura Error en  nuevo_comprobante <br>" .  $e->getMessage();
+           return  "Captura Error en  nuevo_comprobante en ws_afip <br>" .  $e->getMessage();
         }
         // dd($data,$e );
 
@@ -265,7 +286,7 @@ class ws_afip  {
   try {
       // Busco en pagina de afip para sacar los datos
       $cuitEmpresa = (float) env('CUIT');
-      $afipProduccion = (boolean) env('AFIP_PRODUCCION');
+      $afipProduccion = filter_var(env('AFIP_PRODUCCION'), FILTER_VALIDATE_BOOLEAN);
       $afip = new Afip( [ 'CUIT' => $cuitEmpresa , 'production' => $afipProduccion ]  ); 
       /**
       * Informacion de la factura
@@ -311,7 +332,7 @@ class ws_afip  {
     try {
         // Busco en pagina de afip para sacar los datos
 		    $cuitEmpresa = (float) env('CUIT');
-		    $afipProduccion = (boolean) env('AFIP_PRODUCCION');
+		    $afipProduccion = filter_var(env('AFIP_PRODUCCION'), FILTER_VALIDATE_BOOLEAN);
         $afip = new Afip( [ 'CUIT' => $cuitEmpresa , 'production' => $afipProduccion ]  ); 
 
         $datos = $afip->RegisterScopeThirteen->GetTaxpayerDetails($cuit);
@@ -358,7 +379,7 @@ class ws_afip  {
   try {
       // Busco en pagina de afip para sacar los datos
       $cuitEmpresa = (float) env('CUIT');
-      $afipProduccion = (boolean) env('AFIP_PRODUCCION');
+      $afipProduccion = filter_var(env('AFIP_PRODUCCION'), FILTER_VALIDATE_BOOLEAN);
       $afip = new Afip( [ 'CUIT' => $cuitEmpresa , 'production' => $afipProduccion ]  ); 
       $informacion = $afip->RegisterScopeFour->GetServerStatus();
       if($informacion->appserver !=  "OK" ) $msgError = "Error en Servidor Afip (appserver)";

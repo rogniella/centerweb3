@@ -58,9 +58,9 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Informes <span class="caret"></span></a>
               <ul class="dropdown-menu">
                   <li><a href="{{ route('cajas.ventas') }}">Ventas</a></li>
-                  <li><a href="{{ route('cajas.cierres') }}">Cierres de Caja</a></li>  
+                  <li><a href="{{ route('cierres.index') }}">Cierres de Caja</a></li>  
 
-                  <li><a href="{{ route('cajas.saldosCuentasDetalle') }}">Saldos de Cuentas </a></li>
+                  <li><a href="{{ route('cierres.saldosCuentasDetalle') }}">Saldos de Cuentas </a></li>
 
                 <li><a href="{{ route('productos.movimientos') }}">Movimientos de Productos</a></li><li><a href="{{ route('ventas.forma_pago') }}">Formas de Pago</a></li>
 

@@ -485,28 +485,31 @@ class comprobante {
     //     Inserta en Tabla Movimientos de Productos
     //     Actualiza Stock en tabla Productos
     //     Inserta en tabla Caja (1 * forma de pago)
-    //     Actualiza Base Caja y tabla Mcaja  ** pero considera solo 1 forma de pago ***  
-    //        FALTA   *** si es Multiple Formas Pagos ***
-    //     Crea comprobante en sistema AFIP (Con F9 no genero Factura)
+    //     Actualiza Base Caja y tabla Mcaja 
+    //     Crea comprobante en sistema AFIP (Con F9 no genero en AFIP)
     //     Inserta tabla de Facturas (Con F9 no genero Factura)
 
     $this->ret =  ""   ; // todo Ok por defecto
 
-    $operacion = match ($this->comp_tipoot) {
-        'VT' => 'V',
-        'PR' => 'P',
-        default => 'X',
-    };
-    $this->tipo_de_comprobante = $operacion === 'V'
-        ? $this->ConvTipoCompNro_Letra($this->tipo_de_factura)
-        : 'P';
-    if ($operacion === 'P') {
+    switch ($this->comp_tipoot ) {
+      case "VT": //Venta WEB
+        $operacion = "V"; 
+        $this->tipo_de_comprobante =  $this->ConvTipoCompNro_Letra( $this->tipo_de_factura);
+        break;            
+      case "PR": //Presupuesto
+        $operacion = "P"; 
+        $this->tipo_de_comprobante =  "P";
+        $this->tipo_de_factura = "Z"; // No hay que generar nada
         // Si es presupuesto no actualiza pagos
         $this->numero_de_factura = $this->comp_id;
         $this->CAE = "";
         $this->tipo_de_factura = 'Z';
-    }
-               
+        break; 
+    }    
+
+    //     dd( $this->tipo_de_comprobante, $operacion ,$this->tipo_de_factura);
+    //$this->tipo_de_comprobante =  $this->ConvTipoCompNro_Letra( $this->tipo_de_factura);
+
 
     $this->punto_de_venta=  str_pad( $this->punto_de_venta ,4,"0" , STR_PAD_LEFT) ; //LE doy formato por las dudas
 
@@ -549,8 +552,7 @@ class comprobante {
         }    
         $producto->mov_sucursal =  $this->comp_sucursal;
         // Inserta reg en tabla de Movimientos de Producto  y Actualiza Stock en tabla Producto si corresponde
-        $this->ret = $producto->addMovimiento($operacion,$items['cantidad'],$items['precio_unitario'],
-               $this->comp_id , 0 , $items['detalle'] , $this->comp_tipoot , $producto->mov_sucursal, $items['bonif'] );
+        $this->ret = $producto->addMovimiento($operacion,$items['cantidad'],$items['precio_unitario'], $this->comp_id , 0 , $items['detalle'] , $this->comp_tipoot , $producto->mov_sucursal, $items['bonif'] );
         if ($this->ret != "") {
           throw new \ErrorException("Error al actualizar linea Detalle:" . $this->ret );
         }          
@@ -597,7 +599,7 @@ class comprobante {
              // todo correctos ya se gravo en Afip y retorno Nro Fact, CAE , y fecha Venc CAE
              $this->auxEstadoFactua = "E"; // Emitida          
           }else{
-              displaylog('Error: GeneraFAC EN AFIP, NO se genero:' . $this->ret . ' Comp:'. $this->comp_id  . ' Error AuxAfip:' . $this->auxErrorAfip );
+              displaylog('Error: GeneraFAC EN AFIP, NO se genero en AFIP:' . $this->ret . ' Comp:'. $this->comp_id  . ' Error AuxAfip:' . $this->auxErrorAfip );
               $this->auxErrorAfip = $this->ret;
               $this->auxEstadoFactua = "K"; // Error Afip  Registro y dejo marcado
               $this->numero_de_factura = $this->obtengocorrelativo("K");
@@ -609,6 +611,7 @@ class comprobante {
     } // Fin de Graba los Pagos
 
   } catch (\Exception $e) {
+      displaylog('Error: Captura Error voy hacer rollBack' . $e->getMessage() );    
       DB::rollBack();
       $this->ret =  $e->getMessage() ;
 
@@ -746,7 +749,7 @@ class comprobante {
 
       $factura->Fac_Comprobante = $this->tipo_de_comprobante; // A B ...
       if( $this->auxEstadoFactua == "K") {
-        $factura->Fac_NroPuntoVta = "9999";
+        $factura->Fac_NroPuntoVta = "9998"; // Para marcar que quedo con error en AFIP, 9999 Utiliza las sucursales con sistema Local
         $this->punto_de_venta =  $factura->Fac_NroPuntoVta; //Para que quede bien
       }else{
         $factura->Fac_NroPuntoVta =  $this->punto_de_venta ;
@@ -874,37 +877,69 @@ class comprobante {
 private function ConvTipoCompNro_Letra( $tipoNro){
  
     // Retorna Cod Afa Segun Afip
-    return match ($tipoNro) {
-        1 => 'A',
-        3 => 'R',
-        6 => 'B',
-        8 => 'S',
-        11 => 'C',
-        default => '',
-    };
+    switch ($tipoNro ) {
+      case 1: // Factura A
+        return "A" ;  
+        break;
+      case 3: // Nota Cred A
+        return "R" ;  
+        break;
+      case 6: // Factura B
+        return "B" ;  
+        break;
+      case 8: // Nota Cred B
+        return "S" ;  
+        break;
+      case 11: // Factura C
+        return "C" ;  
+        break;
+    }   
 }
 
 private function ConvTipoCompNro_Letra_PDF( $tipoNro){
 
-  return match ($tipoNro) {
-      1, 3 => 'A',
-      6, 8 => 'B',
-      11 => 'C',
-      default => '',
-  };
+  // Retorna Cod Afa Segun Afip
+  switch ($tipoNro ) {
+    case 1: // Factura A
+      return "A" ;  
+      break;
+    case 3: // Nota Cred A
+      return "A" ;  
+      break;
+    case 6: // Factura B
+      return "B" ;  
+      break;
+    case 8: // Nota Cred B
+      return "B" ;  
+      break;
+    case 11: // Factura C
+      return "C" ;  
+      break;
+  }        
+
 }
 
 private function ConvTipoCompLetra_Nro( $tipoletra){
  
-    // Retorna Cod Numerico Segun Afip
-    return match ($tipoletra) {
-        'A' => 1,
-        'B' => 6,
-        'C' => 11,
-        'R' => 3,
-        'S' => 8,
-        default => 0,
-    };
+   // Retorna Cod Numerico Segun Afip
+    switch ($tipoletra ) {
+      case "A": // Factura A
+        return 1 ;  
+        break;
+      case "B": // Factura B
+        return 6 ;  
+        break;
+      case "C": // Factura C
+        return 11 ;  
+        break;
+      case "R": // Nota Credito A
+        return 3 ;  
+        break;
+      case "S": // Nota Credito B
+        return 8 ;  
+        break;
+    }        
+
 }
 
 private function ConvTipoDocumento_Nro( $tipoletra){
@@ -919,27 +954,44 @@ private function ConvTipoDocumento_Nro( $tipoletra){
 
          Numero de documento del comprador (0 para consumidor final)
        **/
-    return match ($tipoletra) {
-        '' => 99,
-        'CUIT' => 80,
-        'DNI' => 96,
-        'CUIL' => 86,
-        'LE' => 89,
-        'LC' => 90,
-        default => 0,
-    };
+  switch ($tipoletra ) {
+      case "": 
+        return 99 ;  
+        break;
+      case "CUIT": 
+        return 80 ;  
+        break;
+      case "DNI": 
+        return 96 ;  
+        break;
+      case "CUIL": 
+        return 86 ;  
+        break;
+      case "LE": 
+        return 89 ;  
+        break;        
+      case "LC": 
+        return 90 ;  
+        break;        
+    }        
+
 }
 
 private function descripcionTipoResponsable( $tipoResp){
  
     // Retorna Cod Numerico Segun Afip
-    return match ($tipoResp) {
-        'CF' => 'Consumidor Final',
-        'RI' => 'Responsable Inscripto',
-        'MO' => 'Monotributo',
-        'EX' => 'IVA Sujeto Exento',
-        default => $tipoResp,
-    };
+    switch ($tipoResp ) {
+      case "CF": 
+        return "Consumidor Final" ;  
+        break;
+      case "RI": 
+        return "Responsable Inscripto";
+      case "MO": 
+        return "Monotributo";
+      case "EX": 
+        return "IVA Sujeto Exento";            
+        break;
+    }  
 }
 
 private function descripcionTipoComprobante( $tipoletra){
