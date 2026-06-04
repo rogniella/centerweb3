@@ -53,7 +53,7 @@ class tar_operacion extends Model {
 
 //        $filter .=  " order by Fac_Id desc ";
 
-        $consulta= "SELECT * FROM tar_operaciones LEFT JOIN tar_productos ON producto = tar_productos.id " . $filter  . " LIMIT 1000 "  ;
+        $consulta= "SELECT  tar_operaciones.*, tar_productos.descripcion FROM tar_operaciones LEFT JOIN tar_productos ON producto = tar_productos.id " . $filter  . " LIMIT 1000 "  ;
 
         $ret = DB::select($consulta,$valores);
 

@@ -9,6 +9,7 @@ use App\Models\tar_operacion;
 use App\Models\tar_liquidacion;
 use App\Models\tar_producto;
 use App\Models\tar_terminal;
+use App\Models\caja;
 
 class TarjetasController extends Controller
 {
@@ -111,7 +112,7 @@ class TarjetasController extends Controller
          $mov->mto_otros_cre = substr($linea, 145, 13);
          $mov->mto_otros_cre = $mov->mto_otros_cre / 100;
 
-          try {
+         try {
             $mov->save();
           } catch (QueryException $e) {
             if ($e->getCode() == '23000') {
@@ -120,7 +121,6 @@ class TarjetasController extends Controller
                 throw $e;
             }
           }
-
 
        }
 
@@ -166,7 +166,7 @@ class TarjetasController extends Controller
 
          if ( $mov->plazo_pago == 10 ){ // Es ahora 12
                // En el caso de las Promo  mto_otros_deb tiene valor y costo_financiero esta en cero
-            displaylog('Promo ' . $mov->mto_otros_deb . ' ' . $mov->costo_financiero );
+                displaylog('Promo ' . $mov->mto_otros_deb . ' ' . $mov->costo_financiero );
                 $interes =  round($mov->mto_otros_deb / 1.105 , 2);
                 $mov->costo_financiero = $mov->costo_financiero + $interes;
                 $mov->iva_anticipo = $mov->iva_anticipo +  round($interes * 0.105 ,2);
@@ -215,12 +215,11 @@ class TarjetasController extends Controller
             $mov->save();
           } catch (QueryException $e) {
             if ($e->getCode() == '23000') {
-                flash("Registro duplicado en liquidaciones (idliquidacion: {$mov->idliquidacion})")->warning();
+                flash("Registro duplicado en liquidaciones2 (idliquidacion: {$mov->idliquidacion})")->warning();
             } else {
                 throw $e;
             }
           }
-
 
        }
 
@@ -288,7 +287,6 @@ class TarjetasController extends Controller
             printf( 'mov->cod_movimiento:' . $mov->cod_movimiento);
             printf( 'tipoPlan:' . $tipoPlan);
             printf( 'promocion:' . $promocion);
-
          }
 
 
@@ -308,7 +306,7 @@ class TarjetasController extends Controller
 
          // No tiene , lo calculos
          // *** FALTA ib QUE NO TIENE
-         $mov->mto_final = round( $mov->mto_bruto - $mov->mto_arancel - $mov->iva_arancel - $mov->financiero - $mov->iva_financiero - $mov->ret_ib , 2);
+         $mov->mto_final = round( $mov->mto_bruto - $mov->mto_arancel - $mov->iva_arancel - $mov->mto_financiero - $mov->iva_financiero - $mov->ret_ib , 2);
 
   /*     
 
@@ -336,18 +334,17 @@ class TarjetasController extends Controller
             $mov->save();
           } catch (QueryException $e) {
             if ($e->getCode() == '23000') {
-                flash("Registro duplicado en liquidaciones (idliquidacion: {$mov->idliquidacion})")->warning();
+                flash("Registro duplicado en Operaciones Detalladas (idliquidacion: {$mov->idliquidacion})")->warning();
             } else {
                 throw $e;
             }
           }
 
-
        }
 
   } // Fin Procesa Linea
 
-   public function lista_operaciones ()  {
+  public function lista_operaciones ()  {
 
       $productos= tar_producto::orderBy('id')->pluck( 'descripcion','id');  
       $terminales= tar_terminal::orderBy('id')->pluck( 'descripcion','id');  
@@ -359,8 +356,7 @@ class TarjetasController extends Controller
   public function buscar_operaciones(Request $request)
   {
       // Boton de la vista lista movimientos
-        $datos = tar_operacion::listar($request->filtro0, $request->filtro2, $request->fecha,  $request->fechafin ,$request->terminal,$request->lote,$request->cupon, $request->fechaope,$request->fechafinope,  1000);
-   
+        $datos = tar_operacion::listar($request->filtro0, $request->filtro2, $request->fecha,  $request->fechafin ,$request->terminal,$request->lote,$request->cupon, $request->fechaope,$request->fechafinope,  1000);   
         return response()->json([ 'results' => $datos ]);
 
   } // Fin Buscar  
@@ -368,28 +364,49 @@ class TarjetasController extends Controller
 
   public function lista_liquidaciones ()  {
 
-      $productos= tar_producto::orderBy('id')->pluck( 'descripcion','id');       
-      
- 
-      return view('tarjetas.index_liquidaciones', [ 'productos' => $productos] );
+        $productos= tar_producto::orderBy('id')->pluck( 'descripcion','id');       
+        return view('tarjetas.index_liquidaciones', [ 'productos' => $productos] );
 
   } // Fin lista 
 
   public function buscar_liquidaciones(Request $request)
   {
-      // Boton de la vista lista liquidaciones
-
-
-      if($request->ajax() ) {
-        $datos = tar_liquidacion::listar($request->filtro0, $request->filtro2, $request->fecha,$request->fechafin , $request->fechaope,$request->fechafinope ,  10000);
-
-  //      foreach ($datos as $fila) {
-  //          $fila->Fac_Total = number_format($fila->Fac_Total,2,".","");
-  //      }  
-   
+    // Boton de la vista lista liquidaciones
+    if($request->ajax() ) {
+        $datos = tar_liquidacion::listar($request->filtro0, $request->filtro2, $request->fecha,$request->fechafin , $request->fechaope,$request->fechafinope ,  10000);   
         return response()->json([ 'results' => $datos ]);
-      }  // Fin Ajax
+    }  // Fin Ajax
 
   } // Fin Buscar  
+
+  public function buscar_caja(Request $request)
+  {
+    if($request->ajax()) {
+        $fecha = $request->fecha;
+        $desde = $fecha . ' 00:00:00';
+        $hasta = $fecha . ' 23:59:59';
+        $caja = caja::whereBetween('Caj_FecMov', [$desde, $hasta])
+                    ->where('Caj_Moneda', 'T')
+                    ->orderBy('Caj_FecMov', 'desc')
+                    ->get();
+        return response()->json(['results' => $caja]);
+    }
+  }
+
+  public function asociar_caja(Request $request)
+  {
+    $tarIdCaja = $request->input('tar_idCaja');
+    $idOperacion = $request->input('id_operacion');
+
+    $mov = tar_operacion::find($idOperacion);
+    if (!$mov) {
+        return response()->json(['success' => false, 'message' => 'Error: Operacion en Tarjetas no encontrada Con Id: ' . $idOperacion], 404);
+    }
+
+    $mov->tar_idCaja = $tarIdCaja;
+    $mov->save();
+
+    return response()->json(['success' => true, 'message' => 'Asociación guardada correctamente']);
+  }
 
 }

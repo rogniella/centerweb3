@@ -476,10 +476,6 @@
 
     var DONUT_COLORS = ['#00a65a', '#f39c12', '#dd4b39', '#3c8dbc', '#605ca8', '#00c0ef', '#f012be', '#39cccc', '#ff851b', '#001f3f'];
 
-    function formatoMoneda(value, row, index) {
-        if (value == null || isNaN(value)) return '<span class="text-muted">-</span>';
-        return '$' + Number(value).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
 
     function formatoOperacion(value, row, index) {
         if (value == 'V') return '<span class="label label-success label-operacion">Venta</span>';

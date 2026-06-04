@@ -78,18 +78,18 @@
 
             <th data-field="idliquidacion"  data-formatter="fotmatoColSel" data-sortable="true" data-halign="center" data-align="center" >Nro.Liquidación</th>
             <th data-field="descripcion"  data-sortable="true"data-halign="center" data-align="left" >Tarjeta</th>
-            <th class="success"  data-field="mto_bruto" data-halign="center" data-align="right" data-footer-formatter="mtoFormatter" data-sortable="true">Mto.Ventas</th>
-            <th data-field="mto_neto" data-halign="center" data-align="right" data-footer-formatter="mtoFormatter" data-sortable="true">Mto.Acreditar</th>
+            <th class="success"  data-field="mto_bruto" data-halign="center" data-align="right"  data-formatter="formatoMoneda" data-footer-formatter="montoTotales" data-sortable="true">Mto.Ventas</th>
+            <th data-field="mto_neto" data-halign="center" data-align="right" data-formatter="formatoMoneda" data-footer-formatter="montoTotales" data-sortable="true">Mto.Acreditar</th>
 
-            <th class="warning" data-field="ret_ib" data-sortable="true" data-footer-formatter="mtoFormatter" data-align="right"> Ret.IB</th>
-            <th class="warning" data-field="mto_arancel" data-halign="center" data-align="right" data-footer-formatter="mtoFormatter" data-sortable="true">Arancel</th>
-            <th class="warning" data-field="iva_arancel" data-halign="center" data-align="right" data-footer-formatter="mtoFormatter"  data-sortable="true">Iva Arancel(21)</th>
+            <th class="warning" data-field="ret_ib" data-sortable="true" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales" data-align="right"> Ret.IB</th>
+            <th class="warning" data-field="mto_arancel" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales" data-sortable="true">Arancel</th>
+            <th class="warning" data-field="iva_arancel" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales"  data-sortable="true">Iva Arancel(21)</th>
 
-            <th class="warning" data-field="costo_financiero" data-halign="center" data-align="right" data-footer-formatter="mtoFormatter" data-sortable="true">Cost.Financiero</th>
-            <th class="warning" data-field="iva_anticipo" data-halign="center" data-align="right" data-footer-formatter="mtoFormatter"  data-sortable="true">Iva Cost.Finan.(10.5)</th>
+            <th class="warning" data-field="costo_financiero" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales" data-sortable="true">Cost.Financiero</th>
+            <th class="warning" data-field="iva_anticipo" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales"  data-sortable="true">Iva Cost.Finan.(10.5)</th>
 
-            <th data-field="percep_iva" data-sortable="true" data-footer-formatter="mtoFormatter" data-align="right"> Percep.Iva</th>
-            <th data-field="mto_otros_deb" data-sortable="true" data-footer-formatter="mtoFormatter" data-align="right">Otros.Deb</th>
+            <th data-field="percep_iva" data-sortable="true" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales" data-align="right"> Percep.Iva</th>
+            <th data-field="mto_otros_deb" data-sortable="true" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales" data-align="right">Otros.Deb</th>
             <th data-field="plazo_pago" data-sortable="true" data-align="right">Plazo</th>
             <th data-field="observacion"  data-sortable="true"data-halign="center" data-align="left" >Observación</th>
 
@@ -104,19 +104,20 @@
                 data-export-data-type="all"  
                 data-toggle="table"
                 data-cache = "false"
-                data-page-list=""      
+                data-page-list=""    
+                data-show-footer="true"     
                 class="table table-striped"
               >
               <thead>
               <tr>
-                <th class="success" data-field="label" data-halign="center"  data-align="left" data-sortable="true">T A R J E T A </th>
+                <th class="success" data-field="label" data-halign="center" data-footer-formatter="idTotal" data-align="left" data-sortable="true">T A R J E T A </th>
                 <th data-field="cantidad" data-sortable="true" data-halign="center" data-align="right">Operaciones</th>
-                <th data-field="mtos" data-sortable="true" data-halign="center" data-align="right">Ventas</th>
-                <th data-field="ret_ib" data-sortable="true" data-halign="center" data-align="right">Ret.IB</th>
-                <th data-field="mto_arancel" data-sortable="true" data-halign="center" data-align="right">Arancel</th>
-                <th data-field="iva_arancel" data-sortable="true" data-halign="center" data-align="right">Iva (21)</th>
-                <th data-field="costo_financiero" data-sortable="true" data-halign="center" data-align="right">Cost.Finac</th>
-                <th data-field="iva_anticipo" data-sortable="true" data-halign="center" data-align="right">Iva (10.5)</th>
+                <th data-field="mtos" data-sortable="true" data-halign="center" data-footer-formatter="montoTotales" data-formatter="formatoMoneda" data-align="right">Ventas</th>
+                <th data-field="ret_ib" data-sortable="true" data-halign="center" data-footer-formatter="montoTotales" data-formatter="formatoMoneda" data-align="right">Ret.IB</th>
+                <th data-field="mto_arancel" data-sortable="true" data-halign="center" data-footer-formatter="montoTotales" data-formatter="formatoMoneda" data-align="right">Arancel</th>
+                <th data-field="iva_arancel" data-sortable="true" data-halign="center" data-footer-formatter="montoTotales" data-formatter="formatoMoneda" data-align="right">Iva (21)</th>
+                <th data-field="costo_financiero" data-sortable="true" data-halign="center" data-footer-formatter="montoTotales" data-formatter="formatoMoneda" data-align="right">Cost.Finac</th>
+                <th data-field="iva_anticipo" data-sortable="true" data-halign="center" data-footer-formatter="montoTotales" data-formatter="formatoMoneda" data-align="right">Iva (10.5)</th>
               </tr>
               </thead>
         </table>  
@@ -139,26 +140,6 @@
    }
 
   
-   function mtoFormatter(data) {
-    var field = this.field
-    return '$ ' + data.map(function (row) {
-        var val = parseFloat(row[field])
-        return isNaN(val) ? 0 : val
-    }).reduce(function (sum, i) {
-        return Number.parseFloat((parseFloat(sum) + i)).toFixed(2)
-    }, 0)
-   }
-
-  function fotmatoColSel(value,row,index) {
-      // Lo usamos para hacer que una columna quede como hipervinculo y pueda pedir mas detalle
-        //value: el valor del campo. 
-        //row: los datos de la fila (un vector con toda la fila.
-        //index: el indice de la fila.
-        var Id = value;
-        //console.log(row)
-        return '<a>'+ Id  + '</a>'            ;
-  }    // Vbles Generales de Entreda
-
 
     var $fecha = '';
     var $fechafin ;

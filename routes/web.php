@@ -273,6 +273,8 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('tarjetas/lista_liquidaciones', 'lista_liquidaciones')->name('tarjetas.lista_liquidaciones');            
         Route::get('tarjetas/buscar_operaciones', 'buscar_operaciones')->name('tarjetas.buscar_operaciones');
         Route::get('tarjetas/buscar_liquidaciones', 'buscar_liquidaciones')->name('tarjetas.buscar_liquidaciones');
+        Route::get('tarjetas/buscar_caja', 'buscar_caja')->name('tarjetas.buscar_caja');
+        Route::post('tarjetas/asociar_caja', 'asociar_caja')->name('tarjetas.asociar_caja');
 
     });
 

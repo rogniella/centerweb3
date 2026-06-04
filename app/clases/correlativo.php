@@ -6,7 +6,7 @@ class correlativo {
 
     public static function leo_proximo($tipocomprobante) {
 
-        $consulta = "SELECT cor_ultimo FROM Correlativos  WHERE    Cor_Tipo=?" ;
+        $consulta = "SELECT cor_ultimo FROM correlativos  WHERE    Cor_Tipo=?" ;
         $datos = DB::select($consulta,[ $tipocomprobante] );
         return $datos[0]->cor_ultimo + 1;
 
@@ -16,7 +16,7 @@ class correlativo {
         
         $cor_fecultman = fechahorahoy();
 
-        $consulta  = "UPDATE Correlativos SET  Cor_Ultimo =" . NumDec($nvoid) . ", Cor_FecUltMan ='" . $cor_fecultman .
+        $consulta  = "UPDATE correlativos SET  Cor_Ultimo =" . NumDec($nvoid) . ", Cor_FecUltMan ='" . $cor_fecultman .
                  "' WHERE(    Cor_Tipo='" . $tipocomprobante . "')";
         
         $datos = DB::update($consulta );
