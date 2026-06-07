@@ -5,45 +5,55 @@
 @section('contenido')
 
 <style>
-#drop-zone {
-    border: 2px dashed #ccc;
-    border-radius: 8px;
-    padding: 40px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: #fafafa;
-    min-height: 150px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
+    .panel-success > .panel-heading { display: block; }
 
-#drop-zone:hover,
-#drop-zone.dragover {
-    border-color: #4CAF50;
-    background: #f0fdf0;
-}
+    #drop-zone {
+        border: 2px dashed var(--border);
+        border-radius: var(--radius-lg);
+        padding: 50px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color .3s, background .3s, transform .2s;
+        background: var(--bg-soft);
+        min-height: 160px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    #drop-zone:hover,
+    #drop-zone.dragover {
+        border-color: var(--primary);
+        background: rgba(37,99,235,.04);
+        transform: scale(1.01);
+    }
+    #drop-zone .icono {
+        font-size: 52px;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+        transition: color .3s, transform .3s;
+    }
+    #drop-zone.dragover .icono {
+        color: var(--primary);
+        transform: translateY(-4px);
+    }
+    #drop-zone p { margin: 4px 0; color: var(--text-secondary); font-size: 14px; }
+    #drop-zone .btn-seleccionar { margin-top: 12px; }
 
-#drop-zone .icono {
-    font-size: 48px;
-    color: #999;
-    margin-bottom: 10px;
-}
-
-#drop-zone.dragover .icono {
-    color: #4CAF50;
-}
-
-#drop-zone p {
-    margin: 5px 0;
-    color: #666;
-}
-
-#drop-zone .btn-seleccionar {
-    margin-top: 10px;
-}
+    #lista-archivos .table { margin-bottom: 0; }
+    #lista-archivos .table thead th {
+        background: var(--bg-soft);
+        color: var(--text-secondary);
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+        border-bottom: 2px solid var(--border);
+    }
+    #lista-archivos .table tbody td {
+        font-size: 13px;
+        border-color: var(--border-light);
+    }
 </style>
 
 <form enctype="multipart/form-data" method="post" action="{{ route('tarjetas.upload') }}">

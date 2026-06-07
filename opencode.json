@@ -5,7 +5,7 @@
             "type": "local",
             "enabled": true,
             "command": [
-                "php",
+                "C:\\laragon\\bin\\php\\php-8.4.12-nts-Win32-vs17-x64\\php.exe",
                 "artisan",
                 "boost:mcp"
             ]

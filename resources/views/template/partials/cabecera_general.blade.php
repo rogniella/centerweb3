@@ -18,6 +18,7 @@
 
     <!-- Para tablas -->
     <link rel="stylesheet" href="{{ asset('plugins/bootstrap-table-1.14.2-dist/bootstrap-table.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/center-ui.css') }}">
     <link rel="stylesheet" href="{{ asset('css/ran.css') }}"> 
 
 

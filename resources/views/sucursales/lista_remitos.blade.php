@@ -30,7 +30,7 @@
             <label>&nbsp</label>
             <button type="button" class=" btn btn-success"
                 id="form-search-btn" onclick="showIng_Remito( 0)">
-                <i class="glyphicon glyphicon-plus"></i> Generar Nuevo Remito
+                <i class="fa fa-plus"></i> Generar Nuevo Remito
             </button>
         </div>
         <!-- Panel De la Tabla -->
@@ -68,6 +68,18 @@
 
 @endsection()
 
+<style>
+    .btn-primary.btn-xs {
+        padding: 2px 7px;
+        font-size: 12px;
+    }
+    #toolbar .btn-success {
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+    }
+</style>
+
 @section('scrip')
 
 <script>
@@ -95,9 +107,9 @@
                     '<i class="fa fa-file-pdf-o"></i>'+
                 '</button>' + '&nbsp;'
         }else{
-           botones = '<button type="button" class="btn btn-primary btn-xs"'+
+            botones = '<button type="button" class="btn btn-primary btn-xs"'+
                         'title="Continuar Carga" onclick="showIng_Remito('+ Id +')">'+
-                    '<i class="fa fa-info-circle"></i>'+
+                    '<i class="fa fa-play-circle" style="font-size:11px;"></i>'+
                 '</button>'+ '&nbsp;';
 
         }        

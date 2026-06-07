@@ -89,6 +89,7 @@
         return '<a>'+ Id  + '</a>'            ;
     }    
 
+    // Para usar en las tablas , que generan un total en el footer de la tabla, se usa data-footer-formatter="idTotal" en el <th> de la columna que se quiere totalizar, y esta funcion hace la suma de toda la columna 
    function montoTotales(data) {
     // Para quenerar una fila de totales en el footer de la tabla, se usa data-footer-formatter="montoTotales" en el <th> de la columna que se quiere totalizar, y esta funcion hace la suma de toda la columna y la formatea como moneda
     var field = this.field
@@ -99,6 +100,18 @@
         return parseFloat(sum) + i
     }, 0)
     return '$ ' + formatearNumeroConSeparadorDeMiles(total, 0)
+   }
+
+   function cantidadTotales(data) {
+    // Para quenerar una fila de totales en el footer de la tabla, se usa data-footer-formatter="montoTotales" en el <th> de la columna que se quiere totalizar, y esta funcion hace la suma de toda la columna y la formatea como moneda
+    var field = this.field
+    var total = data.map(function (row) {
+        var val = parseFloat(row[field])
+        return isNaN(val) ? 0 : val
+    }).reduce(function (sum, i) {
+        return parseFloat(sum) + i
+    }, 0)
+    return  formatearNumeroConSeparadorDeMiles(total, 0)
    }
 
     function formatearNumeroConSeparadorDeMiles(numero, decimales) {

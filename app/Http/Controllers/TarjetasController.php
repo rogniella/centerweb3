@@ -9,6 +9,7 @@ use App\Models\tar_operacion;
 use App\Models\tar_liquidacion;
 use App\Models\tar_producto;
 use App\Models\tar_terminal;
+use App\Models\tar_comercio;
 use App\Models\caja;
 
 class TarjetasController extends Controller
@@ -84,7 +85,7 @@ class TarjetasController extends Controller
          // Trailer Liquidacion (parte 1) 
          $mov = new tar_liquidacion;
          $mov->idliquidacion = substr($linea, 54, 7);
-
+         $mov->comercio = substr($linea, 40, 8);
          $mov->producto = substr($linea, 15, 1);
          $mov->moneda = substr($linea, 16, 3);
          $mov->plazo_pago = substr($linea, 21, 2);
@@ -236,6 +237,7 @@ class TarjetasController extends Controller
          $mov->producto = substr($linea, 15, 1);
          $mov->moneda = substr($linea, 16, 3);
          $mov->plazo_pago = substr($linea, 21, 2);
+         $mov->comercio = substr($linea, 40, 8);
          $mov->idliquidacion = substr($linea, 54, 7);
 
          $fecha = substr($linea, 32, 8);
@@ -348,15 +350,16 @@ class TarjetasController extends Controller
 
       $productos= tar_producto::orderBy('id')->pluck( 'descripcion','id');  
       $terminales= tar_terminal::orderBy('id')->pluck( 'descripcion','id');  
+      $comercios = tar_comercio::orderBy('id')->pluck('descripcion', 'id');
 
-      return view('tarjetas.index_operaciones', [ 'productos' => $productos , 'terminales' => $terminales  ] );
+      return view('tarjetas.index_operaciones', [ 'productos' => $productos , 'terminales' => $terminales, 'comercios' => $comercios ] );
 
   } // Fin lista 
 
   public function buscar_operaciones(Request $request)
   {
       // Boton de la vista lista movimientos
-        $datos = tar_operacion::listar($request->filtro0, $request->filtro2, $request->fecha,  $request->fechafin ,$request->terminal,$request->lote,$request->cupon, $request->fechaope,$request->fechafinope,  1000);   
+        $datos = tar_operacion::listar($request->filtro0, $request->filtro2, $request->fecha, $request->fechafin, $request->comercio, 1000); 
         return response()->json([ 'results' => $datos ]);
 
   } // Fin Buscar  
@@ -364,8 +367,9 @@ class TarjetasController extends Controller
 
   public function lista_liquidaciones ()  {
 
-        $productos= tar_producto::orderBy('id')->pluck( 'descripcion','id');       
-        return view('tarjetas.index_liquidaciones', [ 'productos' => $productos] );
+        $productos= tar_producto::orderBy('id')->pluck( 'descripcion','id');
+        $comercios = tar_comercio::orderBy('id')->pluck('descripcion', 'id');
+        return view('tarjetas.index_liquidaciones', [ 'productos' => $productos, 'comercios' => $comercios] );
 
   } // Fin lista 
 
@@ -373,7 +377,7 @@ class TarjetasController extends Controller
   {
     // Boton de la vista lista liquidaciones
     if($request->ajax() ) {
-        $datos = tar_liquidacion::listar($request->filtro0, $request->filtro2, $request->fecha,$request->fechafin , $request->fechaope,$request->fechafinope ,  10000);   
+        $datos = tar_liquidacion::listar($request->filtro0, $request->filtro2, $request->fecha,$request->fechafin , $request->fechaope,$request->fechafinope , $request->comercio , 10000);  
         return response()->json([ 'results' => $datos ]);
     }  // Fin Ajax
 

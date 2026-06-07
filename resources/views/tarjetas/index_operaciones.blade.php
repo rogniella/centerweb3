@@ -11,7 +11,7 @@
     }        
 ?>
 
-<form class="form-inline" role="form" >
+<form role="form" >
  
   <!-- 1ra Fila de Informes -->
   <div class="row">
@@ -22,50 +22,66 @@
               <h3 class="panel-title">Consulta de Operaciones con Tarjetas</h3>
             </div>
             <div class="panel-body">
-                <div class="form-group">
-
-                <select name="filtro0" id="filtro0" class="form-control" required>
-                        @foreach($productos as $key => $value)
-                            <option value="{{ $key }}" {{ $key == 1 ? 'selected' : '' }}>{{ $value }}</option>
-                        @endforeach
-                </select>      
-
-                <select name="terminal" id="terminal" class="form-control" required>
-                        @foreach($terminales as $key => $value)
-                            <option value="{{ $key }}" {{ $key == 1 ? 'selected' : '' }}>{{ $value }}</option>
-                        @endforeach
-                </select>      
-
-                <label class="control-label">Acreditación:</label>
-                    <div class="input-group">
-                        <button type="button" class="btn btn-default pull-right daterange-btn" id="daterange-btn">
-                      <span>
-                        <i class="fa fa-calendar"></i> Rango de fecha
-                      </span>
-                        <i class="fa fa-caret-down"></i>
-                    </button>              
-                    </div>
-  
-                <label class="control-label">Fec.Operación:</label>
-                    <div class="input-group">
-                    <button type="button" class="btn btn-default pull-right daterange-btn" id="daterange-btn-ope">
-                      <span>
-                        <i class="fa fa-calendar"></i> Rango de fecha
-                      </span>
-                        <i class="fa fa-caret-down"></i>
-                    </button>              
+                <div class="row" style="display:flex; flex-wrap:wrap; align-items:stretch; gap:10px 14px;">
+                    <div class="filter-group" style="min-width:160px; flex:1 1 160px;">
+                        <label class="control-label">Tarjeta</label>
+                        <select name="filtro0" id="filtro0" class="form-control" required>
+                            @foreach($productos as $key => $value)
+                                <option value="{{ $key }}" {{ $key == 1 ? 'selected' : '' }}>{{ $value }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
-                  <input type="text" class="form-control" name="filtro2" id="filtro2"  placeholder="Nro.Liquidación" value="<?= $idliq; ?>">
-                  <input type="text" class="form-control" name="lote" id="lote"  placeholder="Nro.Lote" value="">
-                  <input type="text" class="form-control" name="cupon" id="cupon"  placeholder="Nro.Cupón" value="">
+                    <div class="filter-group" style="min-width:160px; flex:1 1 160px;">
+                        <label class="control-label">Comercio</label>
+                        <select name="filtro_comercio" id="filtro_comercio" class="form-control">
+                            <option value="">Todos</option>
+                            @foreach($comercios as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-              </div>
+                    <div class="filter-group" style="min-width:180px; flex:1 1 180px;">
+                        <label class="control-label">Acreditación</label>
+                        <div class="input-group">
+                            <button type="button" class="btn btn-default daterange-btn" id="daterange-btn">
+                                <span><i class="fa fa-calendar"></i> Rango de fecha</span>
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                        </div>
+                    </div>
 
-              <div class="form-group">
-                <button type="button" class="btn btn-primary pull-right" id="form-search-btn" onclick="consultar()">Actualizar</button>
-              </div>
+                    <div class="filter-group" style="min-width:180px; flex:1 1 180px;">
+                        <label class="control-label">Fec. Operación</label>
+                        <div class="input-group">
+                            <button type="button" class="btn btn-default daterange-btn" id="daterange-btn-ope">
+                                <span><i class="fa fa-calendar"></i> Rango de fecha</span>
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                        </div>
+                    </div>
 
+                    <div class="filter-group" style="min-width:140px; flex:1 1 140px;">
+                        <label class="control-label">Nro. Liquidación</label>
+                        <input type="text" class="form-control" name="filtro2" id="filtro2" placeholder="Nro.Liquidación" value="<?= $idliq; ?>">
+                    </div>
+
+                    <div class="filter-group" style="min-width:140px; flex:1 1 140px;">
+                        <label class="control-label">Terminal</label>
+                        <select name="terminal" id="terminal" class="form-control" required>
+                            @foreach($terminales as $key => $value)
+                                <option value="{{ $key }}" {{ $key == 1 ? 'selected' : '' }}>{{ $value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="filter-group" style="min-width:100px; flex:1 1 100px; justify-content:flex-end;">
+                        <button type="button" class="btn btn-primary" id="form-search-btn" onclick="consultar()">
+                            <i class="fa fa-search" style="margin-right:4px;"></i> Consultar
+                        </button>
+                    </div>
+                </div>
             </div> <!-- Fin Panel BodyInfo -->
         </div> <!-- Fin Panel Info -->
 
@@ -90,27 +106,31 @@
             <th data-field="btn_caja" data-formatter="formatoCajaOpe" data-halign="center" data-align="center" data-sortable="false" width="30px">🔗</th>
             <th data-field="btn_detalle" data-formatter="formatoDetalleOpe" data-halign="center" data-align="center" data-sortable="false" width="30px">🔍</th>
             <th data-field="id" data-sortable="true" >Id</th>
+            <th data-field="fecha_operacion" data-halign="center" data-align="center" data-sortable="true" >Operación</th>
+            <th data-field="dia_semana" data-halign="center" data-align="center" data-formatter="formatoDiaSemana" data-sortable="false">Día</th>
+
+            <th data-field="descripcion"  data-sortable="true"data-halign="center" data-align="left" >Tarjeta</th>
+            <th data-field="cuotas" data-sortable="true" data-align="right">Cuotas</th>
+
+            <th data-field="mto_bruto" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales" data-sortable="true">Mto.Ventas</th>
+            <th data-field="mto_final" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales" data-sortable="true">Mto.Acreditar</th>
+
+            <th data-field="observacion"  data-sortable="true"data-halign="center" data-align="left" >Observación</th>
+
+            <th data-field="mto_arancel" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales" data-sortable="true">Arancel</th>
+            <th data-field="iva_arancel" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales"  data-sortable="true">Iva Arancel(21)</th>
+            <th data-field="mto_financiero" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales"  data-sortable="true">Cost.Financiero</th>
+            <th data-field="iva_financiero" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales"  data-sortable="true">Iva Cost.Finan.(10.5)</th>
+            <th data-field="ret_ib" data-sortable="true" data-align="right" data-footer-formatter="montoTotales" data-align="right"> Ret.IB</th>
+
             <th data-field="fecha_clearing" data-halign="center" data-align="center" data-footer-formatter="idTotal" data-sortable="true" >Fecha Acred.</th>
             <th data-field="fecha_presentacion" data-halign="center" data-align="center" data-sortable="true" >Presentación</th>
-            <th data-field="fecha_operacion" data-halign="center" data-align="center" data-sortable="true" >Operación</th>
 
             <th data-field="idliquidacion"  data-sortable="true" data-halign="center" data-align="center" >Nro.Liquidación</th>
             <th data-field="terminal"  data-sortable="true" data-halign="center" data-align="center" >Terminal</th>
             <th data-field="lote"  data-sortable="true" data-halign="center" data-align="center" >Lote</th>            
             <th data-field="cupon"  data-sortable="true" data-halign="center" data-align="center" >Cupon</th>                                    
-            <th data-field="descripcion"  data-sortable="true"data-halign="center" data-align="left" >Tarjeta</th>
-            <th data-field="mto_bruto" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales" data-sortable="true">Mto.Ventas</th>
-            <th data-field="mto_final" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales" data-sortable="true">Mto.Acreditar</th>
-            <th data-field="mto_arancel" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales" data-sortable="true">Arancel</th>
-            <th data-field="iva_arancel" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales"  data-sortable="true">Iva Arancel(21)</th>
-
-            <th data-field="mto_financiero" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales"  data-sortable="true">Cost.Financiero</th>
-            <th data-field="iva_financiero" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec" data-footer-formatter="montoTotales"  data-sortable="true">Iva Cost.Finan.(10.5)</th>
-
-            <th data-field="ret_ib" data-sortable="true" data-align="right" data-footer-formatter="montoTotales" data-align="right"> Ret.IB</th>
             <th data-field="plazo_pago" data-sortable="true" data-align="right">Plazo</th>
-            <th data-field="cuotas" data-sortable="true" data-align="right">Cuotas</th>
-            <th data-field="observacion"  data-sortable="true"data-halign="center" data-align="left" >Observación</th>
 
           </tr>
           </thead>
@@ -122,28 +142,40 @@
 </form> 
 
 <style>
-    .gasto-arancel      { background-color: #fce4ec !important; }
-    .gasto-iva-arancel  { background-color: #fff3e0 !important; }
-    .gasto-financiero   { background-color: #e8f5e9 !important; }
-    .gasto-iva-financiero { background-color: #e8eaf6 !important; }
-    .gasto-ret-ib       { background-color: #f3e5f5 !important; }
-    #detalleCuerpo tr.info td { background-color: #d9edf7 !important; font-weight: bold; }
-    #detalleCuerpo tr.success td { background-color: #dff0d8 !important; font-weight: bold; }
-    #cajaCuerpo tr.seleccionada td { background-color: #d4edda !important; }
-    .caja-seleccionada { background-color: #cce5ff !important; }
+    #mitabla { border-radius: var(--radius); overflow: hidden; }
+    #mitabla thead tr:first-child th { background: var(--bg-soft); color: var(--text-secondary); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .4px; border-bottom: 2px solid var(--border); padding: 10px 8px; }
+    #mitabla thead tr:first-child th[data-field*="mto_"],
+    #mitabla thead tr:first-child th[data-field*="ret_"],
+    #mitabla thead tr:first-child th[data-field*="iva_"] { color: var(--text-primary); }
+    #mitabla tbody td { font-size: 13px; padding: 8px; border-color: var(--border-light); }
+    #mitabla tbody td[data-v-align="right"] { font-family: 'Segoe UI', system-ui, sans-serif; }
+    #mitabla tbody tr:hover td { background-color: #f8fafc; }
+
+    .gasto-arancel { background-color: rgba(239,68,68,.08) !important; }
+    .gasto-iva-arancel { background-color: rgba(251,146,60,.08) !important; }
+    .gasto-financiero { background-color: rgba(16,185,129,.08) !important; }
+    .gasto-iva-financiero { background-color: rgba(99,102,241,.08) !important; }
+    .gasto-ret-ib { background-color: rgba(168,85,247,.08) !important; }
+
+    #detalleCuerpo tr.info td { background-color: rgba(37,99,235,.08) !important; font-weight: 600; }
+    #detalleCuerpo tr.success td { background-color: rgba(5,150,105,.08) !important; font-weight: 600; }
+    #detalleCuerpo tr td:first-child { border-right: 1px solid var(--border-light); }
+    #detalleCuerpo tr td:last-child { font-family: 'Segoe UI', system-ui, sans-serif; }
+
+    #cajaCuerpo tr.seleccionada td { background-color: rgba(5,150,105,.12) !important; }
+    .caja-seleccionada { background-color: rgba(37,99,235,.1) !important; }
 </style>
 
 <!-- Modal Detalle Operacion -->
 <div class="modal fade" id="modalDetalleOpe" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background-color: #2c3e50; color:#fff; border-bottom:3px solid #18bc9c;">
-                <button type="button" class="close" data-dismiss="modal" style="color:#fff;opacity:.8;">&times;</button>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title"><i class="fa fa-credit-card"></i> Detalle de Operación</h4>
             </div>
             <div class="modal-body">
-                <!-- Cabecera con datos contextuales -->
-                <div class="well well-sm" style="margin-bottom: 15px; background: #f5f5f5;">
+                <div class="well well-sm">
                     <div class="row" id="detalleCabecera">
                         <div class="col-xs-4"><b>Nro.Liquidación:</b> <span id="detIdLiquidacion"></span></div>
                         <div class="col-xs-4"><b>Cupón:</b> <span id="detCupon"></span></div>
@@ -156,10 +188,9 @@
                     </div>
                 </div>
 
-                <!-- Tabla de desglose -->
                 <table class="table table-condensed table-bordered" style="margin-bottom:0;">
                     <thead>
-                        <tr style="background-color: #337ab7; color: #fff;">
+                        <tr>
                             <th width="60%">Concepto</th>
                             <th width="20%" class="text-right">Monto</th>
                             <th width="20%" class="text-right">% s/Venta</th>
@@ -180,12 +211,12 @@
 <div class="modal fade" id="modalCajaOpe" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background-color: #2c3e50; color:#fff; border-bottom:3px solid #18bc9c;">
-                <button type="button" class="close" data-dismiss="modal" style="color:#fff;opacity:.8;">&times;</button>
-                <h4 class="modal-title"><i class="fa fa-link"></i> Asociar Operación con Operación de Forma de Pago</h4>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><i class="fa fa-link"></i> Asociar Operación con Forma de Pago</h4>
             </div>
             <div class="modal-body">
-                <div class="well well-sm" style="margin-bottom:15px; background:#f5f5f5;">
+                <div class="well well-sm" style="margin-bottom:15px;">
                     <div class="row">
                         <div class="col-xs-3"><b>Fecha Operación:</b> <span id="cajaFechaOpe"></span></div>
                         <div class="col-xs-3"><b>Mto.Ventas:</b> <span id="cajaMonto"></span></div>
@@ -194,14 +225,14 @@
                     </div>
                 </div>
 
-                <div class="alert alert-info" style="padding:8px; margin-bottom:10px;">
+                <div class="alert alert-info" style="padding:8px 14px; margin-bottom:12px;">
                     <i class="fa fa-spinner fa-spin" id="cajaSpinner" style="display:none;"></i>
                     <span id="cajaMsg">Seleccione una operación de caja para asociar</span>
                 </div>
 
                 <table class="table table-condensed table-bordered table-hover" style="margin-bottom:0;">
                     <thead>
-                        <tr style="background-color: #337ab7; color: #fff;">
+                        <tr>
                             <th width="8%">ID</th>
                             <th width="12%">Fecha</th>
                             <th width="12%">Monto</th>
@@ -242,6 +273,13 @@
 // Formatea linea de Totales de la Grilla
    function idTotal() {
      return 'T O T A L E S'
+   }
+
+   function formatoDiaSemana(value, row, index) {
+       if (!row.fecha_operacion) return '-';
+       var dias = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+       var fecha = new Date(row.fecha_operacion + 'T12:00:00');
+       return dias[fecha.getDay()];
    }
 
 
@@ -313,7 +351,7 @@
        // ------------------------------------------------      
        $.ajax({
             dataType: "json",
-            data: { filtro0: $('#filtro0').val(), filtro2: $('#filtro2').val()  ,fecha: $fecha , fechafin: $fechafin ,terminal: $('#terminal').val(),lote: $('#lote').val(),cupon: $('#cupon').val() ,fechaope: $fecha_ope , fechafinope: $fechafin_ope  },
+             data: { filtro0: $('#filtro0').val(), terminal: $('#terminal').val(), filtro2: $('#filtro2').val()  ,fecha: $fecha , fechafin: $fechafin ,fechaope: $fecha_ope , fechafinope: $fechafin_ope, comercio: $('#filtro_comercio').val()  },
             url:   'buscar_operaciones',
             type:  'get',
             success: function(data){

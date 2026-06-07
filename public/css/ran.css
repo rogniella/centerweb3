@@ -33,12 +33,6 @@ input[type="number2"] {
     color:#1E25B2; 
 }
 
-.modal-header {
-	background-color: #045FB4; 
-	border-color: black;
-	color: white
-}
-
 /* ---- Más Opciones / Filtros Divider ---- */
 .mas-filtros-divider {
   display: flex;
