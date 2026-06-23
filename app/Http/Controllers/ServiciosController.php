@@ -1,49 +1,44 @@
-<?php namespace App\Http\Controllers;
+<?php
 
-class ServiciosController extends Controller {
+namespace App\Http\Controllers;
 
-	public function index()
-	{
+use Illuminate\Http\Request;
 
-        $servicio = $_GET["msg"];
-        switch ($servicio) {
-          case "OSDE":
-            $titulo = "OSDE" ; 
-            $ruta = "https://extranet.osde.com.ar/OSDEExtranet/jsp/multiempresas/osde/HomePublicaV2.jsp"; 
-            $usuario = "r_niella@hotmail.com  (Profesionales)"; 
-            $clave = "2023bETO"; 
-            break;
-          case "SANCOR":
-            $titulo = "SANCOR SALUD"; 
-            //$ruta = "http://www.sancorsalud.com.ar/";
-            $ruta = "https://autogestionprestadores.sancorsalud.com.ar";
-            $usuario = "600208"; 
-            $clave = "32541455"; 
-            break;
-          case "JERA":
-            $titulo = "JERARQUICOS SALUD" ; 
-            $ruta = "https://gestiones.jerarquicos.com/ConsumosOnline/Account/LogOn?ReturnUrl=%2fConsumosOnline%2fHome%2fIndex"; 
-            $usuario = "CENTERFOTOOPTICA"; 
-            $clave = "belenroge"; 
-            break;
-          case "OSPJN":
-              $titulo = "PODER JUDICIAL" ; 
-              $ruta = "https://extranet.ospjn.gov.ar/WebProveedores"; 
-              $usuario = "r_niella@hotmail.com"; 
-              $clave = "belenroge"; 
-              break;
-        
-	  	}      
+class ServiciosController extends Controller
+{
+    public function index(Request $request)
+    {
 
-      	$datos = [
-            'titulo' => $titulo,
-            'ruta' => $ruta,
-            'usuario' => $usuario,
-            'clave' => $clave
-      	];
+        $servicio = $request->input('msg');
+        $config = config("servicios.servicios.$servicio");
 
-	  return view('servicios.index')->with('datos', $datos);		
+        if (! $config) {
+            abort(404, 'Servicio no encontrado');
+        }
 
-	} // Fin Index
+        $rutas = [
+            'OSDE' => 'https://extranet.osde.com.ar/OSDEExtranet/jsp/multiempresas/osde/HomePublicaV2.jsp',
+            'SANCOR' => 'https://autogestionprestadores.sancorsalud.com.ar',
+            'JERA' => 'https://gestiones.jerarquicos.com/ConsumosOnline/Account/LogOn?ReturnUrl=%2fConsumosOnline%2fHome%2fIndex',
+            'OSPJN' => 'https://extranet.ospjn.gov.ar/WebProveedores',
+        ];
+
+        $titulos = [
+            'OSDE' => 'OSDE',
+            'SANCOR' => 'SANCOR SALUD',
+            'JERA' => 'JERARQUICOS SALUD',
+            'OSPJN' => 'PODER JUDICIAL',
+        ];
+
+        $datos = [
+            'titulo' => $titulos[$servicio],
+            'ruta' => $rutas[$servicio],
+            'usuario' => $config['usuario'],
+            'clave' => $config['clave'],
+        ];
+
+        return view('servicios.index')->with('datos', $datos);
+
+    } // Fin Index
 
 } // Fin Controler

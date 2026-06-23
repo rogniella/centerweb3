@@ -9,11 +9,11 @@
     $tipo_ot = "";
     $fecha = date("Y-m-d");
     $fecha_fin = date("Y-m-d");
-    if ($_GET) {
-        $sucursal = $_GET["sucursal"];
-        $tipo_ot = $_GET["tipoot"];
-        $fecha = $_GET["fecha"];
-        $fecha_fin = $_GET["fechafin"];
+    if (request()) {
+        $sucursal = request()["sucursal"];
+        $tipo_ot = request()["tipoot"];
+        $fecha = request()["fecha"];
+        $fecha_fin = request()["fechafin"];
     }    
 ?>
 

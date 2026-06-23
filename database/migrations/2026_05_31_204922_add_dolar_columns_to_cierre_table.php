@@ -4,13 +4,16 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
+        if (! Schema::hasTable('cierre')) {
+            return;
+        }
+
         Schema::table('cierre', function (Blueprint $table) {
             $table->decimal('Cie_retiro_d', 19, 4)->nullable()->after('Cie_queda_r_final');
             $table->decimal('Cie_queda_d', 19, 4)->nullable()->after('Cie_retiro_d');
@@ -23,6 +26,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (! Schema::hasTable('cierre')) {
+            return;
+        }
+
         Schema::table('cierre', function (Blueprint $table) {
             $table->dropColumn([
                 'Cie_retiro_d',

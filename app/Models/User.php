@@ -17,9 +17,8 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-
     protected $fillable = [
-        'name', 'email', 'password', 'perfil_id' , 'apellidonombre','id_entidadrelacionada','sucursal', 'home_shortcuts'
+        'name', 'email', 'password', 'perfil_id', 'apellidonombre', 'id_entidadrelacionada', 'sucursal', 'home_shortcuts',
     ];
 
     /**
@@ -44,16 +43,15 @@ class User extends Authenticatable
 
     public function perfil()
     {
-        //Recupera la relacion  // Define la relacion  Muchos -> 1
+        // Recupera la relacion  // Define la relacion  Muchos -> 1
         // Si no se espesifica el 2do parametro asume  perfil_id     nombrerelacion_id
-        return $this->belongsTo('App\Perfil','perfil_id'); 
+        return $this->belongsTo('App\Models\Perfil', 'perfil_id');
     }
 
     protected $attributes = [
         // Para definir los valores por defecto
         'email' => 'sin ingresar',
         'apellidonombre' => '',
-        'id_entidadrelacionada' => 0
+        'id_entidadrelacionada' => 0,
     ];
-
 }

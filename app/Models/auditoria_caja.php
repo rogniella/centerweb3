@@ -1,19 +1,20 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+class auditoria_caja extends Model
+{
+    protected $table = 'auditoria_caja';
 
-class auditoria_caja extends Model {
+    protected $primaryKey = 'aud_idweb';
 
-	protected $table = "auditoria_caja";
-	protected $primaryKey = 'aud_idweb';
+    public function save(array $options = [])
+    {
 
+        return parent::save($options);
 
-    public function save(array $options = array()) {
-
-      	return parent::save($options );
-      
-  	} // Fin Save
-
+    } // Fin Save
 
 }

@@ -1,3 +1,3 @@
 <?php
 
-$lang["PES"] = "$";
+$lang['PES'] = '$';

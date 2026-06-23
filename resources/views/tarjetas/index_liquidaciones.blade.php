@@ -123,12 +123,13 @@
           <thead>
           <tr> 
             <th data-field="fecha_clearing" data-halign="center" data-align="center" data-sortable="true" >Fecha Acred.</th>
-            <th data-field="fecha_presentacion" data-halign="center" data-align="center" data-sortable="true" >Presentación</th>
             <th data-field="idliquidacion"  data-formatter="fotmatoColSel" data-sortable="true" data-halign="center" data-align="center" >Nro.Liquidación</th>
             <th data-field="descripcion"  data-sortable="true"data-halign="center" data-align="left" >Tarjeta</th>
             <th class="success"  data-field="mto_bruto" data-halign="center" data-align="right"  data-formatter="formatoMoneda"  data-sortable="true">Mto.Ventas</th>
             <th data-field="mto_neto" data-halign="center" data-align="right" data-formatter="formatoMoneda" data-footer-formatt     data-sortable="true">Mto.Acreditar</th>
             <th data-field="pct_descuento" data-halign="center" data-align="right" data-formatter="formatoPctDesc"  data-sortable="false">% Desc/Venta</th>
+
+            <th data-field="observacion"  data-sortable="true"data-halign="center" data-align="left" >Observación</th>
 
             <th class="warning" data-field="ret_ib" data-sortable="true" data-formatter="formatoMoneda2Dec"  data-align="right"> Ret.IB</th>
             <th class="warning" data-field="mto_arancel" data-halign="center" data-align="right" data-formatter="formatoMoneda2Dec"  data-sortable="true">Arancel</th>
@@ -139,7 +140,7 @@
             <th data-field="percep_iva" data-sortable="true" data-formatter="formatoMoneda2Dec"  data-align="right"> Percep.Iva</th>
             <th data-field="mto_otros_deb" data-sortable="true" data-formatter="formatoMoneda2Dec" data-align="right">Otros.Deb</th>
             <th data-field="plazo_pago" data-sortable="true" data-align="right">Plazo</th>
-            <th data-field="observacion"  data-sortable="true"data-halign="center" data-align="left" >Observación</th>
+            <th data-field="fecha_presentacion" data-halign="center" data-align="center" data-sortable="true" >Presentación</th>
           </tr>
           </thead>
          </table>

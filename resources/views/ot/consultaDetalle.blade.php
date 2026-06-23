@@ -34,9 +34,9 @@
 		  <tbody>
 			@foreach($ot->DetalleProductos as $fila)
 				<tr>
-  					<td>{!! $fila->Mov_Familia . " " . $fila->Mov_IdProd  !!}</td>
-					<td>{!! $fila->Mov_Descripcion !!}</td>
-					<td>{!! $fila->Mov_Precio !!}</td>
+  					<td>{{ $fila->Mov_Familia . " " . $fila->Mov_IdProd  }}</td>
+ 					<td>{{ $fila->Mov_Descripcion }}</td>
+ 					<td>{{ $fila->Mov_Precio }}</td>
 				</tr>
 			@endforeach
 		   </tbody>
@@ -63,10 +63,10 @@
 		  <tbody>
 			@foreach($ot->DetallePagos as $fila)
 				<tr>
-					<td>{!! $fila->Caj_FecMov !!}</td>
-					<td>{!! $fila->Caj_Detalle !!}</td>
-					<td>{!! $fila->Caj_Moneda !!}</td>
-					<td>{!! $fila->Caj_Monto !!}</td>
+ 					<td>{{ $fila->Caj_FecMov }}</td>
+ 					<td>{{ $fila->Caj_Detalle }}</td>
+ 					<td>{{ $fila->Caj_Moneda }}</td>
+ 					<td>{{ $fila->Caj_Monto }}</td>
 				</tr>
 			@endforeach
 		   </tbody>
@@ -86,8 +86,8 @@
 
 		  @foreach($datos as $fila)
 		      <tr>
-		          <td>{!! $fila['titulo'] !!}</td>
-		          <td>{!! $fila['valor'] !!}</td>
+ 		          <td>{!! $fila['titulo'] !!}</td>
+ 		          <td>{!! $fila['valor'] !!}</td>
 		      </tr>
 		  @endforeach
 		</tbody>
@@ -96,7 +96,7 @@
 		</div>       
 	</div>
     <br>
-    <a href="javascript:send_demora( '{!!$ot->Cliente->Cli_Pais!!}{!!$ot->Cliente->Cli_Telefono!!}' );">Informar Demora</a> 
+    <a href="javascript:send_demora( '{{$ot->Cliente->Cli_Pais}}{{$ot->Cliente->Cli_Telefono}}' );">Informar Demora</a> 
 
 	</div> <!-- FIN TAB  DATOS -->
  

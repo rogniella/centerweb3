@@ -68,17 +68,7 @@
 
 @endsection()
 
-<style>
-    .btn-primary.btn-xs {
-        padding: 2px 7px;
-        font-size: 12px;
-    }
-    #toolbar .btn-success {
-        height: 36px;
-        display: inline-flex;
-        align-items: center;
-    }
-</style>
+
 
 @section('scrip')
 
@@ -109,7 +99,7 @@
         }else{
             botones = '<button type="button" class="btn btn-primary btn-xs"'+
                         'title="Continuar Carga" onclick="showIng_Remito('+ Id +')">'+
-                    '<i class="fa fa-play-circle" style="font-size:11px;"></i>'+
+                    '<i class="glyphicon glyphicon-pencil"></i>'+
                 '</button>'+ '&nbsp;';
 
         }        

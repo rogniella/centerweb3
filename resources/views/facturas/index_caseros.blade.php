@@ -7,9 +7,9 @@
     // Inicio los parametros de Filtrado
     $fecha = date("Y-m-d");
     $fecha_fin = date("Y-m-d");
-    if ($_GET) {
-        $fecha = $_GET["fecha"];
-        $fecha_fin = $_GET["fechafin"];
+    if (request()) {
+        $fecha = request()["fecha"];
+        $fecha_fin = request()["fechafin"];
     }    
 ?>
 <form class="form-inline" role="form" >

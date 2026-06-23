@@ -96,6 +96,24 @@ input[type="number2"] {
   border: 0;
 }
 
+/* ---- Accordion cPanel-style ---- */
+.panel-group .panel .panel-title a {
+  cursor: pointer;
+  display: block;
+}
+.panel-group .panel .panel-title a:hover {
+  text-decoration: none;
+}
+.panel-group .accordion-chevron {
+  transition: transform 0.3s ease;
+}
+.panel-group .panel-heading {
+  transition: background-color 0.2s ease;
+}
+.panel-group .panel-heading:hover {
+  filter: brightness(0.97);
+}
+
 .form-group-separado { margin-right: 14px; margin-bottom: 10px; }
 /* ---- para que los que piden rango de fecha no se achiquen ---- */
   @media (max-width: 767px) {

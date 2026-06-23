@@ -1,29 +1,33 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;  // Para usar SQL directamente (Raw SQL)
 
-class precio extends Model {
+class precio extends Model
+{
+    protected $primaryKey = 'id';
 
-	protected $primaryKey = 'id';
-	protected $table = "precios";
+    protected $table = 'precios';
 
-  public static function find_producto($idProd ){
+    protected $guarded = [];
 
+    public static function find_producto($idProd)
+    {
 
-      $datos = Precio::where('idWEB_prod', '=', $idProd)->first();
-        
-      return $datos;
+        $datos = Precio::where('idWEB_prod', '=', $idProd)->first();
 
-  } // Fin find
+        return $datos;
 
-  public static function find_moneda($idMoneda ){
+    } // Fin find
 
+    public static function find_moneda($idMoneda)
+    {
 
-      $datos = Precio::where('idLista', '=', $idMoneda)->get();
-        
-      return $datos;
+        $datos = Precio::where('idLista', '=', $idMoneda)->get();
 
-  } // Fin find
+        return $datos;
+
+    } // Fin find
 
 }

@@ -1,87 +1,90 @@
-<?php namespace App\Models;
+<?php
 
-use Illuminate\Support\Facades\DB;  // Para usar SQL directamente (Raw SQL)
+namespace App\Models;
 
+use Codexshaper\WooCommerce\Facades\Product;  // Para usar SQL directamente (Raw SQL)
 // Para usar API de la Tienda
 // composer require codexshaper/laravel-woocommerce
 // https://codexshaper.github.io/docs/laravel-woocommerce/
-use Codexshaper\WooCommerce\Facades\Product;
+use Illuminate\Support\Facades\DB;
 
+class tienda_producto
+{
+    public $id = 0;
 
-class tienda_producto  {
+    public $sku = '';
 
-    public  $id = 0; 
-    public  $sku = ""; 
-    public  $descripcion = ""; 
-    public  $precio = 0; 
+    public $descripcion = '';
 
-    public static function listar( $filtro_nombre = '' ){
+    public $precio = 0;
+
+    public static function listar($filtro_nombre = '')
+    {
 
         // Trabajo directo con la BD porque es mucho mas rapido que la API
         $consulta = "SELECT sku, max_price as regular_price,min_price,stock_status as stock ,ID , post_title as name
         FROM wpmi_posts INNER JOIN  wpmi_wc_product_meta_lookup ON ID = product_id WHERE post_type = 'product' and post_title LIKE ?
-      "  ;
-        $array_prod  = DB::connection('bdtienda')->select($consulta , [ '%' . $filtro_nombre . '%' ]);
+      ";
+        $array_prod = DB::connection('bdtienda')->select($consulta, ['%'.$filtro_nombre.'%']);
 
-        // Recorro para Completar 
+        // Recorro para Completar
         foreach ($array_prod as $row) {
-                $stock = "";
-                if ($row->stock == 'outofstock' ) {
-                    $row->stock = "Agotado";
-                } elseif ($row->stock == 'instock' ) {
-                    $row->stock = "";
-                }    
+            $stock = '';
+            if ($row->stock == 'outofstock') {
+                $row->stock = 'Agotado';
+            } elseif ($row->stock == 'instock') {
+                $row->stock = '';
+            }
         }
 
-        return $array_prod;    
+        return $array_prod;
 
-    } // Fin 
-  
-    public static function find( $sku) {   
-       $prod = new self;
-       $consulta = "SELECT ID ,sku, max_price as regular_price,min_price,stock_status as stock ,ID , post_title as name
+    } // Fin
+
+    public static function find($sku)
+    {
+        $prod = new self;
+        $consulta = "SELECT ID ,sku, max_price as regular_price,min_price,stock_status as stock ,ID , post_title as name
        FROM wpmi_posts INNER JOIN  wpmi_wc_product_meta_lookup ON ID = product_id WHERE post_type = 'product' and sku = ?";
-      $datos = DB::connection('bdtienda')->select($consulta,[ $sku] );
-      //dd($sku, $datos);
-      if($datos ) {
-        $prod->id =  $datos[0]->ID;
-        $prod->sku =  $datos[0]->sku;
-        $prod->descripcion =  $datos[0]->name;
-        $prod->precio =  $datos[0]->regular_price;
-      }  
-       
-       return $prod;
-    } // Fin 
+        $datos = DB::connection('bdtienda')->select($consulta, [$sku]);
+        // dd($sku, $datos);
+        if ($datos) {
+            $prod->id = $datos[0]->ID;
+            $prod->sku = $datos[0]->sku;
+            $prod->descripcion = $datos[0]->name;
+            $prod->precio = $datos[0]->regular_price;
+        }
 
-    public function save() {
+        return $prod;
+    } // Fin
 
-            // Estas tablas no actualiza
-            $sql = "UPDATE wpmi_wc_product_meta_lookup SET min_price = ?, max_price = ?  WHERE sku = ?";
-            $datos = DB::connection('bdtienda')->update($sql,[ $this->precio,$this->precio,$this->sku] );
-      
-            $sql ="UPDATE wpmi_postmeta SET meta_value=? where  post_id = ? and meta_key ='_price'";
-            $datos = DB::connection('bdtienda')->update($sql,[ $this->precio,$this->id] );
-      
-            $sql ="UPDATE wpmi_postmeta SET meta_value=? where  post_id = ? and meta_key ='_regular_price'";
-            $datos = DB::connection('bdtienda')->update($sql,[ $this->precio,$this->id] );
+    public function save()
+    {
 
-            $sql = "update wpmi_posts set post_modified_gmt = ? , post_modified = ? WHERE ID = ?";
-            $datos = DB::connection('bdtienda')->update($sql,[ fechahoy(),fechahoy(),$this->id] );
-      
-      // Uso funciones de la API
-      $product_id = $this->id;
-      $data       = [
-          'regular_price' => $this->precio,
-          'sale_price'    => $this->precio, // Promo off
-      ];
-      $product2 = Product::update($product_id, $data);
+        // Estas tablas no actualiza
+        $sql = 'UPDATE wpmi_wc_product_meta_lookup SET min_price = ?, max_price = ?  WHERE sku = ?';
+        $datos = DB::connection('bdtienda')->update($sql, [$this->precio, $this->precio, $this->sku]);
 
+        $sql = "UPDATE wpmi_postmeta SET meta_value=? where  post_id = ? and meta_key ='_price'";
+        $datos = DB::connection('bdtienda')->update($sql, [$this->precio, $this->id]);
 
+        $sql = "UPDATE wpmi_postmeta SET meta_value=? where  post_id = ? and meta_key ='_regular_price'";
+        $datos = DB::connection('bdtienda')->update($sql, [$this->precio, $this->id]);
 
-    } // Fin 
+        $sql = 'update wpmi_posts set post_modified_gmt = ? , post_modified = ? WHERE ID = ?';
+        $datos = DB::connection('bdtienda')->update($sql, [fechahoy(), fechahoy(), $this->id]);
 
+        // Uso funciones de la API
+        $product_id = $this->id;
+        $data = [
+            'regular_price' => $this->precio,
+            'sale_price' => $this->precio, // Promo off
+        ];
+        $product2 = Product::update($product_id, $data);
 
-} //Fin Clase
+    } // Fin
+
+} // Fin Clase
 
 /*
     // Ej de Listar con API
@@ -106,8 +109,8 @@ class tienda_producto  {
         }else{
           if (stripos($row->name,strval($request->filtroDescri) ) !== false) {
             $seleccionado = true;
-          }  
-        }  
+          }
+        }
         if($seleccionado == true ) {
           $stock = "";
           if ($row->stock_status == 'outofstock' ) {
@@ -117,9 +120,9 @@ class tienda_producto  {
             'name'  => $row->name ,
             'sku'  => $row->sku ,
             'regular_price'  => $row->regular_price  ,
-            'stock'  => $stock  
+            'stock'  => $stock
           );
-        }  
+        }
       }
 
 

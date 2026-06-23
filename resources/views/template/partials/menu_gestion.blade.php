@@ -43,6 +43,7 @@
                 <li role="separator" class="divider"></li>
                 <li><a href="{{ route('estadisticas.codmov') }}">Estadistica Ingresos/Egresos</a></li>
                 <li><a href="{{ route('estadisticas.rubro') }}">Estadistica por Rubros</a></li>
+                <li><a href="{{ route('estadisticas.rubro_anual') }}">Estadistica por Rubros Anual</a></li>
 
               </ul>
             </li> <!-- Fin de Informes -->

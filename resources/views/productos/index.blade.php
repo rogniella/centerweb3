@@ -3,11 +3,26 @@
    
 @section('contenido')
 
-<form class="form-inline" role="form" onsubmit="return false;">
- 
-  <!-- 1ra Fila de Informes -->
-  <div class="row">
-   <div class="col-sm-12">
+        <style>
+            .panel.panel-filtros {
+                border: none;
+                margin-left: 0;
+                margin-right: 0;
+                border-radius: 0;
+            }
+            .panel.panel-filtros > .panel-heading {
+                padding-left: 0;
+                padding-right: 0;
+                background-color: #f5f5f5;
+            }
+            .panel.panel-filtros > .panel-collapse > .panel-body {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        </style>
+
+        <form class="form-inline" role="form" onsubmit="return false;">
+
         <!-- Panel Del Titulo y Filtros -->
         <div class="panel panel-info">         
             <div class="panel-heading">
@@ -15,58 +30,9 @@
             </div>
             <div class="panel-body">
 
-              <div class="form-group">
-                 <a class="mas-filtros-divider" data-toggle="collapse" href="#collapseFiltro" role="button" aria-expanded="false" aria-controls="collapseFiltro">
-                    <span class="line"></span>
-                    <span class="arrow">▼</span>
-                    <span class="divider-label divider-label-contracted">Más Opciones...</span>
-                    <span class="divider-label divider-label-expanded">Menos Opciones</span>
-                    <span class="line"></span>
-                 </a>
-
-                 <div class="collapse" id="collapseFiltro">
-
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <button type="button" class="btn btn-info btn-sm" onclick="genera_pedido()">
-                          <i class="fa fa-truck"></i> Generar Pedido
-                        </button>
-                        <button type="button" class="btn btn-warning btn-sm" onclick="accion1()">
-                          <i class="fa fa-compress"></i> Consolida Códigos
-                        </button>
-                        <button type="button" class="btn btn-success btn-sm" onclick="precios_masivo()">
-                          <i class="fa fa-usd"></i> Modificar Precios
-                        </button>
-                        <button type="button" class="btn btn-primary btn-sm" onclick="estadisticas()">
-                          <i class="fa fa-bar-chart"></i> Estadisticas
-                        </button>
-                      </div>
-                    </div>
-                    <hr style="margin: 15px 0;">
-                    <div class="form-group">
-                        <select id="filtroEstado" name="filtroEstado" class="form-control">
-                          <option value="T">[Todos]</option>
-                          <option value="A" selected>Activos</option>
-                          <option value="I">Inactivos</option>
-                        </select>
-                        <select id="filtroStock" name="filtroStock" class="form-control">
-                          <option value="T" selected>[Stock Todos]</option>
-                          <option value="C">Con Stock</option>
-                          <option value="S">Sin Stock</option>
-                        </select>
-                        <input type="number" class="form-control" name="mes_ventas" id="mes_ventas" placeholder="Meses de Ventas (Ej: 12)" title="Cantidad de Meses de Ventas"  value="">
-                        <input type="text" class="form-control" name="filtro2" id="filtro2" placeholder="Buscar por precio" title="Solo aquellos que superan el precio especificado
-                        "  value="">
-                        <input type="date" class="form-control" name="filtro3" id="filtro3"  title="Solo aquellos con Fecha Última Actualización menores a la especificada"  value="">
-                    </div>
-
-                   <br> <!-- Salto linea--> 
 
 
-                  </div> <!-- Fin mas filtro -->
 
-              </div> <!-- From Group -->
-              <br> <!-- Salto linea--> 
 
               <div class="form-group">
                 <select name="filtro_flia" id="filtro_flia" class="form-control">
@@ -86,14 +52,64 @@
                   <button type="button" onClick="consultar()" class="btn btn-primary  btn-block"><i class="fa fa-search"></i> Consultar</button>
               </div>
 
+
+            <x-accordion id="productosAccordion">
+              <x-accordion-item id="filtros" title=" Más Opciones ..."  :expanded="false" icon="search" parent="productosAccordion" panelClass="filtros">
+
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <button type="button" class="btn btn-info btn-sm" onclick="genera_pedido()">
+                          <i class="fa fa-truck"></i> Generar Pedido
+                        </button>
+                        <button type="button" class="btn btn-warning btn-sm" onclick="accion1()">
+                          <i class="fa fa-compress"></i> Consolida Códigos
+                        </button>
+                        <button type="button" class="btn btn-success btn-sm" onclick="precios_masivo()">
+                          <i class="fa fa-usd"></i> Modificar Precios
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="estadisticas()">
+                          <i class="fa fa-bar-chart"></i> Estadisticas
+                        </button>
+                      </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <select id="filtroEstado" name="filtroEstado" class="form-control">
+                          <option value="T">[Todos]</option>
+                          <option value="A" selected>Activos</option>
+                          <option value="I">Inactivos</option>
+                        </select>
+                        <select id="filtroStock" name="filtroStock" class="form-control">
+                          <option value="T" selected>[Stock Todos]</option>
+                          <option value="C">Con Stock</option>
+                          <option value="S">Sin Stock</option>
+                        </select>
+                        <input type="number" class="form-control" name="mes_ventas" id="mes_ventas" placeholder="Meses de Ventas (Ej: 12)" title="Cantidad de Meses de Ventas"  value="">
+                        <input type="text" class="form-control" name="filtro2" id="filtro2" placeholder="Buscar por precio" title="Solo aquellos que superan el precio especificado
+                        "  value="">
+                        <input type="date" class="form-control" name="filtro3" id="filtro3"  title="Solo aquellos con Fecha Última Actualización menores a la especificada"  value="">
+                    </div>
+
+
+            </x-accordion-item>
+          </x-accordion>
+
+
+
           
+        </form>
+
             </div> <!-- Fin Panel BodyInfo -->
         </div> <!-- Fin Panel Info -->
 
-  
+
         <!-- Panel De la Tabla -->
         <div class="panel panel-success">     
-            <div id="toolbar">
+
+
+        <div id="toolbar">
 
               <div class="form-group">
               <label>&nbsp</label>
@@ -153,53 +169,44 @@
           </tr>
           </thead>
        </table>
-  </div> <!-- fin Panel Tabla -->
-    </div> <!-- fin de col 12 -->          
-  </div>   <!-- /.Row -->
-
-
-  <div class="row">
-        <div class="col-md-6">
+         </div> <!-- fin Panel Tabla -->
+        
+        <div class="row">
+            <div class="col-md-6">
                 <div class="form-group">
                     <select name="groupby" id="groupby" class="form-control">
-                        <option value="" >Agrupar por..</option>
+                        <option value="">Agrupar por..</option>
                         <option value="marca">Marca</option>
                         <option value="Prod_Categoria">Categoria</option>
                     </select>
-                </div>      
-        </div>      
+                </div>
+            </div>
+        </div>
 
-    </div>   <!-- /.Row -->
-      <div class="row">
-
+        <div class="row">
             <div class="col-md-12">
-              <table id="tabla_tot"
-                data-toggle="table"
-                data-cache = "false"
-                data-page-list=""      
-                class="table table-striped"
-              >
-              <thead>
-              <tr>
-                <th class="success" data-field="label" data-halign="center"  data-align="left" data-sortable="true">AGRUPADO</th>
-                <th data-field="suc1" data-sortable="true" data-halign="center" data-align="right">Stock Suc 1</th>
-                <th data-field="suc2" data-sortable="true" data-halign="center" data-align="right">Stock Suc 2</th>
-                <th data-field="total" data-sortable="true" data-halign="center" data-align="right">Stock Total</th>
-                <th data-field="value" data-sortable="true" data-halign="center" data-align="right">%</th>
+                <table id="tabla_tot"
+                    data-toggle="table"
+                    data-cache="false"
+                    data-page-list=""
+                    class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="success" data-field="label" data-halign="center" data-align="left" data-sortable="true">AGRUPADO</th>
+                            <th data-field="suc1" data-sortable="true" data-halign="center" data-align="right">Stock Suc 1</th>
+                            <th data-field="suc2" data-sortable="true" data-halign="center" data-align="right">Stock Suc 2</th>
+                            <th data-field="total" data-sortable="true" data-halign="center" data-align="right">Stock Total</th>
+                            <th data-field="value" data-sortable="true" data-halign="center" data-align="right">%</th>
+                            <th data-field="vta1" data-sortable="true" data-sorter="priceSorter" data-halign="center" data-align="right">Ventas Suc 1</th>
+                            <th data-field="vta2" data-sortable="true" data-sorter="priceSorter" data-halign="center" data-align="right">Ventas Suc 2</th>
+                            <th data-field="total_vta" data-sortable="true" data-sorter="priceSorter" data-halign="center" data-align="right">Ventas Total</th>
+                            <th data-field="value_vta" data-sortable="true" data-halign="center" data-align="right">%</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
 
-                <th data-field="vta1" data-sortable="true" data-sorter="priceSorter" data-halign="center" data-align="right">Ventas Suc 1</th>
-                <th data-field="vta2" data-sortable="true" data-sorter="priceSorter" data-halign="center" data-align="right">Ventas Suc 2</th>
-                <th data-field="total_vta" data-sortable="true" data-sorter="priceSorter" data-halign="center" data-align="right">Ventas Total</th>
-                <th data-field="value_vta" data-sortable="true" data-halign="center" data-align="right">%</th>
-              </tr>
-              </thead>
-              </table>  
-            </div>  <!-- Fin .col-lg-6 -->
-  </div>   <!-- /.Row -->
-  <br>
-  <br>
-
-</form> 
 
 <!-- Formulario precios para Productos con listas en u$s -->
 <div id="userModal_precios" class="modal fade" data-backdrop="static">

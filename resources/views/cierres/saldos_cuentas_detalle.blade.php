@@ -5,10 +5,10 @@
 
 <?php 
 
-    if ($_GET) {
-        $sucursal = $_GET["sucursal"];
-        $cod_cuenta= $_GET["cuenta"];
-        $moneda = $_GET["moneda"];
+    if (request()) {
+        $sucursal = request()["sucursal"];
+        $cod_cuenta= request()["cuenta"];
+        $moneda = request()["moneda"];
     }else{
         $sucursal = 1;
         $cod_cuenta = '02';
@@ -130,7 +130,7 @@
   function cambioSucursal (){
       // Carga combo cuentas y Codigos segun Sucursal seleccionada
       $sucursal = $("#sucursal").val();
-      var cuenta = {!! $cod_cuenta !!};
+      var cuenta = '{{ $cod_cuenta }}';
       $.ajax({
             global: false,
             dataType: "json",
@@ -157,7 +157,7 @@
       // global: false,   Hace que no despliegue msg de Procesando para este llamado
       // console.log('buscamoneda' , $destino)
       $cuenta = $("#cuenta").val();
-      var moneda = '{!! $moneda !!}';
+      var moneda = '{{ $moneda }}';
 
       $.ajax({
             global: false,

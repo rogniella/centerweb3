@@ -125,12 +125,22 @@
           <br>
           <div class="row">
           <label>Informe 1: </label>
-           {!! Form::select('inf2_info1', $informes_tipo1 , 0, ['id' => 'inf2_info1', 'class' => 'form-control', 'required']) !!}
+            <select name="inf2_info1" id="inf2_info1" class="form-control" required>
+                <option value="0">Seleccione...</option>
+                @foreach ($informes_tipo1 as $key => $value)
+                    <option value="{{ $key }}">{{ $value }}</option>
+                @endforeach
+            </select>
           <br>
           </div> <!-- /.row -->
           <div class="row">
           <label>Informe 2: </label>
-           {!! Form::select('inf2_info2', $informes_tipo1 , 0, ['id' => 'inf2_info2', 'class' => 'form-control', 'required']) !!}
+            <select name="inf2_info2" id="inf2_info2" class="form-control" required>
+                <option value="0">Seleccione...</option>
+                @foreach ($informes_tipo1 as $key => $value)
+                    <option value="{{ $key }}">{{ $value }}</option>
+                @endforeach
+            </select>
           <br>
           </div> <!-- /.row -->
           </div> <!-- fin Col -->

@@ -5,15 +5,15 @@
 
 <?php 
 
-    if ($_GET) {
-        $sucursal = $_GET["sucursal"];
-        $INF_ID = $_GET["tipoinf"];
-        $operacion = $_GET["operacion"];
-        $id_producto = $_GET["id_producto"];
-        $desc_producto = $_GET["desc_producto"];
+    if (request()) {
+        $sucursal = request()["sucursal"];
+        $INF_ID = request()["tipoinf"];
+        $operacion = request()["operacion"];
+        $id_producto = request()["id_producto"];
+        $desc_producto = request()["desc_producto"];
        // $param_codigos = explode(",", $codigos);
-        $anio = $_GET["anio"];
-        $mes = $_GET["mes"];
+        $anio = request()["anio"];
+        $mes = request()["mes"];
         $diafin = date("d",(mktime(0,0,0,$mes+1,1,$anio)-1));
     }else{
         $sucursal = "";

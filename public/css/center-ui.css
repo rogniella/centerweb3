@@ -38,8 +38,9 @@
     box-shadow: var(--shadow-md);
 }
 .panel-info > .panel-heading {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: #fff;
+    background: #d9edf7;
+    color: #31708f;
+    border-color: #bce8f1;
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     border-bottom: none;
     padding: 14px 18px;
@@ -106,33 +107,24 @@
 }
 
 /* ── Buttons ── */
+
+
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    border: none;
-    border-radius: 6px;
-    padding: 8px 20px;
-    font-weight: 500;
-    font-size: 13px;
-    letter-spacing: .3px;
-    box-shadow: var(--shadow-sm);
-    transition: box-shadow .2s, transform .1s;
+        background: linear-gradient(135deg, #3b7cb6 0%, #2c5f8a 100%);
+        border: none;
+        box-shadow: 0 2px 6px rgba(44,95,138,.25);
 }
 .btn-primary:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(44,95,138,.35);
+        background: linear-gradient(135deg, #4688c2 0%, #326a99 100%);
 }
-.btn-primary:active {
-    transform: translateY(0);
-}
+.btn-primary:active { transform: translateY(0); }
 
 .btn-success {
     background: linear-gradient(135deg, var(--success), var(--success-light));
     border: none;
     border-radius: 6px;
-    padding: 5px 14px;
-    font-size: 12px;
-    font-weight: 500;
     box-shadow: var(--shadow-sm);
     transition: box-shadow .2s, transform .1s;
 }
@@ -144,8 +136,6 @@
 .btn-default {
     border-radius: 6px;
     border: 1.5px solid var(--border);
-    font-size: 13px;
-    padding: 6px 14px;
     color: var(--text-secondary);
     background: #fff;
     transition: border-color .2s, background .2s;

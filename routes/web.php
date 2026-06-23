@@ -1,58 +1,53 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\ClientesController;
-use App\Http\Controllers\ProveedoresController;
-use App\Http\Controllers\ProductosController;
-use App\Http\Controllers\MonedasController;
-use App\Http\Controllers\MinformesController;
-use App\Http\Controllers\EstadisticasController;
-use App\Http\Controllers\OtController;
-use App\Http\Controllers\ComprasController;
-use App\Http\Controllers\VentasController;
 use App\Http\Controllers\AfipController;
 use App\Http\Controllers\CajasController;
 use App\Http\Controllers\CierresController;
-use App\Http\Controllers\FacturasController;
-use App\Http\Controllers\SucursalesController;
+use App\Http\Controllers\ClientesController;
+use App\Http\Controllers\ComprasController;
 use App\Http\Controllers\CtrolStockController;
+use App\Http\Controllers\EstadisticasController;
+use App\Http\Controllers\FacturasController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MinformesController;
+use App\Http\Controllers\MonedasController;
+use App\Http\Controllers\OtController;
+use App\Http\Controllers\ProductosController;
+use App\Http\Controllers\ProveedoresController;
+use App\Http\Controllers\SucursalesController;
 use App\Http\Controllers\TarjetasController;
+use App\Http\Controllers\VentasController;
+use Illuminate\Support\Facades\Route;
 
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/admin', 'App\Http\Controllers\HomeController@index')->name('home');
 
-//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-//Route::get('/admin', 'App\Http\Controllers\HomeController@index')->name('home');
-
-//ya no  Route::redirect('/', 'http://tienda.centerfotooptica.com.ar');
- Route::get('/', [HomeController::class, 'index'])->name('home');
- Route::post('/home/shortcuts', [HomeController::class, 'saveShortcuts'])->name('home.shortcuts.save');
+// ya no  Route::redirect('/', 'http://tienda.centerfotooptica.com.ar');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::post('/home/shortcuts', [HomeController::class, 'saveShortcuts'])->name('home.shortcuts.save');
 
 Auth::routes();  // Todas las rutas del manejo de login. Se agregan con laravel/ui
 
 Route::get('servicios/index', [
-	'uses' => 'App\Http\Controllers\ServiciosController@index' ,  // nombreControlador@metodo
-	'as' => 'servicios.index' //Nombre de la ruta
+    'uses' => 'App\Http\Controllers\ServiciosController@index',  // nombreControlador@metodo
+    'as' => 'servicios.index', // Nombre de la ruta
 ]);
 
+// REQUIEREN PRIVILEGIOS DE ADMINISTRADOR
+Route::group(['middleware' => ['auth', 'admin']], function () {
 
-// REQUIEREN PRIVILEGIOS DE ADMINISTRADOR	
-Route::group( ['middleware' => ['auth','admin']], function() {
-
-    // MANTENIMIENTO DE USUARIOS	
-    Route::resource('users','App\Http\Controllers\UserController')->except(['destroy']);
-    // la defino asi para llamarla directamente , no me tomaba 
+    // MANTENIMIENTO DE USUARIOS
+    Route::resource('users', 'App\Http\Controllers\UserController')->except(['destroy']);
+    // la defino asi para llamarla directamente , no me tomaba
     Route::get('user/mydestroy/{id}', 'App\Http\Controllers\UserController@destroy')->name('user.mydestroy');
     Route::get('user/password', 'App\Http\Controllers\UserController@password');
     Route::post('user/updatepassword', 'App\Http\Controllers\UserController@updatePassword');
-    
-}); //FIN Requiere priv de ADM
 
+}); // FIN Requiere priv de ADM
 
-
-// REQUIEREN ESTAR LOGUEADO	
-Route::group( ['middleware' => ['auth'] ], function() {
-	// CLIENTES  
+// REQUIEREN ESTAR LOGUEADO
+Route::group(['middleware' => ['auth']], function () {
+    // CLIENTES
     Route::controller(ClientesController::class)->group(function () {
         Route::get('clientes/index', 'index')->name('clientes.index');
         Route::get('clientes/consulta', 'consulta')->name('clientes.consulta');
@@ -68,7 +63,7 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('clientes/validate_dni_exists', 'validate_dni_exists');
     });
 
-	// PROVEEDORES
+    // PROVEEDORES
     Route::controller(ProveedoresController::class)->group(function () {
         Route::get('proveedores/index', 'index')->name('proveedores.index');
         Route::get('proveedores/buscar', 'buscar');
@@ -81,7 +76,7 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('proveedores/validate_cuit_exists', 'validate_cuit_exists');
     });
 
-	// MONEDAS  Opciones de ABM por Ajax
+    // MONEDAS  Opciones de ABM por Ajax
     Route::controller(MonedasController::class)->group(function () {
         Route::get('monedas/index', 'index')->name('monedas.index');
         Route::get('monedas/buscar', 'buscar');
@@ -93,7 +88,7 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('monedas/graba_cotizacion', 'graba_cotizacion');
     });
 
-	// Minformes  Opciones de ABM por Ajax
+    // Minformes  Opciones de ABM por Ajax
     Route::controller(MinformesController::class)->group(function () {
         Route::get('minformes/index', 'index')->name('minformes.index');
         Route::get('minformes/buscar', 'buscar');
@@ -107,7 +102,7 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('minformes/lee_Tipo2', 'lee_Tipo2');
     });
 
-    // ORDENES DE TRABAJO   
+    // ORDENES DE TRABAJO
     Route::controller(OtController::class)->group(function () {
         Route::get('ot/consulta', 'consulta')->name('ot.consulta');
         Route::get('ot/index', 'index')->name('ot.index');
@@ -115,7 +110,7 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('ot/show', 'show');
     });
 
-    //VENTAS
+    // VENTAS
     Route::controller(VentasController::class)->group(function () {
         Route::get('ventas/altas', 'altas')->name('ventas.altas');
         Route::get('ventas/show', 'show');
@@ -123,11 +118,11 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('ventas/imprimePDF', 'imprimePDF');
         Route::get('ventas/forma_pago', 'forma_pago')->name('ventas.forma_pago');
         Route::post('ventas/store', 'store');
-        Route::get('ventas/forma_pago_carga','forma_pago_carga');
-        Route::get('ventas/cuotas_tarjeta','cuotas_tarjeta');
+        Route::get('ventas/forma_pago_carga', 'forma_pago_carga');
+        Route::get('ventas/cuotas_tarjeta', 'cuotas_tarjeta');
     });
 
-    //CAJAS
+    // CAJAS
     Route::controller(CajasController::class)->group(function () {
         Route::get('cajas/ventas', 'ventas')->name('cajas.ventas');
         Route::get('cajas/ventas2', 'ventas2');
@@ -138,9 +133,9 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('cajas/store', 'store');
         Route::get('cajas/combo_moneda_cuenta', 'combo_moneda_cuenta');
         Route::get('cajas/combo_cuenta_sucursal', 'combo_cuenta_sucursal');
-    });    
+    });
 
-    //CIERRES
+    // CIERRES
     Route::controller(CierresController::class)->group(function () {
         Route::get('cierres', 'cierres')->name('cierres.index');
         Route::get('cierres/listar', 'listar')->name('cierres.listar');
@@ -150,9 +145,9 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('cierres/arqueo', 'arqueo')->name('cajas.arqueo');
         Route::post('cierres/arqueo-guardar', 'arqueoGuardar');
         Route::get('cierres/arqueo-comprobante', 'arqueoComprobante');
-    });    
-    
-    //AFIP
+    });
+
+    // AFIP
     Route::controller(AfipController::class)->group(function () {
         Route::get('afip/valida_estado_servidor', 'valida_estado_servidor');
         Route::get('afip/valida_cuit', 'valida_cuit');
@@ -161,14 +156,14 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::post('afip/carga_comp_recibido_afip2', 'carga_comp_recibido_afip2');
     });
 
-    //FACTURAS
+    // FACTURAS
     Route::controller(FacturasController::class)->group(function () {
         Route::get('facturas/index', 'index')->name('facturas.index');
         Route::get('facturas/buscar', 'buscar');
         Route::get('facturas/delete', 'delete');
     });
 
-    //COMPRAS
+    // COMPRAS
     Route::controller(ComprasController::class)->group(function () {
         Route::get('compras/index', 'index')->name('compras.index');
         Route::get('compras/buscar', 'buscar');
@@ -194,8 +189,10 @@ Route::group( ['middleware' => ['auth'] ], function() {
 
     // ESTADISTICAS
     Route::controller(EstadisticasController::class)->group(function () {
-	    Route::get('estadisticas/rubro', 'rubro')->name('estadisticas.rubro');
+        Route::get('estadisticas/rubro', 'rubro')->name('estadisticas.rubro');
         Route::get('estadisticas/rubro_proceso', 'rubro_proceso');
+        Route::get('estadisticas/rubro_anual', 'rubro_anual')->name('estadisticas.rubro_anual');
+        Route::get('estadisticas/rubro_anual_proceso', 'rubro_anual_proceso');
         Route::get('estadisticas/iva', 'iva');
         Route::get('estadisticas/iva_proceso', 'iva_proceso');
         Route::get('estadisticas/ot', 'ot')->name('estadisticas.ot');
@@ -212,7 +209,7 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('estadisticas/infrubro_detalle_proceso', 'infrubro_detalle_proceso');
     });
 
-	// Control de Stock
+    // Control de Stock
     Route::controller(CtrolStockController::class)->group(function () {
         Route::get('ctrol_stock/index', 'index')->name('ctrol_stock.index');
         Route::get('ctrol_stock/buscar', 'buscar');
@@ -261,8 +258,8 @@ Route::group( ['middleware' => ['auth'] ], function() {
     });
 
     Route::get('marcas/combo_marca', [
-        'uses' => 'App\Http\Controllers\MarcasController@combo_marca' ,  
-        'as' => 'marcas.combo_marca' //Nombre de la ruta
+        'uses' => 'App\Http\Controllers\MarcasController@combo_marca',
+        'as' => 'marcas.combo_marca', // Nombre de la ruta
     ]);
 
     //  TARJETAS
@@ -270,16 +267,13 @@ Route::group( ['middleware' => ['auth'] ], function() {
         Route::get('tarjetas/carga', 'carga')->name('tarjetas.carga');
         Route::post('tarjetas/upload', 'upload')->name('tarjetas.upload');
         Route::get('tarjetas/lista_operaciones', 'lista_operaciones')->name('tarjetas.lista_operaciones');
-        Route::get('tarjetas/lista_liquidaciones', 'lista_liquidaciones')->name('tarjetas.lista_liquidaciones');            
+        Route::get('tarjetas/lista_liquidaciones', 'lista_liquidaciones')->name('tarjetas.lista_liquidaciones');
         Route::get('tarjetas/buscar_operaciones', 'buscar_operaciones')->name('tarjetas.buscar_operaciones');
         Route::get('tarjetas/buscar_liquidaciones', 'buscar_liquidaciones')->name('tarjetas.buscar_liquidaciones');
+        Route::get('tarjetas/buscar_detalle_operacion', 'buscar_detalle_operacion')->name('tarjetas.buscar_detalle_operacion');
         Route::get('tarjetas/buscar_caja', 'buscar_caja')->name('tarjetas.buscar_caja');
         Route::post('tarjetas/asociar_caja', 'asociar_caja')->name('tarjetas.asociar_caja');
 
     });
 
-    
-
-}); //FIN Requiere estar conectado
-
-
+}); // FIN Requiere estar conectado

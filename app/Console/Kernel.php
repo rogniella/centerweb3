@@ -7,13 +7,12 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
-
-    //Ran  estaba en vs anterior
+    // Ran  estaba en vs anterior
     protected $commands = [
         'App\Console\Commands\ActualizaBdCliente',
         'App\Console\Commands\ActualizaBdStock',
         'App\Console\Commands\MandaEmailPendientes',
-        'App\Console\Commands\MandaEmail'
+        'App\Console\Commands\MandaEmail',
     ];
 
     /**

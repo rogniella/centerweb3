@@ -49,6 +49,7 @@
                 <li role="separator" class="divider"></li>
                 <li><a href="{{ route('estadisticas.codmov') }}">Estadistica Ingresos/Egresos</a></li>
                 <li><a href="{{ route('estadisticas.rubro') }}">Estadistica por Rubros</a></li>
+                <li><a href="{{ route('estadisticas.rubro_anual') }}">Estadistica por Rubros Anual</a></li>
                 <li><a href="{{ route('estadisticas.ot') }}">Estadistica Ordenes Trabajos</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="{{ route('tarjetas.lista_operaciones') }}">Operaciones con Tarjetas</a></li>  

@@ -31,4 +31,23 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'servicios' => [
+        'OSDE' => [
+            'usuario' => env('SERVICIO_OSDE_USUARIO', 'r_niella@hotmail.com  (Profesionales)'),
+            'clave' => env('SERVICIO_OSDE_CLAVE', '2023bETO'),
+        ],
+        'SANCOR' => [
+            'usuario' => env('SERVICIO_SANCOR_USUARIO', '600208'),
+            'clave' => env('SERVICIO_SANCOR_CLAVE', '32541455'),
+        ],
+        'JERA' => [
+            'usuario' => env('SERVICIO_JERA_USUARIO', 'CENTERFOTOOPTICA'),
+            'clave' => env('SERVICIO_JERA_CLAVE', 'belenroge'),
+        ],
+        'OSPJN' => [
+            'usuario' => env('SERVICIO_OSPJN_USUARIO', 'r_niella@hotmail.com'),
+            'clave' => env('SERVICIO_OSPJN_CLAVE', 'belenroge'),
+        ],
+    ],
+
 ];

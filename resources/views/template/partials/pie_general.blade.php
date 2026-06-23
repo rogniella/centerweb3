@@ -109,6 +109,17 @@
       this.select();
     });
 
+    // Accordion: toggle chevron icon on collapse/expand
+    $(document).on('shown.bs.collapse hidden.bs.collapse', '.panel-collapse', function () {
+        var $panel = $(this).closest('.panel');
+        var $chevron = $panel.find('.accordion-chevron i');
+        if ($chevron.length) {
+            var isOpen = $(this).hasClass('in');
+            $chevron.removeClass('fa-chevron-down fa-chevron-up')
+                    .addClass(isOpen ? 'fa-chevron-up' : 'fa-chevron-down');
+        }
+    });
+
     function msgerror2(msg,tiempo) {
 
       Swal.fire({

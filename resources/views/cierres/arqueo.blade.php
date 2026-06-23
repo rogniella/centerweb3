@@ -70,7 +70,7 @@
 
 <script>
 
-  var $monedasData = {!! $monedasJson !!};
+  var $monedasData = @json($monedasData);
   var $sucursal = $('#sucursal').val();
   var $cieId = 0;
   var $decMonto = {{ env('DEC_MONTO', 2) }};

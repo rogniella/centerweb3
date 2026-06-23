@@ -16,6 +16,7 @@ class HomeController extends Controller
         $user = auth()->user();
         $allShortcuts = collect(config('home.shortcuts'))->filter(function ($shortcut) use ($user) {
             $roles = $shortcut['roles'] ?? ['*'];
+
             return in_array('*', $roles) || in_array($user->perfil_id, $roles);
         })->all();
 
@@ -39,7 +40,7 @@ class HomeController extends Controller
                 }
             }
             foreach ($allShortcuts as $route => $shortcut) {
-                if (!isset($sortedAllShortcuts[$route])) {
+                if (! isset($sortedAllShortcuts[$route])) {
                     $sortedAllShortcuts[$route] = $shortcut;
                 }
             }

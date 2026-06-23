@@ -12,7 +12,9 @@
         </div>
         <div class="modal-body">
 
-{!! Form::open(['route' => ['users.update', $user], 'method' => 'PUT']) !!}
+<form action="{{ route('users.update', $user) }}" method="POST">
+@method('PUT')
+@csrf
 
 	<div class="form-group">
 		<label for="name">Usuario</label>

@@ -5,18 +5,18 @@
 
 <?php 
     $sucursal = "0";
-    if ($_GET) {
-        $sucursal = $_GET["sucursal"];
-        $INF_ID = $_GET["tipoinf"];
-        $param_codigos = $_GET["codigos"];
+    if (request()) {
+        $sucursal = request()["sucursal"];
+        $INF_ID = request()["tipoinf"];
+        $param_codigos = request()["codigos"];
        // $param_codigos = explode(",", $codigos);
-        if ( isset($_GET["fecha"])) {
+        if ( isset(request()["fecha"])) {
           // Lo llamaron pasando las fechas directamente
-          $fecha = $_GET["fecha"];
-          $fechafin = $_GET["fechafin"];
+          $fecha = request()["fecha"];
+          $fechafin = request()["fechafin"];
         }else{  
-          $anio = $_GET["anio"];
-          $mes = $_GET["mes"];
+          $anio = request()["anio"];
+          $mes = request()["mes"];
           $diafin = date("d",(mktime(0,0,0,$mes+1,1,$anio)-1));
           if ( $mes > 12 )  {
             $fecha = date("Y-m-d",(mktime(0,0,0,1,1,$anio)));

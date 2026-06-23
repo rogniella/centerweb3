@@ -3,8 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-
-use Illuminate\Support\Facades\DB;  // Para usar SQL directamente (Raw SQL)
+// Para usar SQL directamente (Raw SQL)
 
 use Mail;  // Para el envio de mail
 
@@ -17,7 +16,6 @@ class MandaEmail extends Command
      */
     protected $signature = 'email:Manda {--file=} {--asunto=} {--texto=}';
 
-
     // php artisan email:Manda --file=remito_01_4096.pdf --asunto="Este es el asunto"
 
     /**
@@ -25,7 +23,6 @@ class MandaEmail extends Command
      *
      * @var string
      */
-
     protected $description = 'Proceso de Envio de Email';
 
     /**
@@ -47,47 +44,42 @@ class MandaEmail extends Command
     {
 
         // Se ejecutar solo si se modifica alguna tabla de parametros
-            
+
         $file_completo = $this->option('file', '');
-      //$file_completo =  public_path() . "/remitos/" .  $file;
+        // $file_completo =  public_path() . "/remitos/" .  $file;
         $asunto = $this->option('asunto', '');
 
         $texto = $this->option('texto', '');
 
-        displaylog("Proceso de Envio de Mail" . $asunto . '  Archivo:' . $file_completo );     
-        $this->info('Proceso de Envio de Mail ' . $asunto . '  Archivo:' . $file_completo ); //Salida por Consola
+        displaylog('Proceso de Envio de Mail'.$asunto.'  Archivo:'.$file_completo);
+        $this->info('Proceso de Envio de Mail '.$asunto.'  Archivo:'.$file_completo); // Salida por Consola
 
+        /**
+            Entrada: - Id Remito Inter Sucursal
+            Salida:  - Mail con archivo pdf
+         **/
+        $msgError = 'Ok';
 
-    /**
-        Entrada: - Id Remito Inter Sucursal
-        Salida:  - Mail con archivo pdf
-    **/
+        // Mandar Mail
+        // $asunto = "Remito Inter Sucursal  Nro: ";
+        // $file =  "remito_01_4096.pdf";
 
-    $msgError = "Ok";
-
-    // Mandar Mail
-   // $asunto = "Remito Inter Sucursal  Nro: ";
-   // $file =  "remito_01_4096.pdf";
-
-    try {
-      Mail::send('plantillaEmail',[ 'texto' => $texto] , function ($msj) use ($asunto,$file_completo) {
-         $msj->to( env('SUCURSAL_ENVIO_MAIL') );
-      //   $msj->cc('rogelio.niella@gmail.com');
-         $msj->attach($file_completo, [
-//                    'as' => $file,
+        try {
+            Mail::send('plantillaEmail', ['texto' => $texto], function ($msj) use ($asunto, $file_completo) {
+                $msj->to(env('SUCURSAL_ENVIO_MAIL'));
+                //   $msj->cc('rogelio.niella@gmail.com');
+                $msj->attach($file_completo, [
+                    //                    'as' => $file,
                     'mime' => 'application/pdf',
-                     ] )->subject( $asunto );
-       });
-    } catch (\Exception $e) {
+                ])->subject($asunto);
+            });
+        } catch (\Exception $e) {
 
-        $msgError  = 'Error:No se pudo enviar email a la Sucursal:' . $e->getMessage();
+            $msgError = 'Error:No se pudo enviar email a la Sucursal:'.$e->getMessage();
 
-    }      
+        }
 
-
-        $this->info("     Envio     " . $msgError );
-
-
+        $this->info('     Envio     '.$msgError);
 
     }
 }

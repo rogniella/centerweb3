@@ -6,11 +6,11 @@
 <?php 
     $anio = date("Y");  
     $mes = date("m");  
-    if ($_GET) {
-        $sucursal = $_GET["sucursal"];
-        $INF_ID = $_GET["tipoinf"];
-        $id_producto = $_GET["id_producto"];
-        $desc_producto = $_GET["desc_producto"];
+    if (request()) {
+        $sucursal = request()["sucursal"];
+        $INF_ID = request()["tipoinf"];
+        $id_producto = request()["id_producto"];
+        $desc_producto = request()["desc_producto"];
     }else{
         $sucursal = "";
         $INF_ID = "REC";
@@ -180,7 +180,7 @@
   $(document).ready(function() {
 
   <?php 
-      if ($_GET) {
+      if (request()) {
         echo "informe_por_tipo()";
       }
   ?>    
