@@ -9,11 +9,17 @@
     $tipo_ot = "";
     $fecha = date("Y-m-d");
     $fecha_fin = date("Y-m-d");
-    if (request()) {
-        $sucursal = request()["sucursal"];
-        $tipo_ot = request()["tipoot"];
-        $fecha = request()["fecha"];
-        $fecha_fin = request()["fechafin"];
+    if (request()->has('sucursal')) {
+        $sucursal = request('sucursal');
+    }
+    if (request()->has('tipoot')) {
+        $tipo_ot = request('tipoot');
+    }
+    if (request()->has('fecha')) {
+        $fecha = request('fecha');
+    }
+    if (request()->has('fechafin')) {
+        $fecha_fin = request('fechafin');
     }    
 ?>
 
@@ -36,7 +42,7 @@
                     <label class="control-label">Sucursal:</label>
                     <select name="Ot_Sucursal" id="Ot_Sucursal" class="form-control" required>
                         @foreach($sucursales as $key => $value)
-                            <option value="{{ $key }}" {{ $key == 0 ? 'selected' : '' }}>{{ $value }}</option>
+                            <option value="{{ $key }}" {{ $key == $sucursal ? 'selected' : '' }}>{{ $value }}</option>
                         @endforeach
                     </select>
                 </div>    

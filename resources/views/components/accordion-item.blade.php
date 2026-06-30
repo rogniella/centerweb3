@@ -4,6 +4,7 @@
     'expanded' => false,
     'panelClass' => 'default',
     'icon' => '',
+    'headingClass' => '',
 ])
 
 @php
@@ -12,7 +13,7 @@
 @endphp
 
 <div class="panel panel-{{ $panelClass }}">
-    <div class="panel-heading" role="tab" id="{{ $headingId }}">
+    <div class="panel-heading {{ $headingClass }}" role="tab" id="{{ $headingId }}">
         <h4 class="panel-title">
             <a role="button"
                data-toggle="collapse"

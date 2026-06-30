@@ -3,23 +3,6 @@
    
 @section('contenido')
 
-        <style>
-            .panel.panel-filtros {
-                border: none;
-                margin-left: 0;
-                margin-right: 0;
-                border-radius: 0;
-            }
-            .panel.panel-filtros > .panel-heading {
-                padding-left: 0;
-                padding-right: 0;
-                background-color: #f5f5f5;
-            }
-            .panel.panel-filtros > .panel-collapse > .panel-body {
-                padding-left: 0;
-                padding-right: 0;
-            }
-        </style>
 
         <form class="form-inline" role="form" onsubmit="return false;">
 
@@ -54,7 +37,7 @@
 
 
             <x-accordion id="productosAccordion">
-              <x-accordion-item id="filtros" title=" Más Opciones ..."  :expanded="false" icon="search" parent="productosAccordion" panelClass="filtros">
+              <x-accordion-item id="filtros" title=" Más Opciones ..."  :expanded="false" icon="search" parent="productosAccordion" panelClass="filtros" headingClass="panel-heading--mas-opciones">
 
                     <div class="row">
                       <div class="col-sm-12">

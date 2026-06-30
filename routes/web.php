@@ -28,9 +28,14 @@ Route::post('/home/shortcuts', [HomeController::class, 'saveShortcuts'])->name('
 
 Auth::routes();  // Todas las rutas del manejo de login. Se agregan con laravel/ui
 
+Route::get('servicios', [
+    'uses' => 'App\Http\Controllers\ServiciosController@index',
+    'as' => 'servicios.index',
+]);
+
 Route::get('servicios/index', [
-    'uses' => 'App\Http\Controllers\ServiciosController@index',  // nombreControlador@metodo
-    'as' => 'servicios.index', // Nombre de la ruta
+    'uses' => 'App\Http\Controllers\ServiciosController@index',
+    'as' => 'servicios.index.alt',
 ]);
 
 // REQUIEREN PRIVILEGIOS DE ADMINISTRADOR

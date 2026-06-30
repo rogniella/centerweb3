@@ -4,18 +4,17 @@
 @section('contenido')
 
 <?php 
-
-    if (request()) {
-        $sucursal = request()["sucursal"];
-        $cod_cuenta= request()["cuenta"];
-        $moneda = request()["moneda"];
+    if ($_GET) {
+        $sucursal = request('sucursal');
+        $cod_cuenta= request("cuenta");
+        $moneda = request("moneda");
     }else{
         $sucursal = 1;
         $cod_cuenta = '02';
         $moneda = 'P';      
-    }    
-    
+    }        
 ?>
+
 <form class="form-inline" role="form" >
  
   <!-- 1ra Fila de Informes -->

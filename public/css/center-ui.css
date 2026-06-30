@@ -31,6 +31,26 @@
     align-self: flex-start;
 }
 
+.panel.panel-filtros {
+    border: none;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 0;
+}
+.panel.panel-filtros > .panel-heading {
+    padding-left: 0;
+    padding-right: 0;
+    background-color: #f5f5f5;
+}
+.panel.panel-filtros > .panel-collapse > .panel-body {
+    padding-left: 0;
+    padding-right: 0;
+}
+.panel.panel-filtros > .panel-heading.panel-heading--mas-opciones {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
 /* ── Panels ── */
 .panel-info {
     border-color: var(--border);
@@ -112,6 +132,7 @@
 .btn-primary {
         background: linear-gradient(135deg, #3b7cb6 0%, #2c5f8a 100%);
         border: none;
+        border-radius: 6px;
         box-shadow: 0 2px 6px rgba(44,95,138,.25);
 }
 .btn-primary:hover {
