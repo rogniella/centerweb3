@@ -547,6 +547,9 @@ class comprobante
 
             DB::beginTransaction();
 
+        //    $this->ret = "Errr pruebw";
+         //   throw new \ErrorException($this->ret);
+
             // Si ingreso un Cliente, tomo los datos
             $this->CompletoDatosCliente();
             if ($this->ret != '') {
@@ -628,8 +631,11 @@ class comprobante
                         // todo correctos ya se gravo en Afip y retorno Nro Fact, CAE , y fecha Venc CAE
                         $this->auxEstadoFactua = 'E'; // Emitida
                     } else {
+                        if ($this->auxErrorAfip == '') {
+                            // Es porque es un error de validacion    
+                            throw new \ErrorException($this->ret);
+                        }
                         displaylog('Error: GeneraFAC EN AFIP, NO se genero en AFIP:'.$this->ret.' Comp:'.$this->comp_id.' Error AuxAfip:'.$this->auxErrorAfip);
-                        $this->auxErrorAfip = $this->ret;
                         $this->auxEstadoFactua = 'K'; // Error Afip  Registro y dejo marcado
                         $this->numero_de_factura = $this->obtengocorrelativo('K');
                         $this->CAEFchVto = fechahoy();
@@ -816,7 +822,14 @@ class comprobante
         $comp_afip->punto_de_venta = $this->punto_de_venta;
         $comp_afip->cliente_cod_documento = $this->cliente->Aux_CodDocumento; // cod numerico para afip
         $comp_afip->cliente_documento = (float) $this->cliente->Cli_Documento; // Segun corresponda porel tipo
+        $comp_afip->condicion_iva_receptor = $this->cliente->Cli_CodRespIVA ;
         $comp_afip->fecha_factura = $this->comp_fecmov;
+
+        
+      //  dd($comp_afip->IvaReceptorId);
+
+
+
         $comp_afip->importe_gravado = $this->importe_gravado;
         $comp_afip->importe_iva = $this->importe_iva;
         $comp_afip->punto_facturaOriginal = $this->punto_facturaOriginal;   // Se completa solo en Anulaciones
@@ -826,10 +839,16 @@ class comprobante
             $this->CAE = $comp_afip->CAE; // CAE asignado a la Factura
             $this->CAEFchVto = $comp_afip->CAEFchVto; // Fecha de vencimiento del CAE
             $this->numero_de_factura = $comp_afip->numero_de_factura;
-
             return ''; // Todo Ok
         } else {
-            $this->auxErrorAfip = $ret;
+           
+            if ($comp_afip->retErrorValidacion == "" ) {
+                 // Es un error en AFIP no se genero el comprobante, pero no es un error de validacion, puede ser un error de conexion o de sistema de AFIP       
+                 $this->auxErrorAfip = $ret;
+            } else {
+                 // Es un error de Validacion lo podemos arreglar         
+                 $ret = $comp_afip->retErrorValidacion;
+            }            
         }
 
         return $ret;
@@ -909,7 +928,7 @@ class comprobante
 
         } else {
 
-            return 'Error: Al Leer Tabla Comprobantes No encontro <br>'.$this->comp_sucursal.' '.$this->comp_tipoot.' '.$this->comp_id;
+            return 'Error: Al Leer Tabla Comprobantes No encontro Sucursal:'.$this->comp_sucursal.' Comp:'.$this->comp_tipoot.' '.$this->comp_id;
         }
 
         return '';
@@ -1059,6 +1078,7 @@ class comprobante
 
     }
 
+   
     private function cargaAlicuotasIva()
     {
         // Recorro todas las lineas de Detalle

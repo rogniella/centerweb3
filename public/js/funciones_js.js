@@ -69,14 +69,16 @@
         
         if (value == null || isNaN(value)) return '<span class="text-muted">-</span>';
        // return '$' + Number(value).toLocaleString('es-AR', { minimumFractionDigits: cantDecMonto, maximumFractionDigits: cantDecMonto });
-        return  Number(value).toLocaleString('es-AR', { minimumFractionDigits: cantDecMonto, maximumFractionDigits: cantDecMonto });
+        var formatted = Number(value).toLocaleString('es-AR', { minimumFractionDigits: cantDecMonto, maximumFractionDigits: cantDecMonto });
+        return '<span data-tableexport-value="' + value + '">' + formatted + '</span>';
     }
    
     function formatoMoneda2Dec(value, row, index) {
         // Para usar data-formatter="formatoMoneda2Dec"      en los <th de las tablas
         
         if (value == null || isNaN(value)) return '<span class="text-muted">-</span>';
-        return  Number(value).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        var formatted = Number(value).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return '<span data-tableexport-value="' + value + '">' + formatted + '</span>';
     }
 
     function fotmatoColSel(value,row,index) {
@@ -254,7 +256,19 @@
 // ******** Configuraciones *********//
 
 // Sobreescribimos la propiedad que indica cuales formatos de exportar usamos.
+// Es porque al pasar a excel quedaban mal los montos 
 $.fn.bootstrapTable.defaults.exportTypes = ['pdf', 'excel'];
+
+// Para que al exportar a Excel use el data-tableexport-value en vez del texto formateado
+$.fn.bootstrapTable.defaults.exportOptions = {
+    onCellHtmlData: function(cell, rowIndex, colIndex, data) {
+        var $span = cell.find('span[data-tableexport-value]');
+        if ($span.length) {
+            return String($span.data('tableexport-value'));
+        }
+        return data;
+    }
+};
 
 function fotmatoColSel(value,row,index) {
     // Lo usamos para hacer que una columna quede como hipervinculo y pueda pedir mas detalle

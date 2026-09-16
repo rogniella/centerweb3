@@ -14,8 +14,6 @@ class cliente extends Model
 
     protected $primaryKey = 'Cli_idWEB';     // Defino Clave Primaria
 
-    public $timestamps = false;
-
     // Campos que pueden ser accedidos y modificados
     protected $fillable = ['Cli_Id', 'Cli_ApeNom', 'Cli_Documento', 'Cli_Telefono', 'Cli_Pais',
         'Cli_Calle', 'Cli_CodRespIVA', 'Cli_Cuil', 'Cli_CodDocumento'];

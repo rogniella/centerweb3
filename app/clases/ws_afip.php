@@ -8,8 +8,6 @@ use Afip; // Para Generar comprobante afip
 class ws_afip
 {
     // Propiedades
-    // Salida:
-    public $ret = ''; // Retorno de Ejecución  "" = Ok  sino Retoran Mensaje de Error
 
     // Datos de Entrada del comprobante:
     public $tipo_de_factura = '';  // Tipo Interno Cod Numerico segun AFIP, ....
@@ -19,6 +17,10 @@ class ws_afip
     public $cliente_cod_documento = ''; // Nro o Cuit del Cliente
 
     public $cliente_documento = 0; // Nro o Cuit del Cliente
+
+    public $condicion_iva_receptor = ''; // Condición frente al IVA del receptor (CF, RI, MO, EX)
+
+    public $IvaReceptorId = 0; // Es la condicion segun Afip (1=No Gravado, 2=IVA Sujeto Exento, 4=10.5%, 5=21%, 6=27%)
 
     public $fecha_factura = '';
 
@@ -32,18 +34,47 @@ class ws_afip
 
     public $facturaOriginal = '';        // Se completa solo en Anulaciones
 
-    // Retorna
+    // Salidas:
+    public $ret = ''; // Retorno de Ejecución  "" = Ok  sino Retoran Mensaje de Error
+    public $retErrorValidacion = ''; // Indicador de Error de Validacion de Datos  "" = Ok  sino Retoran Mensaje de Error  
+
     public $CAE = '';  // string de 14
 
     public $CAEFchVto = '';  //  "2019-10-16"
 
     public $numero_de_factura = ''; // Numero Generado
 
+    public static function condicionIvaReceptorId($cod_condicion)
+    {
+
+        // Mapea la condición frente al IVA del receptor al Id usado por ARCA
+        // (campo CondicionIVAReceptorId - Resolución General N° 5616/2024)
+        // Tabla: FEParamGetCondicionIvaReceptor
+        //   1 = IVA Responsable Inscripto   (clase A/M/C)
+        //   4 = IVA Sujeto Exento           (clase B/C)
+        //   5 = Consumidor Final            (clase B/C)
+        //   6 = Responsable Monotributo     (clase A/M/C)
+        $condiciones = [
+            'RI' => 1,
+            'EX' => 4,
+            'CF' => 5,
+            'MO' => 6,
+            'MT' => 6,
+            '' => 5,
+        ];
+
+        return $condiciones[strtoupper(trim((string) $cod_condicion))] ?? 5; // Default Consumidor Final
+
+    }
+
     public function nuevo_comprobante()
     {
 
         // Se conecta con Sistema de AFIP
-        $this->auxErrorAfip = ''; // Ok
+        $this->retErrorValidacion = ''; // Ok
+
+
+        
         try {
             $cuitEmpresa = (float) env('CUIT');
             $tope_sin_ident = (float) env('AFIP_TOPE_SINIDENTIF_PES');
@@ -81,19 +112,27 @@ class ws_afip
             }
 
             // Validaciones
+            $this->IvaReceptorId = $this->condicionIvaReceptorId($this->condicion_iva_receptor );
+            $this->retErrorValidacion = $this->validaCondicionIvaReceptor($this->IvaReceptorId);
+            if ( $this->retErrorValidacion !== '') {
+                return $this->retErrorValidacion; // Sale con el error   
+            }
             if ($this->tipo_de_factura == 1 or $this->tipo_de_factura == 3) {  // Facturas A o Notas de Cred A
                 if ($tipo_de_documento != 80) {
-                    throw new \ErrorException('Para comprobantes clase A y M el campo Tipo Documento debe ser igual a CUIT');
+                    $this->retErrorValidacion  = 'Para comprobantes clase A o M el Tipo Documento debe ser igual a CUIT';
+                    return $this->retErrorValidacion; // Sale con el error   
                 }
             }
 
             $importe_total = $this->importe_gravado + $this->importe_iva + $this->importe_exento_iva;
             if ($numero_de_documento == 0 and $importe_total > $tope_sin_ident) {
-                throw new \ErrorException('El comprobante supera Tope de $ '.$tope_sin_ident.'.<br>Tiene que Identificar al Cliente (Cargar datos)');
+                $this->retErrorValidacion  = 'El comprobante supera Tope de $ '.$tope_sin_ident.'.<br>Tiene que Identificar al Cliente (Cargar datos)';
+                return $this->retErrorValidacion; // Sale con el error   
             }
 
             if ($tipo_de_documento != 99 and $numero_de_documento == 0) {
-                throw new \ErrorException('Falta completar el DNI o CUIT');
+                $this->retErrorValidacion  = 'Falta completar el DNI o CUIT';
+                return $this->retErrorValidacion; // Sale con el error   
             }
 
             /**  Número de la ultima Factura  **/
@@ -160,6 +199,7 @@ class ws_afip
                     'Concepto' => $concepto,
                     'DocTipo' => $tipo_de_documento,
                     'DocNro' => $numero_de_documento,
+                    'CondicionIVAReceptorId' => self::condicionIvaReceptorId($this->condicion_iva_receptor),
                     'CbteDesde' => $numero_de_factura,
                     'CbteHasta' => $numero_de_factura,
                     'CbteFch' => intval(str_replace('-', '', $fecha)),
@@ -188,6 +228,7 @@ class ws_afip
                     'Concepto' => $concepto,
                     'DocTipo' => $tipo_de_documento,
                     'DocNro' => $numero_de_documento,
+                    'CondicionIVAReceptorId' => self::condicionIvaReceptorId($this->condicion_iva_receptor),
                     'CbteDesde' => $numero_de_factura,
                     'CbteHasta' => $numero_de_factura,
                     'CbteFch' => intval(str_replace('-', '', $fecha)),
@@ -217,6 +258,7 @@ class ws_afip
                     'Concepto' => $concepto,
                     'DocTipo' => $tipo_de_documento,
                     'DocNro' => $numero_de_documento,
+                    'CondicionIVAReceptorId' => self::condicionIvaReceptorId($this->condicion_iva_receptor),
                     'CbteDesde' => $numero_de_factura,
                     'CbteHasta' => $numero_de_factura,
                     'CbteFch' => intval(str_replace('-', '', $fecha)),
@@ -234,12 +276,17 @@ class ws_afip
             /*
                 Creamos la Factura
             */
-            //    dd($data);
+
+            // dd($data);
+
             $curLocale = setlocale(LC_NUMERIC, '0');
             setlocale(LC_NUMERIC, 'C');
             $res = $afip->ElectronicBilling->CreateVoucher($data);
             setlocale(LC_NUMERIC, $curLocale);
-            // dd($res);
+            
+            displaylog( $data );
+            displaylog( $res  );
+
             $this->CAE = $res['CAE']; // CAE asignado a la Factura
             $this->CAEFchVto = $res['CAEFchVto']; // Fecha de vencimiento del CAE
 
@@ -274,6 +321,56 @@ class ws_afip
         } // Fin try catch
 
     }  // fin crea_comprobante
+
+
+    private function validaCondicionIvaReceptor(?int $condicionId): string
+    {
+
+        // Valida que la combinación Condición IVA del receptor / Tipo de comprobante sea permitida
+        // por ARCA (Resolución General N° 5616 - FEParamGetCondicionIvaReceptor).
+        //
+        // Condiciones cuyo Id admite comprobantes de clase A/M/C:
+        //   1 (IVA Responsable Inscripto), 6 (Responsable Monotributo),
+        //   13 (Monotributista Social), 16 (Monotributo Trabajador Independiente Promovido)
+        // Condiciones cuyo Id admite comprobantes de clase B/C:
+        //   4 (IVA Sujeto Exento), 5 (Consumidor Final), 7, 8, 9, 10, 15
+        // La clase C (Factura C / Nota de Crédito C) admite ambos grupos.
+        //
+        // Retorna '' si la combinación es válida; un mensaje de error descriptivo si no lo es.
+
+        if ($condicionId === null || $condicionId === 0) {
+            return 'Error: CondicionID en blanco';
+        }
+
+        $condicionesClaseAMC = [1, 6, 13, 16];
+        $condicionesClaseBC = [4, 5, 7, 8, 9, 10, 15];
+
+        $tipo = (int) $this->tipo_de_factura;
+
+        $permiteClaseAMC = in_array($tipo, [1, 3, 11, 13], true) && in_array($condicionId, $condicionesClaseAMC, true);
+        $permiteClaseBC = in_array($tipo, [6, 8, 11, 13], true) && in_array($condicionId, $condicionesClaseBC, true);
+
+        if ($permiteClaseAMC || $permiteClaseBC) {
+            return '';
+        }
+
+        $nombreCbte = match ($tipo) {
+            1 => 'Factura A',
+            3 => 'Nota de Crédito A',
+            6 => 'Factura B',
+            8 => 'Nota de Crédito B',
+            11 => 'Factura C',
+            13 => 'Nota de Crédito C',
+            default => 'tipo de comprobante '.$this->tipo_de_factura,
+        };
+
+        return 'La condición frente al IVA del receptor: '.$this->condicion_iva_receptor
+            .' (Id '.$condicionId.') no es válida para '.$nombreCbte.'. '
+            .'Corrija el tipo de comprobante o la condición fiscal del cliente en la ficha del cliente.';
+    }
+
+
+
 
     public static function consulta_comprobante($numero_de_factura, $punto_de_venta, $tipo_de_factura)
     {

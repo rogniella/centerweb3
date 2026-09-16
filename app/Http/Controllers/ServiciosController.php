@@ -9,30 +9,18 @@ class ServiciosController extends Controller
     public function index(Request $request)
     {
 
-        $servicio = $request->input('msg');
+        // Los datos los toma del archivo config/serviciones.php
+
+        $servicio = $request->input('msg'); //Ej OSDE , SANCOR ...
         $config = config("servicios.servicios.$servicio");
 
         if (! $config) {
-            abort(404, 'Servicio no encontrado');
+            abort(404, 'Configuracion de Servicios no encontrado');
         }
 
-        $rutas = [
-            'OSDE' => 'https://extranet.osde.com.ar/OSDEExtranet/jsp/multiempresas/osde/HomePublicaV2.jsp',
-            'SANCOR' => 'https://autogestionprestadores.sancorsalud.com.ar',
-            'JERA' => 'https://gestiones.jerarquicos.com/ConsumosOnline/Account/LogOn?ReturnUrl=%2fConsumosOnline%2fHome%2fIndex',
-            'OSPJN' => 'https://extranet.ospjn.gov.ar/WebProveedores',
-        ];
-
-        $titulos = [
-            'OSDE' => 'OSDE',
-            'SANCOR' => 'SANCOR SALUD',
-            'JERA' => 'JERARQUICOS SALUD',
-            'OSPJN' => 'PODER JUDICIAL',
-        ];
-
         $datos = [
-            'titulo' => $titulos[$servicio],
-            'ruta' => $rutas[$servicio],
+            'titulo' => $config['titulo'],
+            'ruta' => $config['ruta'],
             'usuario' => $config['usuario'],
             'clave' => $config['clave'],
         ];

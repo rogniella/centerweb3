@@ -315,6 +315,13 @@ class VentasController extends Controller
             ]);
         }
 
+        // Si dio un error antes de llamar a AFIP, lo devuelvo
+        if ($ocomprobante->ret != '') {
+            return response()->json([
+                'retError' => $ocomprobante->ret
+            ]);
+        }
+
         // Una vez grabado y si no dio error , lo leo para imprimir
         $ocomprobante = comprobante::find($ocomprobante->comp_sucursal, $ocomprobante->comp_tipoot, $ocomprobante->comp_id);
         //  dd($ocomprobante );

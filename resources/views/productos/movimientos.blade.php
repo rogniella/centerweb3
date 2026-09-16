@@ -94,6 +94,7 @@
                 data-pagination="true"
                 data-page-size="50"
                 data-page-list="[25, 50, 100, 200]"
+                data-export-data-type="all"
                 class="table table-striped table-hover"
             >
             <thead>
