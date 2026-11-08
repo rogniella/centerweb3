@@ -8,9 +8,13 @@
 - Vs 2.02 5/2023 Mejoras en las consultas de Clientes,Ot y Ventas
 - Vs 2.01 5/2023 Agrego posibilidad de Generar Notas de Créditos
 
-# GitHub:     
+# GitHub:   
    github.com  rogniella   r_niella@hotmail.com
    En Rama Main en Repositorio centerweb3 
+
+   Para traer a la Pc Nueva:
+     - Desde la carpeta wwww (el comando crea la carpeta del proyecto)
+     git clone https://github.com/rogniella/centerweb3.git
 
 # Hosting:  lucushost  https://www.lucushost.com/     
    Es Español  vs gratis pero solo 15 dias  HostingWeb   36 U$s año 20gb  Se paga desde 30/5/2020
