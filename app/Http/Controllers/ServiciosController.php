@@ -12,7 +12,7 @@ class ServiciosController extends Controller
         // Los datos los toma del archivo config/serviciones.php
 
         $servicio = $request->input('msg'); //Ej OSDE , SANCOR ...
-        $config = config("servicios.servicios.$servicio");
+        $config = config("services.servicios.$servicio");
 
         if (! $config) {
             abort(404, 'Configuracion de Servicios no encontrado');

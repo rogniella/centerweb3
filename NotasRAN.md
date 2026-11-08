@@ -14,7 +14,15 @@
 
    Para traer a la Pc Nueva:
      - Desde la carpeta wwww (el comando crea la carpeta del proyecto)
-     git clone https://github.com/rogniella/centerweb3.git
+      git clone https://github.com/rogniella/centerweb3.git
+      git config --global user.name "rogniella"
+      git config --global user.email "r_niella@hotmail.com"
+     - En laragon elegir la vs de PHP 8.4
+      composer install
+      npm install
+      Configurar el archivo .env
+      php artisan key:generate
+
 
 # Hosting:  lucushost  https://www.lucushost.com/     
    Es Español  vs gratis pero solo 15 dias  HostingWeb   36 U$s año 20gb  Se paga desde 30/5/2020

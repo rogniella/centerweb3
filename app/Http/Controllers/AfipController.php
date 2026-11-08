@@ -41,6 +41,9 @@ class AfipController extends Controller
 
         $datos = ws_afip::consulta_comprobante($comprobante->numero_de_factura, $punto_de_venta, $comprobante->tipo_de_factura);
 
+        // SON ESTO SIEMPRE SALE COMO UN ERROR , PERO SE VE MEJOR TODA LA INFO
+        dd( $datos['informacion'] ,$datos['msgError']);
+
         return response()->json([
             'informacion' => $datos['informacion'] ?? null,
             'msgError' => $datos['msgError'] ?? null,

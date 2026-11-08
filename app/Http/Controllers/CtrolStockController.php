@@ -128,6 +128,7 @@ class CtrolStockController extends Controller
         $cantidad_bd = 0;
         $cantidad_cero = 0;
         $cantidad_otraSuc = 0;
+        $stock_bd_otra = 0;
         $datos_total = [];
 
         if ($lote->Lot_Sucursal == 1) {
