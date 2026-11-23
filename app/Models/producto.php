@@ -338,7 +338,7 @@ class producto extends Model
 
     }
 
-    public static function listar($filtro_familia = '', $filtro_descripcion = '', $limite = 1000, $filtro_monto = '', $filtro_ultact = '', $filtro_estado = '', $filtro_marca = '')
+    public static function listar($filtro_familia = '', $filtro_descripcion = '', $limite = 1000, $filtro_monto = '', $filtro_ultact = '', $filtro_estado = '', $filtro_marca = '', array $niveles = [])
     {
         // Listado principal, dependiendo de los filtros
         // Tambien lo utiliza el auto completar
@@ -348,6 +348,12 @@ class producto extends Model
         if ($filtro_familia != '') {
             $filter .= ' AND prod_familia = ?';
             $valores[] = $filtro_familia;
+
+            if ($niveles !== []) {
+                [$sqlCategorias, $valoresCategorias] = self::filtroCategorias($filtro_familia, $niveles);
+                $filter .= $sqlCategorias;
+                $valores = array_merge($valores, $valoresCategorias);
+            }
         }
 
         if ($filtro_descripcion != '') {
@@ -401,6 +407,69 @@ class producto extends Model
         return $ret;
 
     } // Fin Listar
+
+    /**
+     * Arma el SQL y los bindings para los niveles de categoría seleccionados.
+     *
+     * @return array{0: string, 1: array<int, mixed>}
+     */
+    private static function filtroCategorias(string $familia, array $niveles): array
+    {
+        $codigos = self::normalizarNivelesCategoria($niveles);
+
+        if ($codigos === []) {
+            return ['', []];
+        }
+
+        $tabla = (new static)->getTable();
+        $categorias = famcategoria::query()
+            ->where('FCat_Familia', $familia)
+            ->orderBy('FCat_IdCategoria')
+            ->get();
+
+        $sql = '';
+        $valores = [];
+
+        foreach ($categorias->values() as $indice => $categoria) {
+            if (! array_key_exists($indice, $codigos)) {
+                continue;
+            }
+
+            $codigo = $codigos[$indice];
+            $sql .= " AND LOWER(TRIM(SUBSTR(TRIM({$tabla}.Prod_Categoria), ?, ?))) = ?";
+            $valores[] = (int) $categoria->FCat_PosIni;
+            $valores[] = mb_strlen(mb_strtolower($codigo));
+            $valores[] = mb_strtolower($codigo);
+        }
+
+        return [$sql, $valores];
+    }
+
+    /**
+     * Descarta niveles vacíos, "[Todos]" y valores que no sean escalares.
+     *
+     * @return array<int, string>
+     */
+    private static function normalizarNivelesCategoria(array $niveles): array
+    {
+        $normalizados = [];
+
+        foreach ($niveles as $indice => $codigo) {
+            if (! is_numeric($indice) || ! is_scalar($codigo)) {
+                continue;
+            }
+
+            $codigo = trim((string) $codigo);
+
+            if ($codigo === '' || $codigo === '00') {
+                continue;
+            }
+
+            $normalizados[(int) $indice] = $codigo;
+        }
+
+        return $normalizados;
+    }
 
     public function addMovimiento($operacion, $cantidad, $precioUnitario, $idOperacion, $idProv = 0, $detalle = '', $tipoOt = '', $sucursal = 0, $bonif = 0)
     {

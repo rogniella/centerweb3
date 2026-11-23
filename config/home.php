@@ -65,6 +65,13 @@ return [
             'roles' => ['*'],
             'modulos' => ['optica'],
         ],
+        'cristales.consultatipo' => [
+            'label' => 'Consulta Tipo Cristales',
+            'icon' => 'fa-eye',
+            'color' => 'card-opt',
+            'roles' => ['*'],
+            'modulos' => ['optica'],
+        ],
         'ot.index' => [
             'label' => 'Ordenes Trabajo',
             'icon' => 'fa-wrench',

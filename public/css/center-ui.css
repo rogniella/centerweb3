@@ -32,23 +32,75 @@
 }
 
 .panel.panel-filtros {
-    border: none;
-    margin-left: 0;
-    margin-right: 0;
+    background: transparent;
+    border: 0;
     border-radius: 0;
+    box-shadow: none;
+    margin: 0;
 }
 .panel.panel-filtros > .panel-heading {
-    padding-left: 0;
-    padding-right: 0;
-    background-color: #f5f5f5;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
 }
+/* ── Más filtros (acordeón compartido) ── */
 .panel.panel-filtros > .panel-collapse > .panel-body {
-    padding-left: 0;
-    padding-right: 0;
+    background: transparent;
+    border: 0;
+    padding: 14px 0 4px;
 }
 .panel.panel-filtros > .panel-heading.panel-heading--mas-opciones {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: 0;
+}
+.panel.panel-filtros > .panel-heading.panel-heading--mas-opciones .panel-title > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .4px;
+    text-transform: uppercase;
+    transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease, color .2s ease;
+}
+.panel.panel-filtros > .panel-heading.panel-heading--mas-opciones .panel-title > a:hover,
+.panel.panel-filtros > .panel-heading.panel-heading--mas-opciones .panel-title > a:focus {
+    background: transparent;
+    border-color: var(--primary-light);
+    color: var(--primary-dark);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+}
+.panel.panel-filtros > .panel-heading.panel-heading--mas-opciones .panel-title > a .fa-sliders {
+    color: var(--primary);
+}
+.panel.panel-filtros > .panel-heading.panel-heading--mas-opciones .accordion-chevron {
+    margin-left: 2px;
+}
+.panel.panel-filtros > .panel-collapse > .panel-body label {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .4px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+.panel.panel-filtros > .panel-collapse > .panel-body .form-control {
+    border-color: var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    height: 36px;
+}
+
+.filtros-avanzados__bloque + .filtros-avanzados__bloque {
+    border-top: 1px solid var(--border-light);
+    margin-top: 14px;
+    padding-top: 14px;
 }
 
 /* ── Panels ── */

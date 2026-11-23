@@ -4,7 +4,7 @@
 @section('contenido')
 
 
-        <form class="form-inline" role="form" onsubmit="return false;">
+        <form role="form" onsubmit="return false;">
 
         <!-- Panel Del Titulo y Filtros -->
         <div class="panel panel-info">         
@@ -13,66 +13,64 @@
             </div>
             <div class="panel-body">
 
-
-
-
-
-              <div class="form-group">
-                <select name="filtro_flia" id="filtro_flia" class="form-control">
-                        @foreach($familias as $key => $value)
-                            <option value="{{ $key }}" {{ $key == '' ? 'selected' : '' }}>{{ $value }}</option>
-                        @endforeach
-                </select>    
-                <input type="text" class="form-control" name="filtro1" id="filtro1"  placeholder="Descripción" value="">
-
-                <select id="filtroMarca" name="filtroMarca" class="form-control">
-                    <option value="T">[Todas Marcas]</option>
-                </select>
-
-              </div>
-
-              <div class="form-group">
-                  <button type="button" onClick="consultar()" class="btn btn-primary  btn-block"><i class="fa fa-search"></i> Consultar</button>
-              </div>
-
-
             <x-accordion id="productosAccordion">
-              <x-accordion-item id="filtros" title=" Más Opciones ..."  :expanded="false" icon="search" parent="productosAccordion" panelClass="filtros" headingClass="panel-heading--mas-opciones">
-
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <button type="button" class="btn btn-info btn-sm" onclick="genera_pedido()">
-                          <i class="fa fa-truck"></i> Generar Pedido
-                        </button>
-                        <button type="button" class="btn btn-warning btn-sm" onclick="accion1()">
-                          <i class="fa fa-compress"></i> Consolida Códigos
-                        </button>
-                        <button type="button" class="btn btn-success btn-sm" onclick="precios_masivo()">
-                          <i class="fa fa-usd"></i> Modificar Precios
-                        </button>
-                        <button type="button" class="btn btn-primary btn-sm" onclick="estadisticas()">
-                          <i class="fa fa-bar-chart"></i> Estadisticas
-                        </button>
+              <x-accordion-item id="filtros" title="MÁS OPCIONES" :expanded="false" icon="sliders" parent="productosAccordion" panelClass="filtros" headingClass="panel-heading--mas-opciones">
+                    <div class="filtros-avanzados">
+                      <div class="filtros-avanzados__bloque filtros-avanzados__bloque--acciones">
+                        <div class="row">
+                          <div class="col-sm-12 text-right">
+                            <button type="button" class="btn btn-info btn-sm" onclick="genera_pedido()">
+                              <i class="fa fa-truck"></i> Generar Pedido
+                            </button>
+                            <button type="button" class="btn btn-warning btn-sm" onclick="accion1()">
+                              <i class="fa fa-compress"></i> Consolida Códigos
+                            </button>
+                            <button type="button" class="btn btn-success btn-sm" onclick="precios_masivo()">
+                              <i class="fa fa-usd"></i> Modificar Precios
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="estadisticas()">
+                              <i class="fa fa-bar-chart"></i> Estadisticas
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                      <div class="filtros-avanzados__bloque">
+                        <div class="row">
 
+                          <div class="col-md-3 col-sm-6">
+                            <div class="form-group">
+                              <label for="filtroStock">Stock</label>
+                              <select id="filtroStock" name="filtroStock" class="form-control">
+                                <option value="T" selected>[Stock Todos]</option>
+                                <option value="C">Con Stock</option>
+                                <option value="S">Sin Stock</option>
+                              </select>
+                            </div>
+                          </div>
 
+                          <div class="col-md-3 col-sm-6">
+                            <div class="form-group">
+                              <label for="mes_ventas">Meses de Ventas</label>
+                              <input type="number" class="form-control" name="mes_ventas" id="mes_ventas" placeholder="Ej: 12" title="Cantidad de Meses de Ventas" value="">
+                            </div>
+                          </div>
 
-                    <div class="form-group">
-                        <select id="filtroEstado" name="filtroEstado" class="form-control">
-                          <option value="T">[Todos]</option>
-                          <option value="A" selected>Activos</option>
-                          <option value="I">Inactivos</option>
-                        </select>
-                        <select id="filtroStock" name="filtroStock" class="form-control">
-                          <option value="T" selected>[Stock Todos]</option>
-                          <option value="C">Con Stock</option>
-                          <option value="S">Sin Stock</option>
-                        </select>
-                        <input type="number" class="form-control" name="mes_ventas" id="mes_ventas" placeholder="Meses de Ventas (Ej: 12)" title="Cantidad de Meses de Ventas"  value="">
-                        <input type="text" class="form-control" name="filtro2" id="filtro2" placeholder="Buscar por precio" title="Solo aquellos que superan el precio especificado
-                        "  value="">
-                        <input type="date" class="form-control" name="filtro3" id="filtro3"  title="Solo aquellos con Fecha Última Actualización menores a la especificada"  value="">
+                          <div class="col-md-3 col-sm-6">
+                            <div class="form-group">
+                              <label for="filtro2">Precio</label>
+                              <input type="text" class="form-control" name="filtro2" id="filtro2" placeholder="Ej: 1000" title="Solo aquellos que superan el precio especificado" value="">
+                            </div>
+                          </div>
+
+                          <div class="col-md-3 col-sm-6">
+                            <div class="form-group">
+                              <label for="filtro3">Fecha Última Actualización</label>
+                              <input type="date" class="form-control" name="filtro3" id="filtro3" title="Solo aquellos con Fecha Última Actualización menores a la especificada" value="">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
 
 
@@ -80,7 +78,52 @@
           </x-accordion>
 
 
+              <div class="row">
+                <div class="col-md-3 col-sm-6">
+                  <div class="form-group">
+                    <label for="filtro_flia">Familia</label>
+                    <select name="filtro_flia" id="filtro_flia" class="form-control">
+                      @foreach($familias as $key => $value)
+                        <option value="{{ $key }}" {{ $key == '' ? 'selected' : '' }}>{{ $value }}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                </div>
 
+                <div class="col-md-3 col-sm-6">
+                  <div class="form-group">
+                    <label for="filtro1">Descripción</label>
+                    <input type="text" class="form-control" name="filtro1" id="filtro1" value="">
+                  </div>
+                </div>
+                          <div class="col-md-3 col-sm-6">
+                            <div class="form-group">
+                              <label for="filtroEstado">Estado</label>
+                              <select id="filtroEstado" name="filtroEstado" class="form-control">
+                                <option value="T">[Todos]</option>
+                                <option value="A" selected>Activos</option>
+                                <option value="I">Inactivos</option>
+                              </select>
+                            </div>
+                          </div>
+
+                <div class="col-md-3 col-sm-6">
+                  <div class="form-group">
+                    <label for="filtroMarca">Marca</label>
+                    <select id="filtroMarca" name="filtroMarca" class="form-control">
+                      <option value="T">[Todas Marcas]</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div id="categoriasFamilia" class="row" style="display:none;"></div>
+
+              <div class="row">
+                <div class="col-sm-12 text-right">
+                  <button type="button" onClick="consultar()" class="btn btn-primary"><i class="fa fa-search"></i> Consultar</button>
+                </div>
+              </div>
           
         </form>
 
@@ -319,6 +362,121 @@
    
 
   var $table = $('#mitabla'); // Tabla principal
+  var urlCategoriasProductos = '{{ route('productos.categorias') }}';
+  var xhrCategoriasProductos = null;
+
+  function seleccionCategoriasProductos() {
+    var seleccion = {};
+
+    $('#categoriasFamilia select[data-nivel]').each(function () {
+      seleccion[$(this).data('nivel')] = $(this).val();
+    });
+
+    return seleccion;
+  }
+
+  function datosFiltrosProductos() {
+    return {
+      filtro_flia: $('#filtro_flia').val(),
+      filtro1: $('#filtro1').val(),
+      filtro2: $('#filtro2').val(),
+      filtro3: $('#filtro3').val(),
+      filtroEstado: $('#filtroEstado').val(),
+      filtroStock: $('#filtroStock').val(),
+      filtroMarca: $('#filtroMarca').val(),
+      mes_ventas: $('#mes_ventas').val(),
+      niveles: seleccionCategoriasProductos()
+    };
+  }
+
+  function dibujarCategoriasProductos(niveles, seleccion, hasta) {
+    var $contenedor = $('#categoriasFamilia');
+
+    $contenedor.empty();
+
+    $.each(niveles, function (_, nivel) {
+      var numeroNivel = parseInt(nivel.indice);
+      var valor = numeroNivel <= hasta ? (seleccion[numeroNivel] || '00') : '00';
+      var $columna = $('<div/>', { class: 'col-md-3 col-sm-6' });
+      var $grupo = $('<div/>', { class: 'form-group' });
+
+      $('<label/>', {
+        for: 'filtro_categoria_' + numeroNivel,
+        text: nivel.descripcion
+      }).appendTo($grupo);
+
+      var $combo = $('<select/>', {
+        id: 'filtro_categoria_' + numeroNivel,
+        name: 'niveles[' + numeroNivel + ']',
+        class: 'form-control select-categoria-producto',
+        'data-nivel': numeroNivel
+      });
+
+      $.each(nivel.opciones, function (_, opcion) {
+        $('<option/>', { value: opcion.codigo, text: opcion.descripcion }).appendTo($combo);
+      });
+
+      $combo.val(valor);
+
+      if ($combo.val() === null) {
+        $combo.val('00');
+      }
+
+      $combo.appendTo($grupo);
+      $grupo.appendTo($columna);
+      $columna.appendTo($contenedor);
+    });
+
+    $contenedor.toggle(niveles.length > 0);
+  }
+
+  function cargarCategoriasProductos(hasta) {
+    var familia = $('#filtro_flia').val();
+
+    if (xhrCategoriasProductos !== null) {
+      xhrCategoriasProductos.abort();
+    }
+
+    if (!familia) {
+      $('#categoriasFamilia').hide().empty();
+      return;
+    }
+
+    var peticion = $.ajax({
+      global: false,
+      dataType: 'json',
+      data: { familia: familia, niveles: seleccionCategoriasProductos() },
+      url: urlCategoriasProductos,
+      type: 'get'
+    });
+
+    xhrCategoriasProductos = peticion;
+
+    peticion.done(function (niveles) {
+      if (!Array.isArray(niveles) || niveles.length === 0) {
+        $('#categoriasFamilia').hide().empty();
+        return;
+      }
+
+      dibujarCategoriasProductos(niveles, seleccionCategoriasProductos(), hasta);
+    }).fail(function (xhr, estado) {
+      if (estado !== 'abort') {
+        msgerror('No se pudieron cargar las categorías: ' + xhr.status);
+      }
+    }).always(function () {
+      if (xhrCategoriasProductos === peticion) {
+        xhrCategoriasProductos = null;
+      }
+    });
+  }
+
+  function limpiarNivelesProductosDesde(desde) {
+    $('#categoriasFamilia select[data-nivel]').each(function () {
+      if (parseInt($(this).data('nivel')) > desde) {
+        $(this).val('00');
+      }
+    });
+  }
 
   $("#userModal_precios").draggable({
       handle: ".modal-header"
@@ -362,6 +520,14 @@
 
     $(document).ready(function(){
         buscarMarcas( $("#filtro_flia").val() , 'S' , '');
+        cargarCategoriasProductos(-1);
+
+        $('#categoriasFamilia').on('change', 'select[data-nivel]', function () {
+            var nivel = parseInt($(this).data('nivel'));
+
+            limpiarNivelesProductosDesde(nivel);
+            cargarCategoriasProductos(nivel);
+        });
 
         $('select[name="groupby"]').change(function () {
             console.log($(this).val())
@@ -491,7 +657,7 @@ if (acumulado_tot != 0) {
        // ------------------------------------------------      
        $.ajax({
             dataType: "json",
-            data: { filtro_flia: $('#filtro_flia').val(), filtro1: $('#filtro1').val(), filtro2: $('#filtro2').val() , filtro3: $('#filtro3').val() , filtroEstado: $('#filtroEstado').val() , filtroStock: $('#filtroStock').val() , filtroMarca: $('#filtroMarca').val() , mes_ventas: $('#mes_ventas').val()  },
+            data: datosFiltrosProductos(),
             url:   'buscar',
             type:  'get',
             success: function(data){
@@ -515,8 +681,8 @@ if (acumulado_tot != 0) {
        // ------------------------------------------------      
        $.ajax({
             dataType: "json",
-            data: { filtro_flia: $('#filtro_flia').val(), filtro1: $('#filtro1').val(), filtro2: $('#filtro2').val() , filtro3: $('#filtro3').val() , filtroEstado: $('#filtroEstado').val() , filtroStock: $('#filtroStock').val() , filtroMarca: $('#filtroMarca').val() ,
-                    precio_aplica:$('#precio_aplica').val(),precio_tipo:$('#precio_tipo').val() , precio_recargo:$('#precio_recargo').val(), precio_redondeo:$('#precio_redondeo').val()    },
+            data: $.extend({}, datosFiltrosProductos(), {
+                    precio_aplica:$('#precio_aplica').val(),precio_tipo:$('#precio_tipo').val() , precio_recargo:$('#precio_recargo').val(), precio_redondeo:$('#precio_redondeo').val()    }),
             url:   'registrar_precio_masivo',
             type:  'get',
             success: function(data){
@@ -579,7 +745,7 @@ if (acumulado_tot != 0) {
        //}     
        $.ajax({
             dataType: "json",
-            data: { filtro_flia: $('#filtro_flia').val(), filtro1: $('#filtro1').val(), filtro2: $('#filtro2').val() , filtro3: $('#filtro3').val() , filtroEstado: $('#filtroEstado').val() , filtroMarca: $('#filtroMarca').val() , mes_ventas: $('#mes_ventas').val()  },
+            data: datosFiltrosProductos(),
             url:   'genera_pedido',
             type:  'get',
             success: function(data){
@@ -682,7 +848,9 @@ if (acumulado_tot != 0) {
            buscarMarcas( $("#Prod_Familia").val() , 'N' , '');
         });    
         $('select[name="filtro_flia"]').change(function () {
+           $('#categoriasFamilia').empty().hide();
            buscarMarcas( $("#filtro_flia").val() , 'S' , '');
+           cargarCategoriasProductos(-1);
         });    
     });
     //me dejo de funcionar ??  $("#Prod_Familia11").on("change", buscarMarcas(''));

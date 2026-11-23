@@ -19,6 +19,7 @@ use App\Models\producto;
 use App\Models\publicacion;
 use App\Models\sucursal;
 use App\Models\tienda_producto;
+use App\Actions\Categorias\CargarCategoriasFamiliaAction;
 use App\Actions\Cristales\ConsultarStockCristalAction;
 use App\Actions\Cristales\GenerarPlanillaStockAction;
 use App\Actions\Movimientos\BuscarMovimientosAction;
@@ -58,6 +59,11 @@ class ProductosController extends Controller
 {
     public function registrar_precio_masivo(Request $request, RegistrarPrecioMasivoAction $action)
     {
+        $request->validate([
+            'niveles' => 'nullable|array',
+            'niveles.*' => 'nullable|string|max:15',
+        ]);
+
         return $action($request->all());
     }
 
@@ -113,6 +119,21 @@ class ProductosController extends Controller
         return view('productos.index', ['familias' => $familias, 'listaMoneda' => $listaMoneda]);
     }
 
+    public function categorias(Request $request, CargarCategoriasFamiliaAction $action)
+    {
+        $validated = $request->validate([
+            'familia' => 'nullable|string|max:10',
+            'niveles' => 'nullable|array',
+            'niveles.*' => 'nullable|string|max:15',
+        ]);
+
+        $familia = trim((string) ($validated['familia'] ?? ''));
+
+        return response()->json(
+            $familia === '' ? [] : $action($familia, $validated['niveles'] ?? [])
+        );
+    }
+
     public function lista_auditoria(Request $request, ListarAuditoriaAction $action)
     {
         return $action($request->familia, $request->idprod);
@@ -127,6 +148,11 @@ class ProductosController extends Controller
     {
         // Buscar de la Pantalla Principal
 
+        $request->validate([
+            'niveles' => 'nullable|array',
+            'niveles.*' => 'nullable|string|max:15',
+        ]);
+
         if ($request->mes_ventas == '') {
             $request->mes_ventas = 2;
         }
@@ -135,7 +161,7 @@ class ProductosController extends Controller
         $filtro_fecini = date('Y-m-d', strtotime($filtro_fecini.'-'.$request->mes_ventas.' month')).' 00:00:00';
 
         if ($request->ajax()) {
-            $datos = producto::listar($request->filtro_flia, $request->filtro1, 10000, $request->filtro2, $request->filtro3, $request->filtroEstado, $request->filtroMarca);
+            $datos = producto::listar($request->filtro_flia, $request->filtro1, 10000, $request->filtro2, $request->filtro3, $request->filtroEstado, $request->filtroMarca, $request->input('niveles') ?? []);
 
             // Recorro para Completar los stock de las sucursales
             $datos2 = [];
@@ -191,6 +217,11 @@ class ProductosController extends Controller
 
     public function genera_pedido(Request $request, GenerarPedidoAction $action)
     {
+        $request->validate([
+            'niveles' => 'nullable|array',
+            'niveles.*' => 'nullable|string|max:15',
+        ]);
+
         return $action($request);
     }
 

@@ -16,7 +16,8 @@ class RegistrarPrecioMasivoAction
             $data['filtro2'] ?? '',
             $data['filtro3'] ?? '',
             $data['filtroEstado'] ?? '',
-            $data['filtroMarca'] ?? ''
+            $data['filtroMarca'] ?? '',
+            is_array($data['niveles'] ?? null) ? $data['niveles'] : []
         );
 
         $cantidad = 0;

@@ -24,7 +24,7 @@
                 @if($icon)
                     <i class="fa fa-{{ $icon }}"></i>
                 @endif
-                {{ $title }}
+                <span class="accordion-title-text">{{ $title }}</span>
                 <span class="accordion-chevron pull-right">
                     <i class="fa fa-chevron-{{ $expanded ? 'up' : 'down' }}"></i>
                 </span>

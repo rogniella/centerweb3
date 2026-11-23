@@ -41,7 +41,8 @@ class GenerarPedidoAction
             $request->filtro2,
             $request->filtro3,
             $request->filtroEstado,
-            $request->filtroMarca
+            $request->filtroMarca,
+            is_array($request->input('niveles')) ? $request->input('niveles') : []
         );
 
         foreach ($datos as $row) {

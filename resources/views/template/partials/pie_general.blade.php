@@ -120,6 +120,16 @@
         }
     });
 
+    // Accordion: cambia la leyenda de los filtros según estén abiertos o cerrados
+    $(document).on('show.bs.collapse hide.bs.collapse', '.panel-collapse', function (event) {
+        var $titulo = $(this).closest('.panel')
+            .find('.panel-heading--mas-opciones .accordion-title-text');
+
+        if ($titulo.length) {
+            $titulo.text(event.type === 'show' ? 'MENOS OPCIONES' : 'MÁS OPCIONES');
+        }
+    });
+
     function msgerror2(msg,tiempo) {
 
       Swal.fire({

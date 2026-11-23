@@ -13,27 +13,31 @@
         </div>
         <div class="panel-body">
 
-
             <x-accordion id="productosAccordion">
-              <x-accordion-item id="filtros" title=" Más Opciones ..."  :expanded="false" icon="search" parent="productosAccordion" panelClass="filtros" headingClass="panel-heading--mas-opciones">
+              <x-accordion-item id="filtros" title="MÁS OPCIONES" :expanded="false" icon="sliders" parent="productosAccordion" panelClass="filtros" headingClass="panel-heading--mas-opciones">
+
+                <div class="filtros-avanzados">
+                  <div class="filtros-avanzados__bloque">
 
 
-                <div class="row">
-                    <div class="col-sm-3 col-xs-12">
+                    <div class="row">
+                      <div class="col-sm-3 col-xs-12">
                         <label class="control-label">Artículo:</label>
                         <input class="form-control" type="text" value="{{ $id_producto }}" id="id_producto" placeholder="Código de artículo">
-                    </div>
-                    <div class="col-sm-5 col-xs-12">
+                      </div>
+                      <div class="col-sm-5 col-xs-12">
                         <label class="control-label">Descripción:</label>
                         <input class="form-control" type="text" value="{{ $desc_producto }}" id="desc_producto" placeholder="Buscar por descripción">
-                    </div>
-                    <div class="col-sm-4 col-xs-12">
+                      </div>
+                      <div class="col-sm-4 col-xs-12">
                         <label class="control-label">Ignore Cod.Cero:</label>
                         <select name="cod_cero" id="cod_cero" class="form-control">
-                            <option value="">NO</option>
-                            <option value="S">SI</option>
+                          <option value="">NO</option>
+                          <option value="S">SI</option>
                         </select>
+                      </div>
                     </div>
+                  </div>
                 </div>
               </x-accordion-item>
             </x-accordion>

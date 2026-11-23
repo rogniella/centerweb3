@@ -5,6 +5,7 @@ use App\Http\Controllers\CajasController;
 use App\Http\Controllers\CierresController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\ComprasController;
+use App\Http\Controllers\ConsultaTipoCristalesController;
 use App\Http\Controllers\CtrolStockController;
 use App\Http\Controllers\EstadisticasController;
 use App\Http\Controllers\FacturasController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\MonedasController;
 use App\Http\Controllers\OtController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\ProveedoresController;
+use App\Http\Controllers\RangosCristalController;
 use App\Http\Controllers\SucursalesController;
 use App\Http\Controllers\TarjetasController;
 use App\Http\Controllers\VentasController;
@@ -230,10 +232,30 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('ctrol_stock/ActualizaDatosLote', 'ActualizaDatosLote');
     });
 
+    // CONSULTA TIPO CRISTALES (FAMILIA LEN)
+    Route::controller(ConsultaTipoCristalesController::class)->group(function () {
+        Route::get('cristales/consulta-tipo', 'index')->name('cristales.consultatipo');
+        Route::get('cristales/consulta-tipo/categorias', 'categorias')->name('cristales.consultatipo.categorias');
+        Route::get('cristales/consulta-tipo/buscar', 'buscar')->name('cristales.consultatipo.buscar');
+    });
+
+    // ADMINISTRACION DE RANGOS DE CRISTALES (SOLO ADMINISTRADORES)
+    Route::controller(RangosCristalController::class)->middleware('admin')->group(function () {
+        Route::get('cristales/consulta-tipo/rangos/{producto}', 'index')->name('cristales.rangos.index');
+        Route::post('cristales/consulta-tipo/rangos/{producto}', 'store')->name('cristales.rangos.store');
+        Route::put('cristales/consulta-tipo/rangos/{producto}/{rango}', 'update')
+            ->name('cristales.rangos.update')
+            ->whereNumber('rango');
+        Route::delete('cristales/consulta-tipo/rangos/{producto}/{rango}', 'destroy')
+            ->name('cristales.rangos.destroy')
+            ->whereNumber('rango');
+    });
+
     // PRODUCTOS
     Route::controller(ProductosController::class)->group(function () {
         Route::get('productos/publicaciones', 'publicaciones')->name('productos.publicaciones');
         Route::get('productos/index', 'index')->name('productos.index');
+        Route::get('productos/categorias', 'categorias')->name('productos.categorias');
         Route::get('productos/registrar_precio_masivo', 'registrar_precio_masivo');
         Route::get('productos/buscar', 'buscar');
         Route::get('productos/show', 'show');

@@ -17,6 +17,7 @@
 
                 <li role="separator" class="divider"></li>
                 <li><a href="{{ route('productos.consultaprecio') }}">Consulta de Precios</a></li>
+                <li><a href="{{ route('cristales.consultatipo') }}">Consulta Tipo Cristales</a></li>
                 <li><a href="{{ route('productos.modificaprecio') }}">Modificacion de Precios</a></li>
                 <li role="separator" class="divider"></li>
  
