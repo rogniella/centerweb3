@@ -5,11 +5,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title"><i class="fa fa-adjust"></i> Administrar rangos <span id="rangosProductoDescripcion"></span></h4>
-                <p class="text-muted" style="margin-bottom: 0;">
-                    <span id="rangosProductoDescripcion"></span>
-                    (<span id="rangosProductoCodigo"></span>)
-                </p>
+                <h4 class="modal-title"><i class="fa fa-adjust"></i> Administrar rango: <span id="rangosProductoDescripcion"></span></h4>
             </div>
             <div class="modal-body">
                 <div id="mensajeRangosCristal" class="alert alert-danger" style="display: none;"></div>
@@ -79,7 +75,11 @@
                         <div class="col-md-3 col-sm-6">
                             <div class="form-group">
                                 <label for="Cri_metodo">Método</label>
-                                <input type="number" step="1" class="form-control" id="Cri_metodo" name="Cri_metodo">
+                                <select class="form-control" id="Cri_metodo" name="Cri_metodo">
+                                    <option value="">Seleccione...</option>
+                                    <option value="0">0 = No valida Suma</option>
+                                    <option value="1">1 = Valida Suma</option>
+                                </select>
                             </div>
                         </div>
                     </div>

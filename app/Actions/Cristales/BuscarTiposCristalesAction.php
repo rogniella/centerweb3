@@ -81,6 +81,8 @@ class BuscarTiposCristalesAction
                 "{$tablaCristales}.Cri_esf_neg",
                 "{$tablaCristales}.Cri_cil",
                 "{$tablaCristales}.Cri_cil_neg",
+                "{$tablaCristales}.Cri_rango",
+                "{$tablaCristales}.Cri_metodo",
             ])
             ->groupBy(fn ($cristal): string => $this->claveProducto(
                 (string) $cristal->Cri_familia,

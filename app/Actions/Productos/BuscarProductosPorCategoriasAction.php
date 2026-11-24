@@ -4,6 +4,7 @@ namespace App\Actions\Productos;
 
 use App\Models\famcategoria;
 use App\Models\producto;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Busca productos de una familia aplicando los filtros de la cascada.
@@ -15,6 +16,13 @@ class BuscarProductosPorCategoriasAction
 {
     /** Valor legacy que representa "[Todos]" en los combos. */
     private const CODIGO_TODOS = '00';
+
+    /** Códigos que, para una familia y nivel, se tratan como equivalentes. */
+    private const ALIASES = [
+        'LEN' => [
+            0 => ['S' => ['S', 'L']],
+        ],
+    ];
 
     /**
      * @param  array<int, string|null>  $niveles
@@ -49,14 +57,19 @@ class BuscarProductosPorCategoriasAction
             }
 
             // Mismo criterio que el VB: MID(Prod_Categoria, PosIni, CantPos) = código elegido.
-            $consulta->whereRaw(
-                "LOWER(TRIM(SUBSTR(TRIM({$tablaProductos}.Prod_Categoria), ?, ?))) = ?",
-                [
-                    (int) $categoria->FCat_PosIni,
-                    mb_strlen(mb_strtolower($codigo)),
-                    mb_strtolower($codigo),
-                ]
-            );
+            // Si el código tiene alias (LEN/S), se acepta cualquiera de sus valores.
+            $consulta->where(function (Builder $consultaNivel) use ($tablaProductos, $categoria, $codigo, $familia, $indice): void {
+                foreach ($this->codigosParaNivel($familia, $indice, $codigo) as $valor) {
+                    $consultaNivel->orWhereRaw(
+                        "LOWER(TRIM(SUBSTR(TRIM({$tablaProductos}.Prod_Categoria), ?, ?))) = ?",
+                        [
+                            (int) $categoria->FCat_PosIni,
+                            mb_strlen(mb_strtolower($valor)),
+                            mb_strtolower($valor),
+                        ]
+                    );
+                }
+            });
         }
 
         // Se escapa "!", "%" y "_" para que los comodines escritos por el usuario
@@ -71,8 +84,8 @@ class BuscarProductosPorCategoriasAction
         }
 
         return $consulta
+            ->orderBy("{$tablaProductos}.Prod_Precio")
             ->orderBy("{$tablaProductos}.Prod_Descripcion")
-            ->orderBy("{$tablaProductos}.Prod_Id")
             ->get()
             ->map(function ($producto): array {
                 return [
@@ -85,5 +98,15 @@ class BuscarProductosPorCategoriasAction
                 ];
             })
             ->all();
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function codigosParaNivel(string $familia, int $indice, string $codigo): array
+    {
+        $alias = self::ALIASES[$familia][$indice][mb_strtoupper(trim($codigo))] ?? null;
+
+        return $alias ?? [$codigo];
     }
 }

@@ -15,6 +15,9 @@
                         <label for="nivel_{{ $categoria['indice'] }}">{{ $categoria['descripcion'] }}</label>
                         <select class="form-control select-categoria" id="nivel_{{ $categoria['indice'] }}" data-nivel="{{ $categoria['indice'] }}">
                             @foreach ($categoria['opciones'] as $opcion)
+                                @if ($categoria['indice'] === 0 && strtoupper($opcion['codigo']) === 'L')
+                                    @continue
+                                @endif
                                 <option value="{{ $opcion['codigo'] }}">{{ $opcion['descripcion'] }}</option>
                             @endforeach
                         </select>
@@ -59,15 +62,12 @@
             data-search="true"
             data-show-export="true"
             data-cache="false"
-            data-pagination="true"
-            data-page-size="50"
-            data-page-list="[10, 25, 50, 100, All]"
             class="table table-striped">
             <thead>
                 <tr>
-                    <th data-field="descripcion" data-sortable="true">Descripción</th>
                     <th data-field="codigo" data-sortable="true">Código</th>
-                    <th data-field="precio" data-sortable="true" data-align="right" data-formatter="formatterPrecio">Precio</th>
+                    <th data-field="descripcion" data-sortable="true">Descripción</th>
+                    <th data-field="precio" data-sortable="true" data-align="right" data-formatter="formatterPrecio" data-sorter="sorterPrecio">Precio</th>
                     <th data-field="rangos" data-sortable="false" data-formatter="formatterRangos">Rangos</th>
                     @if (Auth::check() && Auth::user()->perfil_id === 'ADM')
                         <th data-field="idweb" data-sortable="false" data-align="center" data-formatter="formatterAccionesRangos">Acciones</th>
@@ -92,7 +92,7 @@
     function mensajeErrorValidacionTipoCristal(xhr, contexto) {
         var respuesta = xhr.responseJSON;
         var etiquetas = {
-            esf: 'Esfera',
+            esf: 'Esferico',
             cil: 'Cilindro',
             descripcion: 'Descripción',
             niveles: 'Niveles'
@@ -125,12 +125,29 @@
         return contexto + ': ' + xhr.status;
     }
 
+    var formateadorPrecioTipoCristal = new Intl.NumberFormat('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+
+    function valorNumericoPrecioTipoCristal(valor) {
+        if (typeof valor === 'number') {
+            return valor;
+        }
+
+        return parseFloat(String(valor).replace(/\./g, '').replace(',', '.'));
+    }
+
     function formatterPrecio(value) {
         if (value === null || value === undefined || value === '') {
             return '';
         }
 
-        return parseFloat(value).toFixed(2);
+        return formateadorPrecioTipoCristal.format(parseFloat(value));
+    }
+
+    function sorterPrecio(a, b) {
+        return valorNumericoPrecioTipoCristal(a) - valorNumericoPrecioTipoCristal(b);
     }
 
     function formatterRangos(value) {

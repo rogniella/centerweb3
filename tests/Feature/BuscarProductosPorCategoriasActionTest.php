@@ -43,6 +43,24 @@ class BuscarProductosPorCategoriasActionTest extends TestCase
         $this->assertArrayNotHasKey('rangos', $resultados[0]);
     }
 
+    public function test_ordena_los_resultados_por_precio_de_menor_a_mayor(): void
+    {
+        $this->crearCategoria(1, 'CEL', 1, 2, 'Marca');
+        $this->crearCategoria(2, 'CEL', 3, 6, 'Modelo');
+
+        $this->crearProducto('SAGALXYZ', 'CEL', '0001', 'Lente', 200);
+        $this->crearProducto('SAGALXYZ', 'CEL', '0002', 'Lente', 100);
+        $this->crearProducto('SAGALXYZ', 'CEL', '0003', 'Lente', 150);
+
+        $resultados = app(BuscarProductosPorCategoriasAction::class)('CEL', [
+            0 => 'SA',
+            1 => 'GALXYZ',
+        ]);
+
+        $this->assertSame(['0002', '0003', '0001'], array_column($resultados, 'codigo'));
+        $this->assertSame([100.0, 150.0, 200.0], array_column($resultados, 'precio'));
+    }
+
     public function test_escapa_comodines_en_la_descripcion(): void
     {
         $this->crearCategoria(1, 'CEL', 1, 2, 'Marca');
@@ -86,13 +104,14 @@ class BuscarProductosPorCategoriasActionTest extends TestCase
         ]);
     }
 
-    private function crearProducto(string $categoria, string $familia, string $id, string $descripcion = 'Lente'): producto
+    private function crearProducto(string $categoria, string $familia, string $id, string $descripcion = 'Lente', float $precio = 100): producto
     {
         return producto::factory()->create([
             'Prod_Familia' => $familia,
             'Prod_Id' => $id,
             'Prod_Categoria' => $categoria,
             'Prod_Descripcion' => $descripcion,
+            'Prod_Precio' => $precio,
             'Prod_Estado' => '',
         ]);
     }

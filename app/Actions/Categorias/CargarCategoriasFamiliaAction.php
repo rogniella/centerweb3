@@ -20,6 +20,13 @@ class CargarCategoriasFamiliaAction
     /** Valor legacy que representa "[Todos]" en los combos. */
     private const CODIGO_TODOS = '00';
 
+    /** Códigos que, para una familia y nivel, se tratan como equivalentes. */
+    private const ALIASES = [
+        'LEN' => [
+            0 => ['S' => ['S', 'L']],
+        ],
+    ];
+
     /**
      * Devuelve todos los niveles con sus opciones para el render inicial de la vista.
      *
@@ -95,14 +102,17 @@ class CargarCategoriasFamiliaAction
         // El VB filtraba los ítems por el código elegido en el nivel anterior.
         // Los datos legacy usan '*' como comodín, así que se aceptan ambos casos.
         $codigoPadre = $seleccion[$indice - 1] ?? null;
+        $codigosPadre = $codigoPadre === null
+            ? []
+            : $this->codigosParaNivel($familia, $indice - 1, (string) $codigoPadre);
 
         $catalogadas = famitemcat::query()
             ->where('FCatItem_IdCategoria', $categoria->FCat_IdCategoria);
 
-        if ($codigoPadre !== null) {
-            $catalogadas->where(function (Builder $consulta) use ($codigoPadre): void {
+        if ($codigosPadre !== []) {
+            $catalogadas->where(function (Builder $consulta) use ($codigosPadre): void {
                 $consulta->where('FCatItem_CodPadre', '*')
-                    ->orWhere('FCatItem_CodPadre', $codigoPadre);
+                    ->orWhereIn('FCatItem_CodPadre', $codigosPadre);
             });
         }
 
@@ -194,14 +204,19 @@ class CargarCategoriasFamiliaAction
 
             // Mismo criterio que el VB: MID(Prod_Categoria, PosIni, CantPos) = código elegido.
             // Se usa la longitud del código elegido, no la longitud declarada de la categoría.
-            $consulta->whereRaw(
-                "LOWER(TRIM(SUBSTR(TRIM({$tabla}.Prod_Categoria), ?, ?))) = ?",
-                [
-                    (int) $categoriaPadre->FCat_PosIni,
-                    mb_strlen(mb_strtolower($codigo)),
-                    mb_strtolower($codigo),
-                ]
-            );
+            // Si el código tiene alias (LEN/S), se acepta cualquiera de sus valores.
+            $consulta->where(function (Builder $consultaNivel) use ($tabla, $categoriaPadre, $codigo, $familia, $indice): void {
+                foreach ($this->codigosParaNivel($familia, (int) $indice, (string) $codigo) as $valor) {
+                    $consultaNivel->orWhereRaw(
+                        "LOWER(TRIM(SUBSTR(TRIM({$tabla}.Prod_Categoria), ?, ?))) = ?",
+                        [
+                            (int) $categoriaPadre->FCat_PosIni,
+                            mb_strlen(mb_strtolower($valor)),
+                            mb_strtolower($valor),
+                        ]
+                    );
+                }
+            });
         }
 
         return $consulta->pluck('codigo');
@@ -235,5 +250,15 @@ class CargarCategoriasFamiliaAction
         }
 
         return $normalizada;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function codigosParaNivel(string $familia, int $indice, string $codigo): array
+    {
+        $alias = self::ALIASES[$familia][$indice][mb_strtoupper(trim($codigo))] ?? null;
+
+        return $alias ?? [$codigo];
     }
 }

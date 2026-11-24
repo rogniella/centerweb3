@@ -39,11 +39,11 @@ class GuardarRangoCristalRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'Cri_esf' => 'esfera',
-            'Cri_esf_neg' => 'esfera negativa',
+            'Cri_esf' => 'esferico',
+            'Cri_esf_neg' => 'esferico menor',
             'Cri_cil' => 'cilindro',
-            'Cri_cil_neg' => 'cilindro negativo',
-            'Cri_add' => 'adicción',
+            'Cri_cil_neg' => 'cilindro menor',
+            'Cri_add' => 'add',
             'Cri_rango' => 'rango',
             'Cri_metodo' => 'método',
         ];

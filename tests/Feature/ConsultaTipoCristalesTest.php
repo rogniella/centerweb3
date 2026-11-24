@@ -72,6 +72,65 @@ class ConsultaTipoCristalesTest extends TestCase
             ->assertViewHas('categorias', fn ($categorias): bool => count($categorias) === 4);
     }
 
+    public function test_index_etiqueta_la_opcion_s_y_oculta_la_opcion_l_duplicada(): void
+    {
+        $this->crearProducto('SOPXXX');
+        $this->crearProducto('LOPXXX');
+
+        $this->actingAs(User::factory()->create())
+            ->get(route('cristales.consultatipo'))
+            ->assertOk()
+            ->assertSee('value="S">MONOFOCAL (Separados / Laboratorio)</option>', false)
+            ->assertDontSee('value="L">L</option>', false);
+    }
+
+    public function test_index_formatea_precio_con_separador_de_miles_y_orden_numerico(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->get(route('cristales.consultatipo'))
+            ->assertOk()
+            ->assertSee('data-field="precio" data-sortable="true" data-align="right" data-formatter="formatterPrecio" data-sorter="sorterPrecio"', false)
+            ->assertSee("new Intl.NumberFormat('es-AR'", false)
+            ->assertSee('function sorterPrecio(a, b)', false);
+    }
+
+    public function test_buscar_con_nivel_uno_s_incluye_productos_s_y_l(): void
+    {
+        $this->crearProducto('SOPXXX', ['Prod_Id' => '0001', 'Prod_Descripcion' => 'Lente monofocal']);
+        $this->crearProducto('LOPXXX', ['Prod_Id' => '0002', 'Prod_Descripcion' => 'Lente monofocal']);
+        $this->crearProducto('MOPXXX', ['Prod_Id' => '0003', 'Prod_Descripcion' => 'Lente monofocal']);
+
+        $url = $this->urlConParametros(route('cristales.consultatipo.buscar'), [
+            'niveles' => [0 => 'S'],
+        ]);
+
+        $respuesta = $this->actingAs(User::factory()->create())->getJson($url);
+
+        $respuesta->assertOk();
+
+        $this->assertSame(['0001', '0002'], collect($respuesta->json())->pluck('codigo')->all());
+    }
+
+    public function test_cascada_con_nivel_uno_s_incluye_opciones_de_productos_l(): void
+    {
+        $this->crearProducto('SOPXXX');
+        $this->crearProducto('LSPXXX');
+
+        $url = $this->urlConParametros(route('cristales.consultatipo.categorias'), [
+            'nivel' => 1,
+            'niveles' => [0 => 'S'],
+        ]);
+
+        $respuesta = $this->actingAs(User::factory()->create())->getJson($url);
+
+        $respuesta->assertOk();
+
+        $codigos = collect($respuesta->json('opciones'))->pluck('codigo')->all();
+
+        $this->assertContains('O', $codigos);
+        $this->assertContains('S', $codigos);
+    }
+
     public function test_home_incluye_consulta_tipo_cristales_en_accesos_directos(): void
     {
         $usuario = User::factory()->create(['home_shortcuts' => null]);
